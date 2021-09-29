@@ -82,10 +82,8 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (lyrics) {
-      setIndex(Math.max(
-        lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - OFFSET) - 1,
-        0,
-      ));
+      const nextIndex = lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - OFFSET);
+      setIndex((nextIndex === -1 ? lyrics.length : nextIndex) - 1);
     }
   }, [time, lyrics]);
 
