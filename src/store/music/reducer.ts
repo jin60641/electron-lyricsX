@@ -1,3 +1,4 @@
+import { persistReducer } from 'redux-persist';
 import { createReducer } from 'typesafe-actions';
 
 import musicActions from './actions';
@@ -5,6 +6,12 @@ import {
   initialState,
   MusicState,
 } from './types';
+
+const persistConfig = {
+  key: 'music',
+  storage: window.bridge.storage,
+  whitelist: [],
+};
 
 const musicReducer = createReducer<MusicState>(initialState)
   .handleAction(musicActions.resetMusic, (state) => ({
@@ -36,4 +43,4 @@ const musicReducer = createReducer<MusicState>(initialState)
     })),
   }));
 
-export default musicReducer;
+export default persistReducer(persistConfig, musicReducer);
