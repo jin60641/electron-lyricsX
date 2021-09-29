@@ -4,10 +4,6 @@ import layoutActions from './actions';
 import { initialState, LayoutState } from './types';
 
 const layoutReducer = createReducer<LayoutState>(initialState)
-  .handleAction(layoutActions.setDrawer, (state, action) => ({
-    ...state,
-    drawer: action.payload,
-  }))
   .handleAction(layoutActions.setPalette, (state, action) => ({
     ...state,
     palette: action.payload,

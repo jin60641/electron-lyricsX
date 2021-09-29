@@ -37,35 +37,42 @@ var Playback = /** @class */ (function (_super) {
                     if (!track) {
                         if (_this.isPlaying) {
                             _this.isPlaying = false;
-                            _this.emit(types_1.EventName.PAUSE, _this.prevTrack);
+                            _this.emit(types_1.EventName.STOP, _this.prevTrack);
                             _this.prevTrack = undefined;
                         }
                         return;
                     }
-                    if (track && !_this.isPlaying) {
-                        _this.isPlaying = true;
-                        _this.emit(types_1.EventName.START, track);
-                    }
-                    else if (track && _this.isPlaying) {
-                        if (((_a = _this.prevTrack) === null || _a === void 0 ? void 0 : _a.name) !== data.name) {
-                            _this.emit(types_1.EventName.PAUSE, _this.prevTrack);
+                    if (!_this.isPlaying) {
+                        if (!_this.prevTrack || track.position !== _this.prevTrack.position) {
+                            _this.isPlaying = true;
                             _this.emit(types_1.EventName.START, track);
                         }
-                        else {
-                            _this.emit(types_1.EventName.SEEK, track);
-                        }
+                    }
+                    else if (((_a = _this.prevTrack) === null || _a === void 0 ? void 0 : _a.name) !== data.name) {
+                        _this.emit(types_1.EventName.STOP, _this.prevTrack);
+                        _this.emit(types_1.EventName.START, track);
+                    }
+                    else if (_this.prevTrack && track.position === _this.prevTrack.position) {
+                        _this.isPlaying = false;
+                        _this.emit(types_1.EventName.PAUSE, track);
+                    }
+                    else {
+                        _this.emit(types_1.EventName.SEEK, track);
                     }
                     _this.prevTrack = track;
                 }
+                else {
+                    _this.emit(types_1.EventName.STOP, _this.prevTrack);
+                }
             });
-        }, 2000);
+        }, 1000);
         return _this;
     }
     Playback.prototype.runTransportScript = function (callback) {
         var scriptPath = this.isWindows
             ? path.join(__dirname, '..', 'scripts', 'windows', 'iTunes.js')
-            // : path.join(__dirname, '..', 'scripts', 'mac', 'ITunesTransport.scpt');
-            : path.join(__dirname, '..', 'scripts', 'mac', 'ChromeTransport.scpt');
+            : path.join(__dirname, '..', 'scripts', 'mac', 'ITunesTransport.scpt');
+        // : path.join(__dirname, '..', 'scripts', 'mac', 'ChromeTransport.scpt');
         var scriptRunner = this.isWindows
             ? spawn('cscript', ['//Nologo', scriptPath])
             : spawn('osascript', [scriptPath]);

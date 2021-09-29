@@ -1,17 +1,13 @@
 import {
   app,
-  BrowserView,
-  screen,
   BrowserWindow,
-  dialog,
   ipcMain,
   Menu,
   MenuItemConstructorOptions,
+  screen,
   shell,
 } from 'electron';
-import fetch from 'electron-fetch';
 import * as isDev from 'electron-is-dev';
-import * as fs from 'fs';
 import * as path from 'path';
 
 import {
@@ -28,7 +24,7 @@ const close = () => null;
 
 const isMac = process.platform === 'darwin';
 
-if(isMac) {
+if (isMac) {
   app.dock.hide();
 }
 app.on('window-all-closed', () => {
@@ -134,27 +130,36 @@ const createWindow = () => {
       height: payload.height - bounds.height,
     };
     const display = screen.getPrimaryDisplay().bounds;
-    let x, y;
+    let x; let
+      y;
     if (bounds.x < 5) {
       x = bounds.x;
     } else if (display.width - 5 < bounds.x + bounds.width) {
-      x = bounds.x + bounds.width - Math.round(payload.width)
+      x = bounds.x + bounds.width - Math.round(payload.width);
     } else {
       x = Math.min(Math.max(0, bounds.x - Math.round(diff.width / 2)), display.width - Math.round(payload.width));
     }
     if (bounds.y < 5) {
       y = bounds.y;
     } else if (display.height - 5 < bounds.y + bounds.height) {
-      y = bounds.y + bounds.height - Math.round(payload.height)
+      y = bounds.y + bounds.height - Math.round(payload.height);
     } else {
       y = Math.min(Math.max(0, bounds.y - Math.round(diff.height / 2)), display.height - Math.round(payload.height));
     }
-    win.setBounds({
+    const nextBounds = {
       x,
       y,
       width: Math.round(payload.width),
       height: Math.round(payload.height),
-    });
+    };
+    if (nextBounds.width < bounds.width) {
+      win.setBounds({ ...nextBounds, width: bounds.width });
+      setTimeout(() => {
+        win.setBounds(nextBounds);
+      }, 400);
+    } else {
+      win.setBounds(nextBounds);
+    }
   });
 
   const menu = Menu.buildFromTemplate(template as MenuItemConstructorOptions[]);

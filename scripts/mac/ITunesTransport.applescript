@@ -12,7 +12,15 @@ end IsRunning
 on IsPlaying()
 	if ApplicationIsRunning("Music") then
 		tell application "Music"
-			return player state is playing
+			if player state is playing then
+				return true
+			else if player state is paused then
+				return true
+			else
+				display dialog player state
+				return false
+			end if
+			
 		end tell
 	else
 		return false
@@ -26,7 +34,8 @@ on GetCurrentTrack()
 			set trackName to (get name of current track)
 			set trackArtist to (get artist of current track)
 			set trackDuration to (get duration of current track)
-			return "{\"name\":\"" & trackName & "\",\"artist\":\"" & trackArtist & "\",\"duration\":" & trackDuration & ",\"position\":" & player position & "}"
+			set trackPosition to player position
+			return "{\"name\":\"" & trackName & "\",\"artist\":\"" & trackArtist & "\",\"duration\":" & trackDuration & ",\"position\":" & trackPosition & "}"
 		end tell
 	else
 		return "null"

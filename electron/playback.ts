@@ -8,8 +8,11 @@ type DefaultCallback = (data: Info) => void;
 
 class Playback extends EventTarget {
   private isWindows = !!process.platform.match(/^win/);
+
   private isPlaying: boolean = false;
+
   private prevTrack?: Info;
+
   constructor() {
     super();
     setInterval(() => {
@@ -24,33 +27,38 @@ class Playback extends EventTarget {
           if (!track) {
             if (this.isPlaying) {
               this.isPlaying = false;
-              this.emit(EventName.PAUSE, this.prevTrack);
+              this.emit(EventName.STOP, this.prevTrack);
               this.prevTrack = undefined;
             }
             return;
           }
-          if (track && !this.isPlaying) {
-            this.isPlaying = true;
-            this.emit(EventName.START, track);
-          } else if (track && this.isPlaying) {
-            if (this.prevTrack?.name !== data.name) {
-              this.emit(EventName.PAUSE, this.prevTrack);
+          if (!this.isPlaying) {
+            if (!this.prevTrack || track.position !== this.prevTrack.position) {
+              this.isPlaying = true;
               this.emit(EventName.START, track);
-            } else {
-              this.emit(EventName.SEEK, track);
             }
+          } else if (this.prevTrack?.name !== data.name) {
+            this.emit(EventName.STOP, this.prevTrack);
+            this.emit(EventName.START, track);
+          } else if (this.prevTrack && track.position === this.prevTrack.position) {
+            this.isPlaying = false;
+            this.emit(EventName.PAUSE, track);
+          } else {
+            this.emit(EventName.SEEK, track);
           }
           this.prevTrack = track;
+        } else {
+          this.emit(EventName.STOP, this.prevTrack);
         }
       });
-    }, 2000);
+    }, 1000);
   }
 
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(__dirname, '..', 'scripts', 'windows', 'iTunes.js')
-      // : path.join(__dirname, '..', 'scripts', 'mac', 'ITunesTransport.scpt');
-      : path.join(__dirname, '..', 'scripts', 'mac', 'ChromeTransport.scpt');
+      : path.join(__dirname, '..', 'scripts', 'mac', 'ITunesTransport.scpt');
+      // : path.join(__dirname, '..', 'scripts', 'mac', 'ChromeTransport.scpt');
     const scriptRunner = this.isWindows
       ? spawn('cscript', ['//Nologo', scriptPath])
       : spawn('osascript', [scriptPath]);

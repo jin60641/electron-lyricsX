@@ -1,16 +1,12 @@
+import { v4 as uuid } from 'uuid';
+
 export interface MusicState {
   list: Music[],
-  count: number,
-  lastCount: number,
-  search: Search[],
   lastSelected?: number,
   isPlaying: boolean,
 }
 
-type Search = Pick<Music, 'lyric'>;
-
 export enum Actions {
-  SET_COUNT = 'MUSIC.SET_COUNT',
   SET_LAST_SELECTED = 'MUSIC.SET_LAST_SELECTED',
 
   START_MUSIC = 'MUSIC.START_MUSIC',
@@ -21,21 +17,10 @@ export enum Actions {
   SELECT_MUSIC = 'MUSIC.SELECT_MUSIC',
   RESET_MUSIC = 'MUSIC.RESET_MUSIC',
   REMOVE_MUSIC = 'MUSIC.REMOVE_MUSIC',
-  SAVE_MUSIC = 'MUSIC.SAVE_MUSIC',
-
-  SEARCH_MUSIC_REQUEST = 'MUSIC.SEARCH_MUSIC',
-  SEARCH_MUSIC_SUCCESS = 'MUSIC.SEARCH_MUSIC#SUCCESS',
-  SEARCH_MUSIC_FAILURE = 'MUSIC.SEARCH_MUSIC#FAILURE',
-  RESET_SEARCH = 'MUSIC.RESET_SEARCH',
-
-  OPEN_FINDER = 'MUSIC.OPEN_FINDER',
 }
 
 export const initialState: MusicState = {
   list: [],
-  search: [],
-  count: 0,
-  lastCount: 0,
   isPlaying: false,
 };
 
@@ -44,5 +29,12 @@ export interface Music {
   artist?: string,
   duration?: number,
   position?: number,
-  lyric?: string,
+  lyric?: Row[],
+}
+
+interface Row {
+  timestamp: string,
+  time: number,
+  text: string,
+  id: ReturnType<typeof uuid>,
 }

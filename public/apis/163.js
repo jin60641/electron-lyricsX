@@ -52,7 +52,7 @@ var searchLyric = function (mid) { return __awaiter(void 0, void 0, void 0, func
             })];
     });
 }); };
-var searchMusic = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+var searchMusic = function (info) { return __awaiter(void 0, void 0, void 0, function () {
     var res, ids, lyrics, lyricRes;
     var _a, _b, _c;
     return __generator(this, function (_d) {
@@ -62,7 +62,7 @@ var searchMusic = function (data) { return __awaiter(void 0, void 0, void 0, fun
                         offset: 0,
                         limit: 10,
                         type: 1,
-                        s: data.artist + " " + data.name
+                        s: info.artist + " " + info.name
                     }
                 })];
             case 1:

@@ -81,7 +81,10 @@ var searchMusic = function (data) { return __awaiter(void 0, void 0, void 0, fun
                 if (!songs) return [3 /*break*/, 3];
                 ids = songs.reduce(function (arr, _a) {
                     var mid = _a.mid, mmid = _a.file.media_mid;
-                    return __spreadArrays(arr, [mid, mmid]);
+                    return __spreadArrays(arr, [
+                        mid,
+                        mmid,
+                    ]);
                 }, []);
                 return [4 /*yield*/, Promise.all(ids.map(searchLyric))];
             case 2:

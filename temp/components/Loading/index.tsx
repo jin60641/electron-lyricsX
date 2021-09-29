@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { shallowEqual, useSelector } from 'react-redux';
 
-import { drawerWidth } from 'store/layout/types';
 import { RootState } from 'store/types';
 
 const selector = ({
@@ -14,11 +13,9 @@ const selector = ({
     list,
     count,
   },
-  layout: { drawer: isDrawerOpen },
 }: RootState) => ({
   count: count - lastCount,
   list: list.length - lastCount,
-  isDrawerOpen,
 });
 
 const useStyles = makeStyles({
@@ -29,15 +26,11 @@ const useStyles = makeStyles({
     display: 'flex',
     top: 0,
   },
-  drawerShift: {
-    left: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-  },
 });
 
 const Loading: React.FC = () => {
   const classes = useStyles();
-  const { count, list, isDrawerOpen } = useSelector(selector, shallowEqual);
+  const { count, list } = useSelector(selector, shallowEqual);
 
   if (list === count) {
     return null;
@@ -50,10 +43,7 @@ const Loading: React.FC = () => {
 
   return (
     <LinearProgress
-      className={clsx(
-        classes.root,
-        isDrawerOpen && classes.drawerShift,
-      )}
+      className={classes.root}
       variant='determinate'
       value={(min / max) * 100}
     />

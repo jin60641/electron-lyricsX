@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { BrowserWindow } from 'electron';
-import * as fs from 'fs';
 
 import { Info } from '../types';
 
@@ -30,9 +28,11 @@ const searchMusic = async (data: Info) => {
   const songs = res?.data?.data?.song?.list;
   let lyrics = [];
   if (songs) {
-    const ids = songs.reduce((arr: string[], { mid, file: { media_mid: mmid } }: any) => {
-      return [...arr, mid, mmid];
-    }, [] as string[]);
+    const ids = songs.reduce((arr: string[], { mid, file: { media_mid: mmid } }: any) => [
+      ...arr,
+      mid,
+      mmid,
+    ], [] as string[]);
     const lyricRes = await Promise.all(ids.map(searchLyric));
     lyrics = lyricRes
       .filter(({ data: { retcode } }: any) => retcode === 0)

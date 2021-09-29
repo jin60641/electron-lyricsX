@@ -48,16 +48,80 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.openPreference = exports.stopMusic = exports.pauseMusic = exports.seekMusic = exports.startMusic = void 0;
-var qq_1 = require("./qq");
+var uuid_1 = require("uuid");
+var parse_1 = require("../utils/parse");
+var regex_1 = require("../utils/regex");
 var _163_1 = require("./163");
+var qq_1 = require("./qq");
+var Kuroshiro = require('kuroshiro')["default"];
+var KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
+var kuroshiro = new Kuroshiro();
+var kuromojiAnalyzer = new KuromojiAnalyzer();
+(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, kuroshiro.init(kuromojiAnalyzer)];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); })();
 var startMusic = function (win, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var lyricRes, lyrics;
+    var lyricRes, filteredLyrics, lyrics;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Promise.all([qq_1["default"](data), _163_1["default"](data)])];
             case 1:
                 lyricRes = _a.sent();
-                lyrics = lyricRes.flat();
+                filteredLyrics = lyricRes
+                    .flat()
+                    .filter(function (lyric) { return (lyric === null || lyric === void 0 ? void 0 : lyric.length) && regex_1.timeTagRegex.test(lyric); });
+                return [4 /*yield*/, Promise.all(filteredLyrics.map(function (lyric) { return __awaiter(void 0, void 0, void 0, function () {
+                        var ret;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, Promise.resolve(lyric.split('\n').reduce(function (arr, row) { return __awaiter(void 0, void 0, void 0, function () {
+                                        var matches, timestamp, text, item, _a;
+                                        var _b;
+                                        return __generator(this, function (_c) {
+                                            switch (_c.label) {
+                                                case 0:
+                                                    matches = row.match(regex_1.timeTagRegex);
+                                                    if (!matches) {
+                                                        return [2 /*return*/, arr];
+                                                    }
+                                                    timestamp = matches[0];
+                                                    text = row.replace(timestamp, '').replace('/\r/', '');
+                                                    _b = {
+                                                        timestamp: timestamp,
+                                                        time: parse_1.timeTagToTimestamp(timestamp)
+                                                    };
+                                                    if (!text) return [3 /*break*/, 2];
+                                                    return [4 /*yield*/, kuroshiro.convert(text, { mode: 'furigana', to: 'hiragana' })];
+                                                case 1:
+                                                    _a = _c.sent();
+                                                    return [3 /*break*/, 3];
+                                                case 2:
+                                                    _a = '';
+                                                    _c.label = 3;
+                                                case 3:
+                                                    item = (_b.text = _a,
+                                                        _b.id = uuid_1.v4(),
+                                                        _b);
+                                                    return [4 /*yield*/, arr];
+                                                case 4: return [2 /*return*/, (_c.sent()).concat([item])];
+                                            }
+                                        });
+                                    }); }, []))];
+                                case 1:
+                                    ret = _a.sent();
+                                    return [2 /*return*/, ret];
+                            }
+                        });
+                    }); }))];
+            case 2:
+                lyrics = _a.sent();
                 win.webContents.send('MUSIC.START_MUSIC', lyrics.map(function (lyric) { return (__assign(__assign({}, data), { lyric: lyric })); }));
                 return [2 /*return*/];
         }

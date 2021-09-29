@@ -15,7 +15,7 @@ on GetCurrentTrack()
 					function getData() {
 						try {
 							const video = document.querySelector('#movie_player > div.html5-video-container > video');
-				   			if (!video || video.paused === true) { return 'null'; }
+				   			if (!video) { return 'null'; }
 							const name = document.querySelector('#container > h1').innerText;
 							const { currentTime: position, duration } = video;
 					  		return JSON.stringify({ name, duration, position });

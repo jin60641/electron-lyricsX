@@ -11,8 +11,6 @@ import {
 } from 'rxjs/operators';
 import { isActionOf } from 'typesafe-actions';
 
-import layoutActions from './layout/actions';
-import { AlertType } from './layout/types';
 import { Epic } from './types';
 
 type MapOperator = typeof exhaustMap | typeof switchMap | typeof concatMap | typeof flatMap;
@@ -34,10 +32,6 @@ export const createAsyncEpic = (
       )),
       catchError((e) => [
         asyncActionCreator.failure(e),
-        layoutActions.makeAlert({
-          message: e?.response?.data || e.message,
-          type: AlertType.error,
-        }),
       ]),
     )),
   );

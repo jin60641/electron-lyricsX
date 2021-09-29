@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { BrowserWindow } from 'electron';
-import * as fs from 'fs';
 
 import { Info } from '../types';
 
@@ -16,13 +14,13 @@ const searchLyric = async (mid: string) => axios.get('https://c.y.qq.com/lyric/f
   headers: { referer: 'https://c.y.qq.com/portal/player.html' },
 });
 
-const searchMusic = async (data: Info) => {
+const searchMusic = async (info: Info) => {
   const res = await axios.get('https://c.y.qq.com/soso/fcgi-bin/client_search_cp', {
     params: {
       offset: 0,
       limit: 10,
       type: 1,
-      s: `${data.artist} ${data.name}`,
+      s: `${info.artist} ${info.name}`,
     },
   });
   const ids: string[] = res?.data?.results?.songs?.map(({ id }: { id: string }) => id);
