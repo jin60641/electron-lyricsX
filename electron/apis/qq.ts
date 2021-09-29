@@ -26,7 +26,7 @@ const searchMusic = async (data: Info) => {
     },
   });
   const songs = res?.data?.data?.song?.list;
-  let lyrics = [];
+  let lyrics: string[] = [];
   if (songs) {
     const ids = songs.reduce((arr: string[], { mid, file: { media_mid: mmid } }: any) => [
       ...arr,

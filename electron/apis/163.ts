@@ -24,7 +24,7 @@ const searchMusic = async (info: Info) => {
     },
   });
   const ids: string[] = res?.data?.results?.songs?.map(({ id }: { id: string }) => id);
-  let lyrics = [];
+  let lyrics: string[] = [];
   if (ids) {
     const lyricRes = await Promise.all(ids.map(searchLyric));
     lyrics = lyricRes

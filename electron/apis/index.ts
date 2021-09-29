@@ -27,10 +27,10 @@ const kuromojiAnalyzer = new KuromojiAnalyzer();
 export const startMusic = async (win: BrowserWindow, data: Info) => {
   const lyricRes = await Promise.all([searchQQ(data), search163(data)]);
   const filteredLyrics = lyricRes
-    .flat()
+    .reduce((a, b) => [...a, ...b])
     .filter((lyric) => lyric?.length && timeTagRegex.test(lyric));
   const lyrics = await Promise.all(filteredLyrics.map(async (lyric) => {
-    const ret = await Promise.resolve(lyric.split('\n').reduce(async (arr: Row[], row: string) => {
+    const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
       const matches = row.match(timeTagRegex);
       if (!matches) {
         return arr;
@@ -48,7 +48,7 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
         id: uuid(),
       };
       return (await arr).concat([item]);
-    }, []));
+    }, Promise.resolve([])));
     return ret;
   }));
   win.webContents.send('MUSIC.START_MUSIC', lyrics.map((lyric) => ({ ...data, lyric })));
