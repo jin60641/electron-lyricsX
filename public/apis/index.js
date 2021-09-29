@@ -46,6 +46,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 exports.openPreference = exports.stopMusic = exports.pauseMusic = exports.seekMusic = exports.startMusic = void 0;
 var uuid_1 = require("uuid");
@@ -75,13 +82,13 @@ var startMusic = function (win, data) { return __awaiter(void 0, void 0, void 0,
             case 1:
                 lyricRes = _a.sent();
                 filteredLyrics = lyricRes
-                    .flat()
+                    .reduce(function (a, b) { return __spreadArrays(a, b); })
                     .filter(function (lyric) { return (lyric === null || lyric === void 0 ? void 0 : lyric.length) && regex_1.timeTagRegex.test(lyric); });
                 return [4 /*yield*/, Promise.all(filteredLyrics.map(function (lyric) { return __awaiter(void 0, void 0, void 0, function () {
                         var ret;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, Promise.resolve(lyric.split('\n').reduce(function (arr, row) { return __awaiter(void 0, void 0, void 0, function () {
+                                case 0: return [4 /*yield*/, Promise.resolve((lyric.split('\n')).reduce(function (arr, row) { return __awaiter(void 0, void 0, void 0, function () {
                                         var matches, timestamp, text, item, _a;
                                         var _b;
                                         return __generator(this, function (_c) {
@@ -116,7 +123,7 @@ var startMusic = function (win, data) { return __awaiter(void 0, void 0, void 0,
                                                 case 4: return [2 /*return*/, (_c.sent()).concat([item])];
                                             }
                                         });
-                                    }); }, []))];
+                                    }); }, Promise.resolve([])))];
                                 case 1:
                                     ret = _a.sent();
                                     return [2 /*return*/, ret];
