@@ -13,7 +13,7 @@ import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
 
-const OFFSET = 0;
+const OFFSET = -0.5;
 const LINE_COUNT = 2;
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -58,6 +58,7 @@ const Main: React.FC = () => {
   const classes = useStyles();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
   const [index, setIndex] = useState(0);
   const { isPlaying, music } = useSelector(selector);
@@ -65,11 +66,11 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     let timerId: number | null = null;
-    if (music?.position && isPlaying) {
-      setTime(music.position);
+    if (isPlaying) {
+      setTime(position);
       timerId = window.setInterval(() => {
-        setTime((currentTime) => currentTime + 0.099);
-      }, 100);
+        setTime((currentTime) => currentTime + 0.03);
+      }, 30);
     }
     return () => {
       if (timerId) {
@@ -77,11 +78,14 @@ const Main: React.FC = () => {
         timerId = null;
       }
     };
-  }, [music?.position, isPlaying]);
+  }, [position, isPlaying]);
 
   useEffect(() => {
     if (lyrics) {
-      setIndex(lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - OFFSET));
+      setIndex(Math.max(
+        lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - OFFSET) - 1,
+        0,
+      ));
     }
   }, [time, lyrics]);
 
@@ -111,6 +115,7 @@ const Main: React.FC = () => {
     window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Music) => {
       if (data.position) {
         setTime(data.position);
+        setPosition(data.position);
       }
     });
   }, []);
@@ -126,6 +131,7 @@ const Main: React.FC = () => {
           text,
           id,
         }) => (
+          // eslint-disable-next-line react/no-danger
           <div key={`lyric-row-${id}`} className={classes.row} dangerouslySetInnerHTML={{ __html: text }} />
         ))}
       </div>
