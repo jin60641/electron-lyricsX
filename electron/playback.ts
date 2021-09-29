@@ -33,7 +33,7 @@ class Playback extends EventTarget {
             return;
           }
           if (!this.isPlaying) {
-            if (!this.prevTrack || track.position !== this.prevTrack.position) {
+            if (this.prevTrack && track.position !== this.prevTrack.position) {
               this.isPlaying = true;
               this.emit(EventName.START, track);
             }

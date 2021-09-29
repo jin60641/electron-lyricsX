@@ -43,7 +43,7 @@ var Playback = /** @class */ (function (_super) {
                         return;
                     }
                     if (!_this.isPlaying) {
-                        if (!_this.prevTrack || track.position !== _this.prevTrack.position) {
+                        if (_this.prevTrack && track.position !== _this.prevTrack.position) {
                             _this.isPlaying = true;
                             _this.emit(types_1.EventName.START, track);
                         }
