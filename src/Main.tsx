@@ -101,9 +101,8 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (index >= 0 && domRef.current) {
-      const rect = domRef.current.getBoundingClientRect();
-      setWidth(rect.width);
-      setHeight(rect.height);
+      setWidth(domRef.current.scrollWidth);
+      setHeight(domRef.current.scrollHeight);
     }
   }, [index, domRef]);
 
