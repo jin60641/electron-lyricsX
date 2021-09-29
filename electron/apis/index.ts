@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Info } from '../types';
 import { timeTagToTimestamp } from '../utils/parse';
-import { timeTagRegex } from '../utils/regex';
+import { timeTagRegex, filterRegex } from '../utils/regex';
 
 import search163 from './163';
 import searchQQ from './qq';
@@ -33,6 +33,9 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
     const ret = await Promise.resolve(lyric.split('\n').reduce(async (arr: Row[], row: string) => {
       const matches = row.match(timeTagRegex);
       if (!matches) {
+        return arr;
+      }
+      if (filterRegex.test(row)) {
         return arr;
       }
       const [timestamp] = matches;

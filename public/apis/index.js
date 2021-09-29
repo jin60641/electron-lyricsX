@@ -91,6 +91,9 @@ var startMusic = function (win, data) { return __awaiter(void 0, void 0, void 0,
                                                     if (!matches) {
                                                         return [2 /*return*/, arr];
                                                     }
+                                                    if (regex_1.filterRegex.test(row)) {
+                                                        return [2 /*return*/, arr];
+                                                    }
                                                     timestamp = matches[0];
                                                     text = row.replace(timestamp, '').replace('/\r/', '');
                                                     _b = {
