@@ -3623,6 +3623,20 @@ broadcast-channel@^3.1.0:
     rimraf "3.0.2"
     unload "2.2.0"
 
+broadcast-channel@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/broadcast-channel/-/broadcast-channel-4.2.0.tgz#9ca93a23a31036266c2c9b0f8f55bd21594b8f82"
+  integrity sha512-XX9yNnIy/v2T+HR5EKIH7ziM2mYTefsrzZ2lkCmFZxwCDG7Ns7HLIooUXA114sCeFRJ4MEXEgdMapxfPDh9Xkg==
+  dependencies:
+    "@babel/runtime" "^7.7.2"
+    detect-node "^2.1.0"
+    js-sha3 "0.8.0"
+    microseconds "0.2.0"
+    nano-time "1.0.0"
+    oblivious-set "1.0.0"
+    rimraf "3.0.2"
+    unload "2.2.0"
+
 brorand@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
