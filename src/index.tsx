@@ -17,11 +17,13 @@ const { locale: { code } } = store.getState();
   const i18n = await initializeI18next(code);
 
   ReactDOM.render(
-    <Provider store={store}>
-      <PersistGate loading={<></>} persistor={persistor}>
-        <App />
-      </PersistGate>
-    </Provider>,
+    <I18nextProvider i18n={i18n}>
+      <Provider store={store}>
+        <PersistGate loading={<></>} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </Provider>
+    </I18nextProvider>,
     document.getElementById('root'),
   );
 })();
