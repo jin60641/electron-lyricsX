@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => createStyles({
     color: 'white',
     textShadow: '0px 0px 8px rgba(0,255,255,.68)',
     fontSize: 28,
+    userSelect: 'none',
   },
 }));
 
