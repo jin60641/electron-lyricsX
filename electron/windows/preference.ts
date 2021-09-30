@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
 import { isDev } from '../constants';
@@ -40,6 +40,10 @@ const preferenceWindow = () => {
 
   app.on('before-quit', () => {
     isBeforeQuit = true;
+  });
+
+  ipcMain.on('LAYOUT.CLOSE_PREFERENCE', () => {
+    win.hide();
   });
 
   return win;

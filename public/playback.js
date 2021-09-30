@@ -73,8 +73,8 @@ var Playback = /** @class */ (function (_super) {
     Playback.prototype.runTransportScript = function (callback) {
         var scriptPath = this.isWindows
             ? path.join(SCRIPT_DIR, 'windows', 'iTunes.js')
-            // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-            : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+            : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+        // : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
         if (!callback) {
             return;
         }

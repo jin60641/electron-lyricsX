@@ -1,7 +1,10 @@
 "use strict";
 exports.__esModule = true;
+exports.isEventName = void 0;
 var types_1 = require("./types");
 var events = require('events');
+var isEventName = function (eventName) { return Object.values(types_1.EventName).includes(eventName); };
+exports.isEventName = isEventName;
 var EventClient = /** @class */ (function () {
     function EventClient() {
         this.eventTarget = new events.EventEmitter();
@@ -11,7 +14,7 @@ var EventClient = /** @class */ (function () {
      * Add a event handler
      */
     EventClient.prototype.on = function (eventName, listener) {
-        if (!this.isEventName(eventName)) {
+        if (!exports.isEventName(eventName)) {
             throw new Error('invalid event name');
         }
         if (typeof listener !== 'function') {
@@ -27,7 +30,7 @@ var EventClient = /** @class */ (function () {
      * Remove a event handler
      */
     EventClient.prototype.off = function (eventName, listener) {
-        if (!this.isEventName(eventName)) {
+        if (!exports.isEventName(eventName)) {
             throw new Error('invalid event name');
         }
         if (typeof listener !== 'function') {
@@ -45,9 +48,6 @@ var EventClient = /** @class */ (function () {
             _this.eventTarget.off(eventName, listener);
         });
         this.listeners = [];
-    };
-    EventClient.prototype.isEventName = function (eventName) {
-        return Object.values(types_1.EventName).includes(eventName);
     };
     return EventClient;
 }());

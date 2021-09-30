@@ -1,5 +1,4 @@
 import * as isDev from 'electron-is-dev';
-import { promises as fs } from 'fs';
 
 import EventTarget from './event';
 import { EventName, Info } from './types';
@@ -62,8 +61,8 @@ class Playback extends EventTarget {
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(SCRIPT_DIR, 'windows', 'iTunes.js')
-      // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-      : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+      : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+      // : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
     if (!callback) {
       return;
     }

@@ -2,18 +2,19 @@ import { ClientEvent, EventName } from './types';
 
 const events = require('events');
 
-type EventClientListener<T extends keyof ClientEvent.HandlersEventMap = keyof ClientEvent.HandlersEventMap> = {
+type EventClientListener<
+  T extends keyof ClientEvent.HandlersEventMap = keyof ClientEvent.HandlersEventMap,
+> = {
   eventName: T,
   listener: (event: ClientEvent.HandlersEventMap[T]) => void,
 };
+
+export const isEventName = (eventName: EventName) => Object.values(EventName).includes(eventName);
 
 class EventClient {
   private eventTarget = new events.EventEmitter();
 
   private listeners: EventClientListener[] = [];
-
-  constructor() {
-  }
 
   /**
    * Add a event handler
@@ -21,7 +22,7 @@ class EventClient {
   public on<K extends keyof ClientEvent.HandlersEventMap>(
     eventName: K, listener: (event: ClientEvent.HandlersEventMap[K]) => void,
   ) {
-    if (!this.isEventName(eventName)) {
+    if (!isEventName(eventName)) {
       throw new Error('invalid event name');
     }
 
@@ -40,8 +41,11 @@ class EventClient {
   /**
    * Remove a event handler
    */
-  public off<K extends keyof ClientEvent.HandlersEventMap>(eventName: K, listener: (event: ClientEvent.HandlersEventMap[K]) => void) {
-    if (!this.isEventName(eventName)) {
+  public off<K extends keyof ClientEvent.HandlersEventMap>(
+    eventName: K,
+    listener: (event: ClientEvent.HandlersEventMap[K]) => void,
+  ) {
+    if (!isEventName(eventName)) {
       throw new Error('invalid event name');
     }
 
@@ -52,7 +56,10 @@ class EventClient {
     return this.eventTarget.off(eventName, listener);
   }
 
-  public emit<K extends keyof ClientEvent.DetailMap>(eventName: K, detail?: ClientEvent.DetailMap[K]) {
+  public emit<K extends keyof ClientEvent.DetailMap>(
+    eventName: K,
+    detail?: ClientEvent.DetailMap[K],
+  ) {
     return this.eventTarget.emit(eventName, { detail });
   }
 
@@ -61,10 +68,6 @@ class EventClient {
       this.eventTarget.off(eventName, listener);
     });
     this.listeners = [];
-  }
-
-  private isEventName(eventName: EventName) {
-    return Object.values(EventName).includes(eventName);
   }
 }
 

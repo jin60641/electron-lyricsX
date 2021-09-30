@@ -1,9 +1,7 @@
 import {
-  app,
   BrowserWindow,
   ipcMain,
   screen,
-  shell,
 } from 'electron';
 import * as path from 'path';
 
@@ -60,14 +58,20 @@ const createWindow = () => {
     } else if (display.width - 5 < bounds.x + bounds.width) {
       x = bounds.x + bounds.width - Math.round(payload.width);
     } else {
-      x = Math.min(Math.max(0, bounds.x - Math.round(diff.width / 2)), display.width - Math.round(payload.width));
+      x = Math.min(
+        Math.max(0, bounds.x - Math.round(diff.width / 2)),
+        display.width - Math.round(payload.width),
+      );
     }
     if (bounds.y < 5) {
       y = bounds.y;
     } else if (display.height - 5 < bounds.y + bounds.height) {
       y = bounds.y + bounds.height - Math.round(payload.height);
     } else {
-      y = Math.min(Math.max(0, bounds.y - Math.round(diff.height / 2)), display.height - Math.round(payload.height));
+      y = Math.min(
+        Math.max(0, bounds.y - Math.round(diff.height / 2)),
+        display.height - Math.round(payload.height),
+      );
     }
     const nextBounds = {
       x,

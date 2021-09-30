@@ -111,6 +111,7 @@ const Main: React.FC = () => {
   }, [width, height]);
 
   useEffect(() => {
+    // avoid using redux for update immediately
     window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Music) => {
       if (data.position) {
         setTime(data.position);

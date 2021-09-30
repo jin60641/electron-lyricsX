@@ -14,6 +14,8 @@ var preferenceWindow = function () {
         width: 800,
         height: 700,
         webPreferences: {
+            // if electron update to <= 15
+            // enableRemoteModule: true,
             nodeIntegration: true,
             contextIsolation: true,
             preload: path.join(__dirname, '..', 'preload.js')
@@ -35,6 +37,9 @@ var preferenceWindow = function () {
     win.on('close', handleClose);
     electron_1.app.on('before-quit', function () {
         isBeforeQuit = true;
+    });
+    electron_1.ipcMain.on('LAYOUT.CLOSE_PREFERENCE', function () {
+        win.hide();
     });
     return win;
 };

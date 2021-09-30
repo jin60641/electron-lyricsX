@@ -68,7 +68,7 @@ var checkAnalyzer = function () { return __awaiter(void 0, void 0, void 0, funct
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (!!kuroshiro.analyzer) {
+                if (kuroshiro.analyzer) {
                     return [2 /*return*/];
                 }
                 return [4 /*yield*/, kuroshiro.init(kuromojiAnalyzer)];
