@@ -1,10 +1,15 @@
+import * as isDev from 'electron-is-dev';
+import { promises as fs } from 'fs';
+
 import EventTarget from './event';
 import { EventName, Info } from './types';
 
-const { spawn } = require('child_process');
+const { spawnSync } = require('child_process');
 const path = require('path');
 
-type DefaultCallback = (data: Info) => void;
+const SCRIPT_DIR = path.join(isDev ? path.join(__dirname, '..') : process.resourcesPath, 'scripts');
+
+type DefaultCallback = (data: Info | null) => void;
 
 class Playback extends EventTarget {
   private isWindows = !!process.platform.match(/^win/);
@@ -56,23 +61,35 @@ class Playback extends EventTarget {
 
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
-      ? path.join(__dirname, '..', 'scripts', 'windows', 'iTunes.js')
-      : path.join(__dirname, '..', 'scripts', 'mac', 'ITunesTransport.scpt');
-      // : path.join(__dirname, '..', 'scripts', 'mac', 'ChromeTransport.scpt');
-    const scriptRunner = this.isWindows
-      ? spawn('cscript', ['//Nologo', scriptPath])
-      : spawn('osascript', [scriptPath]);
-    scriptRunner.stdout.on('data', (data: any) => {
-      let result;
-      try {
-        result = JSON.parse(data);
-      } catch (e) {
-        result = data;
+      ? path.join(SCRIPT_DIR, 'windows', 'iTunes.js')
+      // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+      : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+    if (!callback) {
+      return;
+    }
+    try {
+      const result = this.isWindows
+        ? spawnSync('cscript', ['//Nologo', scriptPath])
+        : spawnSync('osascript', [scriptPath], { shell: true });
+      let data: Info | null = null;
+      if (typeof result.stdout === 'string') {
+        try {
+          data = JSON.parse(result.stdout);
+        } catch (_e) {
+          data = result.stdout;
+        }
+      } else if (result.stdout instanceof Buffer) {
+        const parsed = (new TextDecoder()).decode(result.stdout).trim();
+        try {
+          data = JSON.parse((new TextDecoder()).decode(result.stdout).trim());
+        } catch (e) {
+          data = parsed as unknown as Info;
+        }
       }
-      if (callback) {
-        callback(result);
-      }
-    });
+      callback(data);
+    } catch (e) {
+      callback(null);
+    }
   }
 
   currentTrack(callback: DefaultCallback) {

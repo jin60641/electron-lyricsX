@@ -1,7 +1,10 @@
-import { applyMiddleware, compose, createStore } from 'redux';
+import {
+  applyMiddleware, compose, createStore, Middleware,
+} from 'redux';
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
 import { persistStore } from 'redux-persist';
+// import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync';
 import { ActionCreator, getType } from 'typesafe-actions';
 
 import rootEpic from './epic';
@@ -13,7 +16,12 @@ const composeEnhancers = compose;
 const loggerMiddleware = createLogger();
 const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootState>();
 
-const middlewares: any[] = [epicMiddleware];
+// const stateSyncMiddleware = createStateSyncMiddleware({ blacklist: [] });
+
+const middlewares: Middleware[] = [
+  epicMiddleware,
+  // stateSyncMiddleware,
+];
 
 if (process.env.NODE_ENV === 'development') {
   middlewares.push(loggerMiddleware);
@@ -25,6 +33,7 @@ const store = createStore(
 );
 
 epicMiddleware.run(rootEpic);
+// initMessageListener(store);
 
 const persistor = persistStore(store);
 channels.forEach((channel) => {

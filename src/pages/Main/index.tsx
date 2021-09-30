@@ -9,6 +9,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
+import Draggable from 'components/Draggable';
 import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
@@ -122,17 +123,20 @@ const Main: React.FC = () => {
   }
 
   return (
-    <div className={classes.main} style={{ width, height }}>
-      <div className={classes.wrap} ref={domRef}>
-        {selectedLyrics.map(({
-          text,
-          id,
-        }) => (
-          // eslint-disable-next-line react/no-danger
-          <div key={`lyric-row-${id}`} className={classes.row} dangerouslySetInnerHTML={{ __html: text }} />
-        ))}
+    <>
+      <Draggable />
+      <div className={classes.main} style={{ width, height }}>
+        <div className={classes.wrap} ref={domRef}>
+          {selectedLyrics.map(({
+            text,
+            id,
+          }) => (
+            // eslint-disable-next-line react/no-danger
+            <div key={`lyric-row-${id}`} className={classes.row} dangerouslySetInnerHTML={{ __html: text }} />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

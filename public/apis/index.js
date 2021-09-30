@@ -54,7 +54,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-exports.openPreference = exports.stopMusic = exports.pauseMusic = exports.seekMusic = exports.startMusic = void 0;
+exports.stopMusic = exports.pauseMusic = exports.seekMusic = exports.startMusic = void 0;
 var uuid_1 = require("uuid");
 var parse_1 = require("../utils/parse");
 var regex_1 = require("../utils/regex");
@@ -64,22 +64,36 @@ var Kuroshiro = require('kuroshiro')["default"];
 var KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 var kuroshiro = new Kuroshiro();
 var kuromojiAnalyzer = new KuromojiAnalyzer();
-(function () { return __awaiter(void 0, void 0, void 0, function () {
+var checkAnalyzer = function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, kuroshiro.init(kuromojiAnalyzer)];
+            case 0:
+                if (!!kuroshiro.analyzer) {
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, kuroshiro.init(kuromojiAnalyzer)];
             case 1:
                 _a.sent();
                 return [2 /*return*/];
         }
     });
-}); })();
+}); };
+checkAnalyzer();
 var startMusic = function (win, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var lyricRes, filteredLyrics, lyrics;
+    var e_1, lyricRes, filteredLyrics, lyrics;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Promise.all([qq_1["default"](data), _163_1["default"](data)])];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, checkAnalyzer()];
             case 1:
+                _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                e_1 = _a.sent();
+                return [3 /*break*/, 3];
+            case 3: return [4 /*yield*/, Promise.all([qq_1["default"](data), _163_1["default"](data)])];
+            case 4:
                 lyricRes = _a.sent();
                 filteredLyrics = lyricRes
                     .reduce(function (a, b) { return __spreadArrays(a, b); })
@@ -130,7 +144,7 @@ var startMusic = function (win, data) { return __awaiter(void 0, void 0, void 0,
                             }
                         });
                     }); }))];
-            case 2:
+            case 5:
                 lyrics = _a.sent();
                 win.webContents.send('MUSIC.START_MUSIC', lyrics.map(function (lyric) { return (__assign(__assign({}, data), { lyric: lyric })); }));
                 return [2 /*return*/];
@@ -159,7 +173,3 @@ var stopMusic = function (win) { return __awaiter(void 0, void 0, void 0, functi
     });
 }); };
 exports.stopMusic = stopMusic;
-var openPreference = function (win) {
-    win.webContents.send('LAYOUT.SET_PREFERENCE', '');
-};
-exports.openPreference = openPreference;

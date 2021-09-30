@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Info } from '../types';
 import { timeTagToTimestamp } from '../utils/parse';
-import { timeTagRegex, filterRegex } from '../utils/regex';
+import { filterRegex, timeTagRegex } from '../utils/regex';
 
 import search163 from './163';
 import searchQQ from './qq';
@@ -20,11 +20,21 @@ const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 
 const kuroshiro = new Kuroshiro();
 const kuromojiAnalyzer = new KuromojiAnalyzer();
-(async () => {
+
+const checkAnalyzer = async () => {
+  if (!!kuroshiro.analyzer) {
+    return;
+  }
   await kuroshiro.init(kuromojiAnalyzer);
-})();
+}
+
+checkAnalyzer();
 
 export const startMusic = async (win: BrowserWindow, data: Info) => {
+  try {
+    await checkAnalyzer();
+  } catch (e) {
+  }
   const lyricRes = await Promise.all([searchQQ(data), search163(data)]);
   const filteredLyrics = lyricRes
     .reduce((a, b) => [...a, ...b])
@@ -64,8 +74,4 @@ export const pauseMusic = async (win: BrowserWindow) => {
 
 export const stopMusic = async (win: BrowserWindow) => {
   win.webContents.send('MUSIC.STOP_MUSIC', '');
-};
-
-export const openPreference = (win: BrowserWindow) => {
-  win.webContents.send('LAYOUT.SET_PREFERENCE', '');
 };

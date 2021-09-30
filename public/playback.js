@@ -13,10 +13,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
+var isDev = require("electron-is-dev");
 var event_1 = require("./event");
 var types_1 = require("./types");
-var spawn = require('child_process').spawn;
+var spawnSync = require('child_process').spawnSync;
 var path = require('path');
+var SCRIPT_DIR = path.join(isDev ? path.join(__dirname, '..') : process.resourcesPath, 'scripts');
 var Playback = /** @class */ (function (_super) {
     __extends(Playback, _super);
     function Playback() {
@@ -70,24 +72,39 @@ var Playback = /** @class */ (function (_super) {
     }
     Playback.prototype.runTransportScript = function (callback) {
         var scriptPath = this.isWindows
-            ? path.join(__dirname, '..', 'scripts', 'windows', 'iTunes.js')
-            : path.join(__dirname, '..', 'scripts', 'mac', 'ITunesTransport.scpt');
-        // : path.join(__dirname, '..', 'scripts', 'mac', 'ChromeTransport.scpt');
-        var scriptRunner = this.isWindows
-            ? spawn('cscript', ['//Nologo', scriptPath])
-            : spawn('osascript', [scriptPath]);
-        scriptRunner.stdout.on('data', function (data) {
-            var result;
-            try {
-                result = JSON.parse(data);
+            ? path.join(SCRIPT_DIR, 'windows', 'iTunes.js')
+            // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+            : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+        if (!callback) {
+            return;
+        }
+        try {
+            var result = this.isWindows
+                ? spawnSync('cscript', ['//Nologo', scriptPath])
+                : spawnSync('osascript', [scriptPath], { shell: true });
+            var data = null;
+            if (typeof result.stdout === 'string') {
+                try {
+                    data = JSON.parse(result.stdout);
+                }
+                catch (_e) {
+                    data = result.stdout;
+                }
             }
-            catch (e) {
-                result = data;
+            else if (result.stdout instanceof Buffer) {
+                var parsed = (new TextDecoder()).decode(result.stdout).trim();
+                try {
+                    data = JSON.parse((new TextDecoder()).decode(result.stdout).trim());
+                }
+                catch (e) {
+                    data = parsed;
+                }
             }
-            if (callback) {
-                callback(result);
-            }
-        });
+            callback(data);
+        }
+        catch (e) {
+            callback(null);
+        }
     };
     Playback.prototype.currentTrack = function (callback) {
         this.runTransportScript(callback);
