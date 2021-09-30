@@ -22,11 +22,11 @@ const kuroshiro = new Kuroshiro();
 const kuromojiAnalyzer = new KuromojiAnalyzer();
 
 const checkAnalyzer = async () => {
-  if (!!kuroshiro.analyzer) {
+  if (kuroshiro.analyzer) {
     return;
   }
   await kuroshiro.init(kuromojiAnalyzer);
-}
+};
 
 checkAnalyzer();
 
@@ -34,6 +34,7 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
   try {
     await checkAnalyzer();
   } catch (e) {
+    // error logging
   }
   const lyricRes = await Promise.all([searchQQ(data), search163(data)]);
   const filteredLyrics = lyricRes
