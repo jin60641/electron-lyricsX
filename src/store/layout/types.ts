@@ -4,6 +4,7 @@ export interface LayoutState {
 
 export enum Actions {
   SET_PALETTE = 'LAYOUT.SET_PALETTE',
+  CLOSE_PREFERENCE = 'LAYOUT.CLOSE_PREFERENCE',
 }
 
 export enum Palette {

@@ -13,7 +13,7 @@ import {
 
 import Modal from 'components/Modal';
 import { Route as TRoute } from 'constants/routes';
-// import layoutActions from 'store/layout/actions';
+import layoutActions from 'store/layout/actions';
 
 const useStyles = makeStyles((theme) => ({
   menu: {
@@ -57,7 +57,7 @@ const Preference: React.FC = () => {
   const { pathname } = useLocation();
   const tab = useMemo(() => pathname.replace(`${path}/`, ''), [pathname, path]);
   const handleClose = useCallback(() => {
-    console.log(dispatch);
+    dispatch(layoutActions.closePreference());
   }, [dispatch]);
 
   return (
