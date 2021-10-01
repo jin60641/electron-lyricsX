@@ -17,7 +17,6 @@ on IsPlaying()
 			else if player state is paused then
 				return true
 			else
-				display dialog player state
 				return false
 			end if
 			
