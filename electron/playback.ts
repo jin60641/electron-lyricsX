@@ -1,5 +1,4 @@
-import * as isDev from 'electron-is-dev';
-
+import { isDev } from './constants';
 import EventTarget from './event';
 import { EventName, Info } from './types';
 
