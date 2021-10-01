@@ -3,7 +3,7 @@ import * as isDev from 'electron-is-dev';
 import EventTarget from './event';
 import { EventName, Info } from './types';
 
-const { spawnSync } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 
 const SCRIPT_DIR = path.join(isDev ? path.join(__dirname, '..') : process.resourcesPath, 'scripts');
@@ -66,29 +66,30 @@ class Playback extends EventTarget {
     if (!callback) {
       return;
     }
-    try {
-      const result = this.isWindows
-        ? spawnSync('cscript', ['//Nologo', scriptPath])
-        : spawnSync('osascript', [scriptPath], { shell: true });
+    const process = this.isWindows
+      ? spawn('cscript', ['//Nologo', scriptPath])
+      : spawn('osascript', [scriptPath], { shell: true });
+    process.stdout.on('data', (result: string | Buffer) => {
       let data: Info | null = null;
-      if (typeof result.stdout === 'string') {
+      if (typeof result === 'string') {
         try {
-          data = JSON.parse(result.stdout);
+          data = JSON.parse(result);
         } catch (_e) {
-          data = result.stdout;
+          data = result as unknown as Info;
         }
-      } else if (result.stdout instanceof Buffer) {
-        const parsed = (new TextDecoder()).decode(result.stdout).trim();
+      } else if (result instanceof Buffer) {
+        const parsed = (new TextDecoder()).decode(result).trim();
         try {
-          data = JSON.parse((new TextDecoder()).decode(result.stdout).trim());
+          data = JSON.parse((new TextDecoder()).decode(result).trim());
         } catch (e) {
           data = parsed as unknown as Info;
         }
       }
       callback(data);
-    } catch (e) {
+    });
+    process.on('error', () => {
       callback(null);
-    }
+    });
   }
 
   currentTrack(callback: DefaultCallback) {
