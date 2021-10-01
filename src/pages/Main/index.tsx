@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => createStyles({
     textAlign: 'center',
     whiteSpace: 'nowrap',
     transition: 'width .3s, height .3s',
+    overflow: 'hidden',
   },
   wrap: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
