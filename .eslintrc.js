@@ -10,6 +10,7 @@ module.exports = {
     'airbnb-typescript'
   ],
   rules: {
+    'linebreak-style': 'off',
     'consistent-return': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars-experimental': 'error',
