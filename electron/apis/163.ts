@@ -20,7 +20,7 @@ const searchMusic = async (info: Info) => {
       offset: 0,
       limit: 10,
       type: 1,
-      s: `${info.artist} ${info.name}`,
+      s: `${info.artist} - ${info.name}`,
     },
   });
   const ids: string[] = res?.data?.results?.songs?.map(({ id }: { id: string }) => id);

@@ -22,7 +22,7 @@ const searchMusic = async (data: Info) => {
       inCharset: 'utf8',
       outCharset: 'utf8',
       format: 'json',
-      w: `${data.artist} ${data.name}`,
+      w: `${data.artist} - ${data.name}`,
     },
   });
   const songs = res?.data?.data?.song?.list;
