@@ -7,7 +7,7 @@ import actions from 'store/music/actions';
 
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
-  const [offset, setOffset] = useState(0.5);
+  const [offset, setOffset] = useState(-0.5);
 
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));

@@ -28,7 +28,7 @@ export const initialState: MusicState = {
   list: [],
   isPlaying: false,
   currentOffset: 0,
-  globalOffset: 0.5,
+  globalOffset: -0.5,
 };
 
 export interface Music {
