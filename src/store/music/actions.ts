@@ -21,6 +21,18 @@ const resetMusic = createAction(
   Actions.RESET_MUSIC,
 )();
 
+const setCurrentOffset = createAction(
+  Actions.SET_CURRENT_OFFSET,
+)<
+number
+>();
+
+const setGlobalOffset = createAction(
+  Actions.SET_GLOBAL_OFFSET,
+)<
+number
+>();
+
 const startMusic = createAction(Actions.START_MUSIC)<Music[]>();
 const stopMusic = createAction(Actions.STOP_MUSIC)();
 const pauseMusic = createAction(Actions.PAUSE_MUSIC)();
@@ -34,4 +46,6 @@ export default {
   stopMusic,
   pauseMusic,
   seekMusic,
+  setCurrentOffset,
+  setGlobalOffset,
 };

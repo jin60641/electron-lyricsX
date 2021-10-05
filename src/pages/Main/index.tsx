@@ -1,8 +1,5 @@
 import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+  useEffect, useMemo, useRef, useState,
 } from 'react';
 
 import { createStyles, makeStyles } from '@material-ui/core/styles';
@@ -14,7 +11,6 @@ import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
 
-const OFFSET = -0.5;
 const LINE_COUNT = 2;
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -50,10 +46,14 @@ const selector = ({
     list,
     lastSelected,
     isPlaying,
+    currentOffset,
+    globalOffset,
   },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,
+  currentOffset,
+  globalOffset,
 });
 
 const Main: React.FC = () => {
@@ -64,7 +64,7 @@ const Main: React.FC = () => {
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
   const [index, setIndex] = useState(0);
-  const { isPlaying, music } = useSelector(selector);
+  const { isPlaying, music, currentOffset, globalOffset } = useSelector(selector);
   const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
 
   useEffect(() => {
@@ -85,7 +85,8 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (lyrics) {
-      const nextIndex = lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - OFFSET);
+      const offsetSum = currentOffset + globalOffset;
+      const nextIndex = lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - offsetSum);
       setIndex((nextIndex === -1 ? lyrics.length : nextIndex) - 1);
     }
   }, [time, lyrics]);

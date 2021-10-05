@@ -4,6 +4,8 @@ export interface MusicState {
   list: Music[],
   lastSelected?: number,
   isPlaying: boolean,
+  currentOffset: number,
+  globalOffset: number,
 }
 
 export enum Actions {
@@ -17,11 +19,16 @@ export enum Actions {
   SELECT_MUSIC = 'MUSIC.SELECT_MUSIC',
   RESET_MUSIC = 'MUSIC.RESET_MUSIC',
   REMOVE_MUSIC = 'MUSIC.REMOVE_MUSIC',
+
+  SET_CURRENT_OFFSET = 'MUSIC.SET_CURRENT_OFFSET',
+  SET_GLOBAL_OFFSET = 'MUSIC.SET_GLOBAL_OFFSET',
 }
 
 export const initialState: MusicState = {
   list: [],
   isPlaying: false,
+  currentOffset: 0,
+  globalOffset: 0.5,
 };
 
 export interface Music {
