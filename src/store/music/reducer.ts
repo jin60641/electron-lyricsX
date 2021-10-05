@@ -41,6 +41,14 @@ const musicReducer = createReducer<MusicState>(initialState)
       ...music,
       isSelected: i === action.payload,
     })),
+  }))
+  .handleAction(musicActions.setCurrentOffset, (state, action) => ({
+    ...state,
+    currentOffset: action.payload,
+  }))
+  .handleAction(musicActions.setGlobalOffset, (state, action) => ({
+    ...state,
+    globalOffset: action.payload,
   }));
 
 export default persistReducer(persistConfig, musicReducer);

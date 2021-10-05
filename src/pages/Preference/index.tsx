@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 enum Tabs {
   language = 'Language',
   theme = 'Theme',
+  settings = 'Settings',
 }
 
 const routes: TRoute[] = Object.entries(Tabs).map(([key, value]) => ({
