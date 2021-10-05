@@ -89,7 +89,7 @@ const Main: React.FC = () => {
       const nextIndex = lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - offsetSum);
       setIndex((nextIndex === -1 ? lyrics.length : nextIndex) - 1);
     }
-  }, [time, lyrics]);
+  }, [time, lyrics, globalOffset, currentOffset]);
 
   const selectedLyrics = useMemo(() => (lyrics ? lyrics
     .slice(index, index + LINE_COUNT)
