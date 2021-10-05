@@ -60,13 +60,13 @@ class Playback extends EventTarget {
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(SCRIPT_DIR, 'windows', 'ITunesTransport.ps1')
-      : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-      // : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+      // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+      : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
     if (!callback) {
       return;
     }
     const process = this.isWindows
-      ? spawn("powershell.exe",[scriptPath])
+      ? spawn('powershell.exe', [scriptPath])
       : spawn('osascript', [scriptPath], { shell: true });
     process.stdout.on('data', (result: string | Buffer) => {
       let data: Info | null = null;

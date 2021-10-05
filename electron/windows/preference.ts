@@ -13,7 +13,7 @@ const preferenceWindow = () => {
     minimizable: false,
     width: 800,
     height: 700,
-    
+
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
