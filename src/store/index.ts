@@ -3,7 +3,15 @@ import {
 } from 'redux';
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
-import { persistStore } from 'redux-persist';
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync';
 import { ActionCreator, getType } from 'typesafe-actions';
 
@@ -18,8 +26,12 @@ const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootState>()
 
 const stateSyncMiddleware = createStateSyncMiddleware({
   blacklist: [
-    'persist/PERSIST',
-    'persist/REHYDRATE',
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
   ],
 });
 
