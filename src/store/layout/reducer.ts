@@ -13,6 +13,10 @@ const layoutReducer = createReducer<LayoutState>(initialState)
   .handleAction(layoutActions.setPalette, (state, action) => ({
     ...state,
     palette: action.payload,
+  }))
+  .handleAction(layoutActions.setDraggable, (state, action) => ({
+    ...state,
+    draggable: action.payload,
   }));
 
 export default persistReducer(persistConfig, layoutReducer);
