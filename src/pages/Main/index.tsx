@@ -2,7 +2,7 @@ import React, {
   useEffect, useMemo, useRef, useState,
 } from 'react';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
@@ -13,7 +13,11 @@ import { RootState } from 'store/types';
 
 const LINE_COUNT = 2;
 
-const useStyles = makeStyles((theme) => createStyles({
+type Props = {
+  draggable: string;
+};
+
+const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   main: {
     display: 'inline-flex',
     flexDirection: 'column',
