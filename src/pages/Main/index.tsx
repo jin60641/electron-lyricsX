@@ -27,8 +27,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s',
+    transition: 'width .3s, height .3s opacity .3s',
     overflow: 'hidden',
+    '-webkit-app-region': ({ draggable }) => (draggable === 'ON' ? 'drag' : 'no-drag'),
   },
   wrap: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
@@ -53,23 +54,27 @@ const selector = ({
     currentOffset,
     globalOffset,
   },
+  layout: { draggable },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,
   currentOffset,
   globalOffset,
-});
+  draggable,
+}
+);
 
 const Main: React.FC = () => {
   const domRef = useRef<HTMLDivElement | null>(null);
-  const classes = useStyles();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
   const [index, setIndex] = useState(0);
-  const { isPlaying, music, currentOffset, globalOffset } = useSelector(selector);
+  const { isPlaying, music, currentOffset, globalOffset, draggable } = useSelector(selector);
+  const classes = useStyles({ draggable });
   const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
+  const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -132,8 +137,12 @@ const Main: React.FC = () => {
 
   return (
     <>
-      <Draggable />
-      <div className={classes.main} style={{ width, height }}>
+      <div
+        className={classes.main}
+        style={{ width, height, opacity }}
+        onMouseEnter={() => (draggable === 'OFF' ? setOpacity(0) : null)}
+        onMouseLeave={() => (draggable === 'OFF' ? setOpacity(1) : null)}
+      >
         <div className={classes.wrap} ref={domRef}>
           {selectedLyrics.map(({
             text,
