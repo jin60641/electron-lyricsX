@@ -1,18 +1,27 @@
 import axios from 'axios';
 
-import { Info } from '../types';
+import { Info, LyricResponse } from '../types';
 
-const searchLyric = async (mid: string) => axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
-  params: {
-    songmid: mid,
-    g_tk: 5381,
-    nobase64: 1,
-    format: 'json',
-    platform: 'yqq.json',
-    needNewCode: 0,
-  },
-  headers: { referer: 'https://c.y.qq.com/portal/player.html' },
-});
+const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
+  const res = await axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
+    params: {
+      songmid: info.id,
+      g_tk: 5381,
+      nobase64: 1,
+      format: 'json',
+      platform: 'yqq.json',
+      needNewCode: 0,
+    },
+    headers: { referer: 'https://c.y.qq.com/portal/player.html' },
+  });
+  if (!res?.data?.lrc?.lyric) {
+    return;
+  }
+  return {
+    ...info,
+    lyric: res.data.lrc.lyric,
+  } as LyricResponse;
+}
 
 const searchMusic = async (info: Info) => {
   const res = await axios.get('https://c.y.qq.com/soso/fcgi-bin/client_search_cp', {
@@ -23,15 +32,16 @@ const searchMusic = async (info: Info) => {
       s: `${info.artist} - ${info.name}`,
     },
   });
-  const ids: string[] = res?.data?.results?.songs?.map(({ id }: { id: string }) => id);
-  let lyrics: string[] = [];
-  if (ids) {
-    const lyricRes = await Promise.all(ids.map(searchLyric));
-    lyrics = lyricRes
-      .filter(({ data }) => !!data?.lrc?.lyric)
-      .map(({ data: { lrc: { lyric } } }) => lyric);
+  if (!res?.data?.results?.songs?.length) {
+    return [];
   }
-  return lyrics;
+  const infos: LyricResponse[] = res.data.results.songs.map(({ id, name, artists }: { id: string, name: string, artists: { name: string }[] }) => ({
+    id,
+    name,
+    artist: artists?.[0].name
+  }));
+  const lyricInfos = await Promise.all(infos.map(searchLyric))
+  return lyricInfos.filter(lyric => !!lyric) as LyricResponse[];
 };
 
 export default searchMusic;
