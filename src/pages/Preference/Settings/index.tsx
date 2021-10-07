@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { FormControl } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -12,16 +13,16 @@ import actions from 'store/music/actions';
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const [offset, setOffset] = useState(-0.5);
-  const [draggable, setDraggable] = useState('ON');
+  const [draggable, setDraggable] = useState(true);
 
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
     setOffset(() => Number(e.target.value));
   }, [dispatch]);
 
-  const handleOnChangeDraggable = useCallback((e) => {
-    dispatch(layoutAction.setDraggable(e.target.value));
-    setDraggable(() => String(e.target.value));
+  const handleOnChangeDraggable = useCallback((value) => {
+    dispatch(layoutAction.setDraggable(value));
+    setDraggable(() => Boolean(value));
   }, [dispatch]);
 
   return (
@@ -37,21 +38,13 @@ const Settings: React.FC = () => {
         }}
         onChange={handleOnChange}
       />
-      <InputLabel id='demo-simple-select-autowidth-label'>
-        Draggable
-      </InputLabel>
-      <Select
-        labelId='demo-simple-select-autowidth-label'
-        id='demo-simple-select-autowidth'
-        value={draggable}
-        onChange={handleOnChangeDraggable}
-        autoWidth
-        label='Draggable'
-        defaultValue={draggable}
-      >
-        <MenuItem value='ON'>ON</MenuItem>
-        <MenuItem value='OFF'>OFF</MenuItem>
-      </Select>
+      <FormControl>
+        <InputLabel>Draggable</InputLabel>
+        <Select value={draggable} label='Draggable' autoWidth>
+          <MenuItem onClick={() => handleOnChangeDraggable(true)} value='true'>ON</MenuItem>
+          <MenuItem onClick={() => handleOnChangeDraggable(false)} value='false'>OFF</MenuItem>
+        </Select>
+      </FormControl>
     </>
   );
 };
