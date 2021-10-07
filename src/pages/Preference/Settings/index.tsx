@@ -1,10 +1,8 @@
 import React, { useCallback, useState } from 'react';
 
-import { FormControl } from '@material-ui/core';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
+import {
+  Checkbox, FormControl, FormControlLabel, TextField,
+} from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
 import layoutAction from 'store/layout/actions';
@@ -40,11 +38,13 @@ const Settings: React.FC = () => {
         onChange={handleOnChange}
       />
       <FormControl>
-        <InputLabel>Draggable</InputLabel>
-        <Select value={`${draggable}`} label='Draggable' autoWidth>
-          <MenuItem onClick={() => handleOnChangeDraggable(true)} value='true'>ON</MenuItem>
-          <MenuItem onClick={() => handleOnChangeDraggable(false)} value='false'>OFF</MenuItem>
-        </Select>
+        <FormControlLabel
+          control={<Checkbox defaultChecked />}
+          label='Draggable ON'
+          value={draggable}
+          onChange={() => handleOnChangeDraggable(!draggable)}
+          checked={draggable}
+        />
       </FormControl>
     </>
   );
