@@ -27,9 +27,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s opacity .3s',
+    transition: 'width .3s, height .3s opacity 3s',
     overflow: 'hidden',
-    '-webkit-app-region': ({ draggable }) => (draggable === 'ON' ? 'drag' : 'no-drag'),
+    '-webkit-app-region': ({ draggable }) => (draggable ? 'drag' : 'no-drag'),
   },
   wrap: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
@@ -140,8 +140,8 @@ const Main: React.FC = () => {
       <div
         className={classes.main}
         style={{ width, height, opacity }}
-        onMouseEnter={() => (draggable === 'OFF' ? setOpacity(0) : null)}
-        onMouseLeave={() => (draggable === 'OFF' ? setOpacity(1) : null)}
+        onMouseEnter={() => (!draggable ? setOpacity(0) : null)}
+        onMouseLeave={() => (!draggable ? setOpacity(1) : null)}
       >
         <div className={classes.wrap} ref={domRef}>
           {selectedLyrics.map(({
