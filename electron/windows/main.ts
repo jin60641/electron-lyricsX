@@ -4,6 +4,7 @@ import {
   screen,
 } from 'electron';
 import * as path from 'path';
+import { Simulate } from 'react-dom/test-utils';
 
 import {
   pauseMusic,
@@ -14,6 +15,8 @@ import {
 import { isDev } from '../constants';
 import playback from '../playback';
 import { EventName } from '../types';
+
+import drag = Simulate.drag;
 
 const createWindow = () => {
   // Create the browser window.
@@ -87,6 +90,12 @@ const createWindow = () => {
     } else {
       win.setBounds(nextBounds);
     }
+  });
+
+  ipcMain.on('LAYOUT.CHANGE_DRAGGABLE', (_event, payload) => {
+    const { draggable } = payload;
+    if (draggable) win.setIgnoreMouseEvents(false);
+    else win.setIgnoreMouseEvents(true);
   });
 
   playback.on(EventName.START, ({ detail }) => {
