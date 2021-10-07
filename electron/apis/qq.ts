@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { Info, LyricResponse } from '../types';
+import { LyricRequest, LyricResponse } from '../types';
 
 const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
   const res = await axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
@@ -24,7 +24,7 @@ const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = asyn
 }
 
 
-const searchMusic = async (data: Info) => {
+const searchMusic = async (data: LyricRequest) => {
   const res = await axios.get('https://c.y.qq.com/soso/fcgi-bin/client_search_cp', {
     params: {
       new_json: 1,
