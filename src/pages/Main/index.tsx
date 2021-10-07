@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+// import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
-// import Draggable from 'components/Draggable';
 import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
@@ -29,8 +29,23 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     whiteSpace: 'nowrap',
     transition: 'width .3s, height .3s, opacity 1s',
     overflow: 'hidden',
-    '-webkit-app-region': ({ draggable }) => (draggable ? 'drag' : 'no-drag'),
+    '-webkit-app-region': 'no-drag',
+    '&:hover': { opacity: 0 },
   },
+  draggableOn: {
+    display: 'inline-flex',
+    flexDirection: 'column',
+    borderRadius: theme.spacing(2),
+    flexGrow: 1,
+    backgroundColor: 'rgba(0,0,0,.6)',
+    alignItems: 'center',
+    textAlign: 'center',
+    whiteSpace: 'nowrap',
+    transition: 'width .3s, height .3s, opacity 1s',
+    overflow: 'hidden',
+    '-webkit-app-region': 'drag',
+  },
+
   wrap: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     display: 'inline-flex',
@@ -74,7 +89,7 @@ const Main: React.FC = () => {
   const { isPlaying, music, currentOffset, globalOffset, draggable } = useSelector(selector);
   const classes = useStyles({ draggable });
   const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
-  const [opacity, setOpacity] = useState(1);
+  // const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -142,10 +157,8 @@ const Main: React.FC = () => {
   return (
     <>
       <div
-        className={classes.main}
-        style={{ width, height, opacity }}
-        onMouseEnter={() => (!draggable ? setOpacity(0) : null)}
-        onMouseLeave={() => (!draggable ? setOpacity(1) : null)}
+        className={draggable ? classes.draggableOn : classes.main}
+        style={{ width, height }}
       >
         <div className={classes.wrap} ref={domRef}>
           {selectedLyrics.map(({
