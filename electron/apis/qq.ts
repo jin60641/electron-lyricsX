@@ -1,18 +1,28 @@
 import axios from 'axios';
 
-import { Info } from '../types';
+import { Info, LyricResponse } from '../types';
 
-const searchLyric = async (mid: string) => axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
-  params: {
-    songmid: mid,
-    g_tk: 5381,
-    nobase64: 1,
-    format: 'json',
-    platform: 'yqq.json',
-    needNewCode: 0,
-  },
-  headers: { referer: 'https://c.y.qq.com/portal/player.html' },
-});
+const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
+  const res = await axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
+    params: {
+      songmid: info.id,
+      g_tk: 5381,
+      nobase64: 1,
+      format: 'json',
+      platform: 'yqq.json',
+      needNewCode: 0,
+    },
+    headers: { referer: 'https://c.y.qq.com/portal/player.html' },
+  });
+  if (res?.data?.retcode !== 0 || !res?.data?.lyric) {
+    return;
+  }
+  return {
+    ...info,
+    lyric: res.data.lyric,
+  } as LyricResponse;
+}
+
 
 const searchMusic = async (data: Info) => {
   const res = await axios.get('https://c.y.qq.com/soso/fcgi-bin/client_search_cp', {
@@ -26,19 +36,24 @@ const searchMusic = async (data: Info) => {
     },
   });
   const songs = res?.data?.data?.song?.list;
-  let lyrics: string[] = [];
-  if (songs) {
-    const ids = songs.reduce((arr: string[], { mid, file: { media_mid: mmid } }: any) => [
-      ...arr,
-      mid,
-      mmid,
-    ], [] as string[]);
-    const lyricRes = await Promise.all(ids.map(searchLyric));
-    lyrics = lyricRes
-      .filter(({ data: { retcode } }: any) => retcode === 0)
-      .map(({ data: { lyric } }: any) => lyric);
+  if (!songs) {
+    return [];
   }
-  return lyrics;
+  const infos: LyricResponse[] = songs.reduce((arr: LyricResponse[], { name, singer, mid, file: { media_mid: mmid } }: any) => [
+    ...arr,
+    {
+      id: mid,
+      name,
+      artist: singer[0]?.name
+    },
+    {
+      id: mmid,
+      name,
+      artist: singer[0]?.name
+    },
+  ], [] as LyricResponse[]);
+  const lyricInfos = await Promise.all(infos.map(searchLyric))
+  return lyricInfos.filter(lyric => !!lyric) as LyricResponse[];
 };
 
 export default searchMusic;

@@ -8,6 +8,13 @@ export interface Info {
   finish: number
 }
 
+export interface LyricResponse {
+  id: string | number;
+  name: string;
+  artist: string;
+  lyric: string;
+}
+
 export enum EventName {
   START = 'start',
   STOP = 'stop',
