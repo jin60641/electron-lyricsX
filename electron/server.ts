@@ -7,7 +7,7 @@ import router from './router';
 const app = new Koa();
 
 app.use(koaCors({
-  origin: 'chrome-extension://njjadjbedbkjgjgeneepgacgkfngmipf',
+  origin: '*',
 }));
 app.use(koaBody());
 app.use(router.routes());
