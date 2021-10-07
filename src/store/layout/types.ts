@@ -17,8 +17,8 @@ export enum Palette {
 }
 
 export enum Draggable {
-  ON = 'ON',
-  OFF = 'OFF',
+  TRUE = 'on',
+  FALSE = 'false',
 }
 
-export const initialState: LayoutState = { palette: Palette.DEVICE, draggable: Draggable.ON };
+export const initialState: LayoutState = { palette: Palette.DEVICE, draggable: Draggable.TRUE };
