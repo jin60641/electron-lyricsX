@@ -25,6 +25,9 @@ const routes: TRoute[] = [{
 }, {
   key: 'preference',
   component: lazy(() => import('pages/Preference')),
+}, {
+  key: 'search',
+  component: lazy(() => import('pages/Search')),
 }];
 
 const App: React.FC = () => {

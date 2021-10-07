@@ -4,13 +4,13 @@ import {
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
 import {
-  persistStore,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from 'redux-persist';
 import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync';
 import { ActionCreator, getType } from 'typesafe-actions';
