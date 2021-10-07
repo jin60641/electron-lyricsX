@@ -39,8 +39,8 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
   const lyricRes = await Promise.all([searchQQ(data), search163(data)]);
   const filteredLyrics = lyricRes
     .reduce((a, b) => [...a, ...b])
-    .filter((lyric) => lyric?.length && timeTagRegex.test(lyric));
-  const lyrics = await Promise.all(filteredLyrics.map(async (lyric) => {
+    .filter(({ lyric }) => lyric?.length && timeTagRegex.test(lyric));
+  const lyrics = await Promise.all(filteredLyrics.map(async ({ lyric, ...info }) => {
     const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
       const matches = row.match(timeTagRegex);
       if (!matches) {
@@ -60,9 +60,12 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
       };
       return (await arr).concat([item]);
     }, Promise.resolve([])));
-    return ret;
+    return {
+      ...info,
+      lyric: ret,
+    };
   }));
-  win.webContents.send('MUSIC.START_MUSIC', lyrics.map((lyric) => ({ ...data, lyric })));
+  win.webContents.send('MUSIC.START_MUSIC', lyrics);
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {
