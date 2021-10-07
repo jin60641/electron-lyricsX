@@ -5,16 +5,18 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import layoutAction from 'store/layout/actions';
 import actions from 'store/music/actions';
 
+import { RootState } from '../../../store/types';
+
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const [offset, setOffset] = useState(-0.5);
-  const [draggable, setDraggable] = useState(false);
-
+  const selector = ({ layout: { draggable } }: RootState) => ({ draggable });
+  const { draggable } = useSelector(selector);
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
     setOffset(() => Number(e.target.value));
@@ -22,7 +24,6 @@ const Settings: React.FC = () => {
 
   const handleOnChangeDraggable = useCallback((value) => {
     dispatch(layoutAction.setDraggable(value));
-    setDraggable(() => Boolean(value));
   }, [dispatch]);
 
   return (
