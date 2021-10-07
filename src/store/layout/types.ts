@@ -1,13 +1,15 @@
 export interface LayoutState {
   palette: Palette;
-
+  title: string | undefined;
+  artist: string | undefined;
 }
 
 export enum Actions {
   SET_PALETTE = 'LAYOUT.SET_PALETTE',
   CLOSE_PREFERENCE = 'LAYOUT.CLOSE_PREFERENCE',
 
-  CLOSE_SEARCH_MODAL = 'LAYOUT.CLOSE_SEARCH_MODAL',
+  SET_TITLE = 'LAYOUT.SET_TITLE',
+  SET_ARTIST = 'LAYOUT.SET_ARTIST',
 }
 
 export enum Palette {
@@ -16,4 +18,4 @@ export enum Palette {
   LIGHT = 'light',
 }
 
-export const initialState: LayoutState = { palette: Palette.DEVICE };
+export const initialState: LayoutState = { palette: Palette.DEVICE, title: '', artist: '' };

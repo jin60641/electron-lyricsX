@@ -28,7 +28,7 @@ const createTemplate = (windows: Windows) => ([
     label: 'Search',
     submenu: [
       {
-        label: 'search lyrics',
+        label: 'Search lyrics',
         click: () => {
           windows.search.show();
         },

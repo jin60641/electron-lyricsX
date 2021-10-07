@@ -26,22 +26,25 @@ const useStyles = makeStyles((theme) => ({
   },
   title: { fontWeight: 'bold' },
   close: { fontSize: 20 },
-  body: {
-    flexDirection: 'row',
-    display: 'flex',
-    flexGrow: 1,
-    paddingTop: theme.spacing(2),
-  },
+  body: (props) => (
+    props ? { ...props, paddingTop: theme.spacing(2) }
+      : {
+        flexDirection: 'row',
+        display: 'flex',
+        flexGrow: 1,
+        paddingTop: theme.spacing(2),
+      }),
 }));
 
 interface Props {
   isOpen: boolean,
   onClose: () => void,
   title: string,
+  styleProps?: any
 }
 
-const Modal: React.FC<Props> = ({ children, isOpen, onClose, title }) => {
-  const classes = useStyles();
+const Modal: React.FC<Props> = ({ children, isOpen, onClose, title, styleProps }) => {
+  const classes = useStyles(styleProps);
 
   if (!isOpen) {
     return null;

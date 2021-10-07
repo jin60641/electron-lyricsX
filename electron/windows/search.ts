@@ -22,9 +22,9 @@ const searchWindow = () => {
   });
 
   if (isDev) {
-    win.loadURL('http://localhost:3000/#/preference/theme');
+    win.loadURL('http://localhost:3000/#/Search');
   } else {
-    win.loadURL(`file://${path.join(__dirname, '..', '..', 'build', 'index.html#/preference/theme')}`);
+    win.loadURL(`file://${path.join(__dirname, '..', '..', 'build', 'index.html#/Search')}`);
   }
 
   const handleClose = (e: Event) => {
