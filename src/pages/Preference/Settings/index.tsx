@@ -13,7 +13,7 @@ import actions from 'store/music/actions';
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const [offset, setOffset] = useState(-0.5);
-  const [draggable, setDraggable] = useState(true);
+  const [draggable, setDraggable] = useState(false);
 
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
@@ -40,7 +40,7 @@ const Settings: React.FC = () => {
       />
       <FormControl>
         <InputLabel>Draggable</InputLabel>
-        <Select value={draggable} label='Draggable' autoWidth>
+        <Select value={`${draggable}`} label='Draggable' autoWidth>
           <MenuItem onClick={() => handleOnChangeDraggable(true)} value='true'>ON</MenuItem>
           <MenuItem onClick={() => handleOnChangeDraggable(false)} value='false'>OFF</MenuItem>
         </Select>
