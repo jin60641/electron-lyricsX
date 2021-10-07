@@ -1,6 +1,6 @@
 export interface LayoutState {
   palette: Palette;
-  draggable: Draggable;
+  draggable: boolean;
 }
 
 export enum Actions {
@@ -16,9 +16,4 @@ export enum Palette {
   LIGHT = 'light',
 }
 
-export enum Draggable {
-  TRUE = 'on',
-  FALSE = 'false',
-}
-
-export const initialState: LayoutState = { palette: Palette.DEVICE, draggable: Draggable.TRUE };
+export const initialState: LayoutState = { palette: Palette.DEVICE, draggable: false };
