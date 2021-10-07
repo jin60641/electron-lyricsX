@@ -14,7 +14,7 @@ import { RootState } from 'store/types';
 const LINE_COUNT = 2;
 
 type Props = {
-  draggable: string;
+  draggable: boolean;
 };
 
 const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
@@ -27,7 +27,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s opacity 3s',
+    transition: 'width .3s, height .3s, opacity 1s',
     overflow: 'hidden',
     '-webkit-app-region': ({ draggable }) => (draggable ? 'drag' : 'no-drag'),
   },
