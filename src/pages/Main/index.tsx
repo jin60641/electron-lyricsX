@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-// import clsx from 'clsx';
+import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
@@ -29,23 +29,12 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     whiteSpace: 'nowrap',
     transition: 'width .3s, height .3s, opacity .3s',
     overflow: 'hidden',
+    '-webkit-app-region': 'drag',
+  },
+  draggableOff: {
     '-webkit-app-region': 'no-drag',
     '&:hover': { opacity: 0 },
   },
-  draggableOn: {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    borderRadius: theme.spacing(2),
-    flexGrow: 1,
-    backgroundColor: 'rgba(0,0,0,.6)',
-    alignItems: 'center',
-    textAlign: 'center',
-    whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s, opacity 1s',
-    overflow: 'hidden',
-    '-webkit-app-region': 'drag',
-  },
-
   wrap: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     display: 'inline-flex',
@@ -89,7 +78,6 @@ const Main: React.FC = () => {
   const { isPlaying, music, currentOffset, globalOffset, draggable } = useSelector(selector);
   const classes = useStyles({ draggable });
   const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
-  // const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -157,7 +145,7 @@ const Main: React.FC = () => {
   return (
     <>
       <div
-        className={draggable ? classes.draggableOn : classes.main}
+        className={clsx(classes.main, { [classes.draggableOff]: !draggable })}
         style={{ width, height }}
       >
         <div className={classes.wrap} ref={domRef}>
