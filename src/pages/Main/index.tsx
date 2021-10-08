@@ -27,7 +27,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s, opacity 1s',
+    transition: 'width .3s, height .3s, opacity .3s',
     overflow: 'hidden',
     '-webkit-app-region': 'no-drag',
     '&:hover': { opacity: 0 },
