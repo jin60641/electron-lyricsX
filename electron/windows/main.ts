@@ -89,6 +89,12 @@ const createWindow = () => {
     }
   });
 
+  ipcMain.on('LAYOUT.CHANGE_DRAGGABLE', (_event, payload) => {
+    const { draggable } = payload;
+    if (draggable) win.setIgnoreMouseEvents(false);
+    else win.setIgnoreMouseEvents(true);
+  });
+
   playback.on(EventName.START, ({ detail }) => {
     win.show();
     startMusic(win, detail);
