@@ -4,7 +4,6 @@ import {
   screen,
 } from 'electron';
 import * as path from 'path';
-import { Simulate } from 'react-dom/test-utils';
 
 import {
   pauseMusic,
@@ -15,8 +14,6 @@ import {
 import { isDev } from '../constants';
 import playback from '../playback';
 import { EventName } from '../types';
-
-import drag = Simulate.drag;
 
 const createWindow = () => {
   // Create the browser window.
