@@ -21,6 +21,10 @@ const layoutReducer = createReducer<LayoutState>(initialState)
   .handleAction(layoutActions.setArtist, (state, action) => ({
     ...state,
     artist: action.payload,
+  }))
+  .handleAction(layoutActions.setDraggable, (state, action) => ({
+    ...state,
+    draggable: action.payload,
   }));
 
 export default persistReducer(persistConfig, layoutReducer);

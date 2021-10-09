@@ -2,18 +2,22 @@ import React, {
   useEffect, useMemo, useRef, useState,
 } from 'react';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
-import Draggable from 'components/Draggable';
 import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
 
 const LINE_COUNT = 2;
 
-const useStyles = makeStyles((theme) => createStyles({
+type Props = {
+  draggable: boolean;
+};
+
+const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   main: {
     display: 'inline-flex',
     flexDirection: 'column',
@@ -23,8 +27,13 @@ const useStyles = makeStyles((theme) => createStyles({
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s',
+    transition: 'width .3s, height .3s, opacity .3s',
     overflow: 'hidden',
+    '-webkit-app-region': 'drag',
+  },
+  draggableOff: {
+    '-webkit-app-region': 'no-drag',
+    '&:hover': { opacity: 0 },
   },
   wrap: {
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
@@ -49,22 +58,25 @@ const selector = ({
     currentOffset,
     globalOffset,
   },
+  layout: { draggable },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,
   currentOffset,
   globalOffset,
-});
+  draggable,
+}
+);
 
 const Main: React.FC = () => {
   const domRef = useRef<HTMLDivElement | null>(null);
-  const classes = useStyles();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
   const [index, setIndex] = useState(0);
-  const { isPlaying, music, currentOffset, globalOffset } = useSelector(selector);
+  const { isPlaying, music, currentOffset, globalOffset, draggable } = useSelector(selector);
+  const classes = useStyles({ draggable });
   const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
 
   useEffect(() => {
@@ -113,6 +125,10 @@ const Main: React.FC = () => {
   }, [width, height]);
 
   useEffect(() => {
+    window.bridge.ipc.send('LAYOUT.CHANGE_DRAGGABLE', { draggable });
+  }, [draggable]);
+
+  useEffect(() => {
     // avoid using redux for update immediately
     window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Music) => {
       if (data.position) {
@@ -128,8 +144,10 @@ const Main: React.FC = () => {
 
   return (
     <>
-      <Draggable />
-      <div className={classes.main} style={{ width, height }}>
+      <div
+        className={clsx(classes.main, { [classes.draggableOff]: !draggable })}
+        style={{ width, height }}
+      >
         <div className={classes.wrap} ref={domRef}>
           {selectedLyrics.map(({
             text,

@@ -7,11 +7,14 @@ import musicActions from 'store/music/actions';
 import { RootState } from 'store/types';
 
 /**
+ * todo
+ * 
  * 1. 각 div resizable하게 변경
- * 2. article에서 하단 도달 시 scroll 되도록 변경
- * 3. 이벤트 처리 리팩토링
- * 4. lyric area에서 onBlur시 row 배경 회색으로 변경
+ * 2. 이벤트 처리 리팩토링
+ * 3. lyric area에서 onBlur시 row 배경 회색으로 변경
+ * 4. 가사에 나오는 한자 변환
  */
+
 const useStyles = makeStyles({
   rowWrapper: {
     display: 'flex',

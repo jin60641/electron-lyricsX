@@ -29,3 +29,12 @@ yarn-error.log*
 *.swp
 electron-builder.yml
 .eslintcache
+
+# Webstorm project files
+.idea
+.idea/*.xml
+*.iml
+out
+gen
+build
+rebel.xml
