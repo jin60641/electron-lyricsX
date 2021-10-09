@@ -15,20 +15,27 @@ const useStyle = makeStyles({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    margin: '0 10px',
+    width: '100%',
     height: '20px',
+    borderBottom: 'solid gray 1px',
   },
   content: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    margin: '0 10px',
+    height: '30vh',
+    width: '100%',
+    borderBottom: 'solid gray 1px',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
   },
   lyric: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    margin: '0 10px',
+    flexDirection: 'column',
+    alignContent: 'center',
+    height: '60vh',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
   },
 });
 
@@ -36,6 +43,7 @@ const styleProps = {
   flexDirection: 'column',
   display: 'flex',
   flexGrow: 1,
+  overflowY: 'hidden',
 };
 const Search: React.FC = () => {
   const classes = useStyle();

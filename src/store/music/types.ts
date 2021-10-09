@@ -2,6 +2,8 @@ import { v4 as uuid } from 'uuid';
 
 export interface MusicState {
   list: Music[],
+  searchList: Music[],
+  searchIndex: number,
   lastSelected?: number,
   isPlaying: boolean,
   currentOffset: number,
@@ -15,6 +17,8 @@ export enum Actions {
   STOP_MUSIC = 'MUSIC.STOP_MUSIC',
   PAUSE_MUSIC = 'MUSIC.PAUSE_MUSIC',
   SEEK_MUSIC = 'MUSIC.SEEK_MUSIC',
+  SEARCH_MUSIC = 'MUSIC.SEARCH_MUSIC',
+  SET_SEARCH_INDEX = 'MUSIC.SEARCH_INDEX',
 
   SELECT_MUSIC = 'MUSIC.SELECT_MUSIC',
   RESET_MUSIC = 'MUSIC.RESET_MUSIC',
@@ -26,6 +30,8 @@ export enum Actions {
 
 export const initialState: MusicState = {
   list: [],
+  searchList: [],
+  searchIndex: 0,
   isPlaying: false,
   currentOffset: 0,
   globalOffset: -0.5,
@@ -36,6 +42,7 @@ export interface Music {
   artist?: string,
   duration?: number,
   position?: number,
+  source?: string,
   lyric?: Row[],
 }
 

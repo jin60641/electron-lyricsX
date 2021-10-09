@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
+import { searchMusic } from '../apis/index';
 import { isDev } from '../constants';
 
 const searchWindow = () => {
@@ -45,7 +46,9 @@ const searchWindow = () => {
   ipcMain.on('LAYOUT.CLOSE_PREFERENCE', () => {
     win.hide();
   });
-
+  ipcMain.on('MUSIC.SEARCH_MUSIC', (_event, payload) => {
+    searchMusic(win, payload);
+  });
   return win;
 };
 

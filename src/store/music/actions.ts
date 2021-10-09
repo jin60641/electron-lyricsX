@@ -37,6 +37,8 @@ const startMusic = createAction(Actions.START_MUSIC)<Music[]>();
 const stopMusic = createAction(Actions.STOP_MUSIC)();
 const pauseMusic = createAction(Actions.PAUSE_MUSIC)();
 const seekMusic = createAction(Actions.SEEK_MUSIC)<Music>();
+const searchMusic = createAction(Actions.SEARCH_MUSIC)<Music[]>();
+const setSearchIndex = createAction(Actions.SET_SEARCH_INDEX)<number>();
 
 export default {
   resetMusic,
@@ -46,6 +48,8 @@ export default {
   stopMusic,
   pauseMusic,
   seekMusic,
+  searchMusic,
+  setSearchIndex,
   setCurrentOffset,
   setGlobalOffset,
 };

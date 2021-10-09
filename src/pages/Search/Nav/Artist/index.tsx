@@ -33,7 +33,7 @@ const Artist = () => {
   return (
     <div className={classes.artist}>
       <label className={classes.label} htmlFor='artist'>아티스트: </label>
-      <input className={classes.input} type='text' name='artist' onChange={handleOnChange} value={artist} />
+      <input className={classes.input} type='text' name='artist' onChange={handleOnChange} value={artist} size={30} />
     </div>
   );
 };

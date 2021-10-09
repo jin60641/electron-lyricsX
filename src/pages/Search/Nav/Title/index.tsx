@@ -32,7 +32,7 @@ const Title = () => {
   return (
     <div className={classes.title}>
       <label className={classes.label} htmlFor='title'>제목: </label>
-      <input className={classes.input} name='title' type='text' value={title} onChange={handleOnChange} />
+      <input className={classes.input} name='title' type='text' value={title} onChange={handleOnChange} size={30} />
     </div>
   );
 };
