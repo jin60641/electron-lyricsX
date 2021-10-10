@@ -11,7 +11,7 @@ import { RootState } from 'store/types';
 const useStyle = makeStyles({ button: { flex: '0.3' } });
 
 const selector = ({
-  layout: {
+  search: {
     title,
     artist,
   },

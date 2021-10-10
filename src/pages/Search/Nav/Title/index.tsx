@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 
-import layoutAction from 'store/layout/actions';
+import searchAction from 'store/search/actions';
 import { RootState } from 'store/types';
 
 const useStyle = makeStyles({
@@ -20,13 +20,13 @@ const useStyle = makeStyles({
   input: { fontSize: '15px' },
 });
 
-const selector = ({ layout: { title } }: RootState) => (title);
+const selector = ({ search: { title } }: RootState) => (title);
 const Title = () => {
   const classes = useStyle();
   const dispatch = useDispatch();
   const title = useSelector(selector);
   const handleOnChange = useCallback((e) => {
-    dispatch(layoutAction.setTitle(e.target.value));
+    dispatch(searchAction.setTitle(e.target.value));
   }, [dispatch]);
 
   return (

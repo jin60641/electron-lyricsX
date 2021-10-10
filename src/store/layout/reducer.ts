@@ -14,14 +14,6 @@ const layoutReducer = createReducer<LayoutState>(initialState)
     ...state,
     palette: action.payload,
   }))
-  .handleAction(layoutActions.setTitle, (state, action) => ({
-    ...state,
-    title: action.payload,
-  }))
-  .handleAction(layoutActions.setArtist, (state, action) => ({
-    ...state,
-    artist: action.payload,
-  }))
   .handleAction(layoutActions.setDraggable, (state, action) => ({
     ...state,
     draggable: action.payload,

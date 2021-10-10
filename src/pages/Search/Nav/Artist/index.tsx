@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 
-import layoutAction from 'store/layout/actions';
+import searchAction from 'store/search/actions';
 import { RootState } from 'store/types';
 
 const useStyle = makeStyles({
@@ -20,7 +20,7 @@ const useStyle = makeStyles({
   input: { fontSize: '15px' },
 });
 
-const selector = ({ layout: { artist } }: RootState) => (artist);
+const selector = ({ search: { artist } }: RootState) => (artist);
 
 const Artist = () => {
   const classes = useStyle();
@@ -28,7 +28,7 @@ const Artist = () => {
   const artist = useSelector(selector);
 
   const handleOnChange = useCallback((e) => {
-    dispatch(layoutAction.setArtist(e.target.value));
+    dispatch(searchAction.setArtist(e.target.value));
   }, [dispatch]);
   return (
     <div className={classes.artist}>
