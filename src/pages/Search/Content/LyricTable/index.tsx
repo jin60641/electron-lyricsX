@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ import { RootState } from 'store/types';
 
 /**
  * todo
- * 
+ *
  * 1. 각 div resizable하게 변경
  * 2. 이벤트 처리 리팩토링
  * 3. lyric area에서 onBlur시 row 배경 회색으로 변경
@@ -52,7 +52,9 @@ const LyricTable = () => {
   const classes = useStyles();
   const tbody = useRef<HTMLTableSectionElement>(null);
 
-  const getFocusedRow = () => (tbody.current?.childNodes[searchIndex] as HTMLTableRowElement);
+  const getFocusedRow = useCallback(() => (
+    tbody.current?.childNodes[searchIndex] as HTMLTableRowElement),
+  [searchIndex]);
   const getIndexOfNode = (target: HTMLTableRowElement) => {
     const childNodes = tbody.current?.childNodes;
 
@@ -97,7 +99,7 @@ const LyricTable = () => {
   };
   useEffect(() => {
     getFocusedRow()?.focus();
-  }, [searchIndex]);
+  }, [searchIndex, getFocusedRow]);
   return (
     <table className={classes.table}>
       <thead className={classes.th}>
