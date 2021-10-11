@@ -25,7 +25,7 @@ const SearchBtn = () => {
   const { title, artist } = useSelector(selector);
   const dispatch = useDispatch();
   const handleOnClick = () => {
-    window.bridge.ipc.send('MUSIC.SEARCH_MUSIC', { name: title, artist });
+    window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
   };
 
   window.bridge.ipc.receive(getType(musicActions.searchMusic), (data: Music[]) => {
