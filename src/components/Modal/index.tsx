@@ -27,13 +27,14 @@ const useStyles = makeStyles((theme) => ({
   title: { fontWeight: 'bold' },
   close: { fontSize: 20 },
   body: (props) => (
-    props ? { ...props, paddingTop: theme.spacing(2) }
+    Object.keys(props).length ? { ...props, paddingTop: theme.spacing(2) }
       : {
         flexDirection: 'row',
         display: 'flex',
         flexGrow: 1,
         paddingTop: theme.spacing(2),
-      }),
+      }
+  ),
 }));
 
 interface Props {
