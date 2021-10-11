@@ -4,8 +4,8 @@ export interface SearchState {
 }
 
 export enum Actions {
-  SET_TITLE = 'LAYOUT.SET_TITLE',
-  SET_ARTIST = 'LAYOUT.SET_ARTIST',
+  SET_TITLE = 'SEARCH.SET_TITLE',
+  SET_ARTIST = 'SEARCH.SET_ARTIST',
 }
 
 export const initialState: SearchState = {
