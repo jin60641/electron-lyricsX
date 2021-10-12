@@ -11,10 +11,12 @@ interface Props {
 
 const selector = ({
   music: {
+    list,
     searchList,
     searchIndex,
   },
 }: RootState) => ({
+  list,
   searchList,
   searchIndex,
 });
@@ -25,18 +27,26 @@ const uesStyles = makeStyles({
   },
 });
 const Lyric: React.FC<Props> = ({ className }) => {
-  const { searchList, searchIndex } = useSelector(selector);
+  const { list, searchList, searchIndex } = useSelector(selector);
   const classes = uesStyles();
 
   return (
     <div className={className}>
-      {searchList[searchIndex]?.lyric?.map((e) => (
-        <p className={classes.lyric}>
-          {e.timestamp}
-          {' '}
-          {e.text}
-        </p>
-      ))}
+      { searchList?.length === 0
+        ? list[searchIndex]?.lyric?.map((lyric) => (
+          <p className={classes.lyric}>
+            {lyric.timestamp}
+            {' '}
+            {lyric.text}
+          </p>
+        ))
+        : searchList[searchIndex]?.lyric?.map((e) => (
+          <p className={classes.lyric}>
+            {e.timestamp}
+            {' '}
+            {e.text}
+          </p>
+        ))}
     </div>
   );
 };

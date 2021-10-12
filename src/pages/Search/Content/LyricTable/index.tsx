@@ -35,10 +35,12 @@ const useStyles = makeStyles({
 });
 const selector = ({
   music: {
+    list,
     searchList,
     searchIndex,
   },
 }: RootState) => ({
+  list,
   searchList,
   searchIndex,
 });
@@ -47,7 +49,7 @@ const FOCUSED_COLOR = '#1E90FF';
 const BLURED_COLOR = 'black';
 
 const LyricTable = () => {
-  const { searchList, searchIndex } = useSelector(selector);
+  const { list, searchList, searchIndex } = useSelector(selector);
   const dispatch = useDispatch();
   const classes = useStyles();
   const tbody = useRef<HTMLTableSectionElement>(null);
@@ -85,12 +87,20 @@ const LyricTable = () => {
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>) => {
     switch (e.key) {
       case 'ArrowUp':
-        if (searchIndex > 0) {
+        if (searchList.length === 0) {
+          if (searchIndex > 0) {
+            moveRow(getFocusedRow(), -1);
+          }
+        } else if (searchIndex > 0) {
           moveRow(getFocusedRow(), -1);
         }
         break;
       case 'ArrowDown':
-        if (searchIndex < searchList.length - 1) {
+        if (searchList.length === 0) {
+          if (searchIndex < list.length - 1) {
+            moveRow(getFocusedRow(), 1);
+          }
+        } else if (searchIndex < searchList.length - 1) {
           moveRow(getFocusedRow(), 1);
         }
         break;
@@ -110,13 +120,21 @@ const LyricTable = () => {
         </tr>
       </thead>
       <tbody ref={tbody}>
-        {searchList.map((info) => (
-          <tr className={classes.rowWrapper} onFocus={handleOnFocus} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} role='row' tabIndex={0}>
-            <td className={classes.child}>{info.title}</td>
-            <td className={classes.child}>{info.artist}</td>
-            <td className={classes.child}>{info.source}</td>
-          </tr>
-        ))}
+        { searchList?.length === 0
+          ? list.map((info) => (
+            <tr className={classes.rowWrapper} onFocus={handleOnFocus} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} role='row' tabIndex={0}>
+              <td className={classes.child}>{info.title}</td>
+              <td className={classes.child}>{info.artist}</td>
+              <td className={classes.child}>{info.source}</td>
+            </tr>
+          ))
+          : searchList.map((info) => (
+            <tr className={classes.rowWrapper} onFocus={handleOnFocus} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} role='row' tabIndex={0}>
+              <td className={classes.child}>{info.title}</td>
+              <td className={classes.child}>{info.artist}</td>
+              <td className={classes.child}>{info.source}</td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
