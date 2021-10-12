@@ -44,6 +44,15 @@ const Nav: React.FC<Props> = ({ className }) => {
   const handleOnClick = useCallback(() => {
     window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
   }, [title, artist]);
+  const handleOnKeyDown = useCallback((e: React.KeyboardEvent) => {
+    switch (e.key) {
+      case 'Enter':
+        console.log('enter');
+        window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
+        break;
+      default: break;
+    }
+  }, [title, artist]);
   return (
     <nav className={className}>
       <div className={classes.wrapper}>
@@ -53,6 +62,7 @@ const Nav: React.FC<Props> = ({ className }) => {
           type='text'
           value={title}
           onChange={handleOnTitleChange}
+          onKeyDown={handleOnKeyDown}
           className={classes.input}
         />
       </div>
@@ -63,6 +73,7 @@ const Nav: React.FC<Props> = ({ className }) => {
           type='text'
           value={artist}
           onChange={handleOnArtistChange}
+          onKeyDown={handleOnKeyDown}
           className={classes.input}
         />
       </div>
