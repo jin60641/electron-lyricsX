@@ -56,7 +56,6 @@ export const useThemeCustom = () => {
   }, [dispatch]);
 
   const handleChangeBackgroundOpacity = useCallback((e) => {
-    console.log(e.target, '----------------');
     if (Number(e.target.value) < 0 || Number(e.target.value) > 1) {
       // eslint-disable-next-line no-alert
       alert('This value must be set from 0 to 1.');
