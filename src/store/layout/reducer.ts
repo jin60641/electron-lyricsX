@@ -17,6 +17,26 @@ const layoutReducer = createReducer<LayoutState>(initialState)
   .handleAction(layoutActions.setDraggable, (state, action) => ({
     ...state,
     draggable: action.payload,
+  }))
+  .handleAction(layoutActions.setLineCount, (state, action) => ({
+    ...state,
+    lineCount: action.payload,
+  }))
+  .handleAction(layoutActions.setLyricSize, (state, action) => ({
+    ...state,
+    lyricSize: action.payload,
+  }))
+  .handleAction(layoutActions.setFontColor, (state, action) => ({
+    ...state,
+    fontColor: action.payload,
+  }))
+  .handleAction(layoutActions.setBackgroundOpacity, (state, action) => ({
+    ...state,
+    backgroundOpacity: action.payload,
+  }))
+  .handleAction(layoutActions.setBackgroundColor, (state, action) => ({
+    ...state,
+    backgroundColor: action.payload,
   }));
 
 export default persistReducer(persistConfig, layoutReducer);
