@@ -11,10 +11,16 @@ import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
 
+import { BackgroundColor, FontColor } from '../../store/layout/types';
+
 const LINE_COUNT = 2;
 
 type Props = {
-  draggable: boolean;
+  lineCount: number;
+  lyricSize: number;
+  fontColor: FontColor;
+  backgroundOpacity: number;
+  backgroundColor: BackgroundColor;
 };
 
 const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
@@ -23,12 +29,13 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     flexDirection: 'column',
     borderRadius: theme.spacing(2),
     flexGrow: 1,
-    backgroundColor: 'rgba(0,0,0,.6)',
+    backgroundColor: ({ backgroundColor }) => backgroundColor,
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
     transition: 'width .3s, height .3s, opacity .3s',
     overflow: 'hidden',
+    opacity: ({ backgroundOpacity }) => Number(backgroundOpacity),
     '-webkit-app-region': 'drag',
   },
   draggableOff: {
@@ -42,10 +49,9 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   },
   row: {
     display: 'inline-block',
-    // TODO: CUSTOMIZE
-    color: 'white',
+    color: ({ fontColor }) => fontColor,
     textShadow: '0px 0px 8px rgba(0,255,255,.68)',
-    fontSize: 28,
+    fontSize: ({ lyricSize }) => Number(lyricSize),
     userSelect: 'none',
   },
 }));
@@ -58,13 +64,25 @@ const selector = ({
     currentOffset,
     globalOffset,
   },
-  layout: { draggable },
+  layout: {
+    draggable,
+    lineCount,
+    lyricSize,
+    fontColor,
+    backgroundOpacity,
+    backgroundColor,
+  },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,
   currentOffset,
   globalOffset,
   draggable,
+  lineCount,
+  lyricSize,
+  fontColor,
+  backgroundOpacity,
+  backgroundColor,
 }
 );
 
@@ -75,8 +93,23 @@ const Main: React.FC = () => {
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
   const [index, setIndex] = useState(0);
-  const { isPlaying, music, currentOffset, globalOffset, draggable } = useSelector(selector);
-  const classes = useStyles({ draggable });
+  const {
+    isPlaying,
+    music,
+    currentOffset,
+    globalOffset,
+    draggable, lineCount,
+    lyricSize, fontColor,
+    backgroundOpacity,
+    backgroundColor,
+  } = useSelector(selector);
+  const classes = useStyles({
+    lineCount,
+    lyricSize,
+    fontColor,
+    backgroundOpacity,
+    backgroundColor,
+  });
   const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
 
   useEffect(() => {
