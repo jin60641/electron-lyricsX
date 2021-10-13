@@ -9,23 +9,21 @@ interface Props {
   stepSize: number,
 }
 
-const MenuTextInput: React.FC<Props> = ({ label, menuState, changeHandler, stepSize }) => {
-  return (
-    <>
-      <TextField
-        type='number'
-        value={menuState}
-        label={label}
-        variant='outlined'
-        inputProps={{
-          maxLength: 10,
-          step: stepSize,
-        }}
-        onChange={changeHandler}
-        style={{ marginBottom: '15px' }}
-      />
-    </>
-  );
-};
+const MenuTextInput: React.FC<Props> = ({ label, menuState, changeHandler, stepSize }) => (
+  <>
+    <TextField
+      type='number'
+      value={menuState}
+      label={label}
+      variant='outlined'
+      inputProps={{
+        maxLength: 10,
+        step: stepSize,
+      }}
+      onChange={changeHandler}
+      style={{ marginBottom: '15px' }}
+    />
+  </>
+);
 
 export default MenuTextInput;
