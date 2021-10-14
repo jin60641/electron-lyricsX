@@ -40,7 +40,12 @@ export const useThemeCustom = () => {
   }, [dispatch]);
 
   const handleChangeLineCount = useCallback((e) => {
-    dispatch(actions.setLineCount(e.target.value));
+    if (Number(e.target.value) < 1) {
+      // eslint-disable-next-line no-alert
+      alert('This value must be set to at least 1.');
+      return;
+    }
+    dispatch(actions.setLineCount(Number(e.target.value)));
   }, [dispatch]);
 
   const handleChangeFontSize = useCallback((e) => {
