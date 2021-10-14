@@ -4,7 +4,7 @@ export interface LayoutState {
   lineCount: number;
   lyricSize: number;
   fontColor: FontColor;
-  backgroundOpacity: 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
+  backgroundOpacity: number;
   backgroundColor: BackgroundColor.BLACK,
 }
 
@@ -48,7 +48,7 @@ export const initialState: LayoutState = {
 
   draggable: false,
 
-  lineCount: 3,
+  lineCount: 2,
   lyricSize: 28,
   fontColor: FontColor.WHITE,
   backgroundOpacity: 1,
