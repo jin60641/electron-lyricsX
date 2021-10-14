@@ -13,8 +13,6 @@ import { RootState } from 'store/types';
 
 import { BackgroundColor, FontColor } from '../../store/layout/types';
 
-const LINE_COUNT = 2;
-
 type Props = {
   lineCount: number;
   lyricSize: number;
@@ -35,7 +33,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     whiteSpace: 'nowrap',
     transition: 'width .3s, height .3s, opacity .3s',
     overflow: 'hidden',
-    opacity: ({ backgroundOpacity }) => Number(backgroundOpacity),
+    opacity: ({ backgroundOpacity }) => backgroundOpacity,
     '-webkit-app-region': 'drag',
   },
   draggableOff: {
@@ -51,7 +49,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     display: 'inline-block',
     color: ({ fontColor }) => fontColor,
     textShadow: '0px 0px 8px rgba(0,255,255,.68)',
-    fontSize: ({ lyricSize }) => Number(lyricSize),
+    fontSize: ({ lyricSize }) => lyricSize,
     userSelect: 'none',
   },
 }));
@@ -137,14 +135,14 @@ const Main: React.FC = () => {
   }, [time, lyrics, globalOffset, currentOffset]);
 
   const selectedLyrics = useMemo(() => (lyrics ? lyrics
-    .slice(index, index + LINE_COUNT)
+    .slice(index, index + lineCount)
     .filter(({
       time: rowTime,
       text,
     }, i) => (
       text.length
       && (i === 0 || rowTime <= (time + 10 * i))
-    )) : null), [lyrics, index, time]);
+    )) : null), [lyrics, index, time, lineCount]);
 
   useEffect(() => {
     if (index >= 0 && domRef.current) {
