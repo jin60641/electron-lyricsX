@@ -49,7 +49,7 @@ export const useThemeCustom = () => {
   }, [dispatch]);
 
   const handleChangeFontSize = useCallback((e) => {
-    dispatch(actions.setLyricSize(e.target.value));
+    dispatch(actions.setLyricSize(Number(e.target.value)));
   }, [dispatch]);
 
   const handleChangeFontColor = useCallback((e) => {
@@ -66,7 +66,7 @@ export const useThemeCustom = () => {
       alert('This value must be set from 0 to 1.');
       return;
     }
-    dispatch(actions.setBackgroundOpacity(e.target.value));
+    dispatch(actions.setBackgroundOpacity(Number(e.target.value)));
   }, [dispatch]);
 
   return {
