@@ -41,8 +41,6 @@ export const useThemeCustom = () => {
 
   const handleChangeLineCount = useCallback((e) => {
     if (Number(e.target.value) < 1) {
-      // eslint-disable-next-line no-alert
-      alert('This value must be set to at least 1.');
       return;
     }
     dispatch(actions.setLineCount(Number(e.target.value)));
@@ -62,8 +60,6 @@ export const useThemeCustom = () => {
 
   const handleChangeBackgroundOpacity = useCallback((e) => {
     if (Number(e.target.value) < 0 || Number(e.target.value) > 1) {
-      // eslint-disable-next-line no-alert
-      alert('This value must be set from 0 to 1.');
       return;
     }
     dispatch(actions.setBackgroundOpacity(Number(e.target.value)));
