@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, TextField } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
@@ -11,24 +11,10 @@ interface Props {
   className: string
 }
 
-const useStyles = makeStyles({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flex: '1',
-  },
-  label: {
-    fontSize: '15px',
-    marginRight: '10px',
-  },
-  input: { fontSize: '15px' },
-});
 const Nav: React.FC<Props> = ({ className }) => {
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   useEffect(() => {
     window.bridge.ipc.receive(getType(musicActions.searchMusic), (data: Music[]) => {
@@ -47,7 +33,6 @@ const Nav: React.FC<Props> = ({ className }) => {
   const handleOnKeyDown = useCallback((e: React.KeyboardEvent) => {
     switch (e.key) {
       case 'Enter':
-        console.log('enter');
         window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
         break;
       default: break;
@@ -55,29 +40,27 @@ const Nav: React.FC<Props> = ({ className }) => {
   }, [title, artist]);
   return (
     <nav className={className}>
-      <div className={classes.wrapper}>
-        <label htmlFor='title' className={classes.label}>제목: </label>
-        <input
-          name='title'
-          type='text'
-          value={title}
-          onChange={handleOnTitleChange}
-          onKeyDown={handleOnKeyDown}
-          className={classes.input}
-        />
-      </div>
-      <div className={classes.wrapper}>
-        <label htmlFor='artist' className={classes.label}>아티스트: </label>
-        <input
-          name='artist'
-          type='text'
-          value={artist}
-          onChange={handleOnArtistChange}
-          onKeyDown={handleOnKeyDown}
-          className={classes.input}
-        />
-      </div>
-      <button onClick={handleOnClick} type='button'>검색</button>
+      <TextField
+        id='title-text-field'
+        label='Title'
+        variant='outlined'
+        type='text'
+        value={title}
+        onChange={handleOnTitleChange}
+        onKeyDown={handleOnKeyDown}
+        fullWidth
+      />
+      <TextField
+        id='artist-text-field'
+        label='Artist'
+        variant='outlined'
+        type='text'
+        value={artist}
+        onChange={handleOnArtistChange}
+        onKeyDown={handleOnKeyDown}
+        fullWidth
+      />
+      <Button variant='contained' onClick={handleOnClick}>검색</Button>
     </nav>
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import { RootState } from 'store/types';
 
@@ -26,8 +26,9 @@ const uesStyles = makeStyles({
     margin: '0',
   },
 });
+
 const Lyric: React.FC<Props> = ({ className }) => {
-  const { list, searchList, searchIndex } = useSelector(selector);
+  const { list, searchList, searchIndex } = useSelector(selector, shallowEqual);
   const classes = uesStyles();
 
   return (

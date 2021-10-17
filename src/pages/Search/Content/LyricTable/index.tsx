@@ -1,7 +1,20 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 
 import musicActions from 'store/music/actions';
 import { RootState } from 'store/types';
@@ -11,26 +24,17 @@ import { RootState } from 'store/types';
  *
  * 1. 각 div resizable하게 변경
  * 2. 이벤트 처리 리팩토링
- * 3. lyric area에서 onBlur시 row 배경 회색으로 변경
+ * 3. lyric area에서 onBlur시 row 배경 회색으로 변경 √
  * 4. 가사에 나오는 한자 변환
  */
 
 const useStyles = makeStyles({
-  rowWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  th: {
-    position: 'sticky',
-    top: '0',
-    backgroundColor: '#6b6b6b',
-  },
-  table: { width: '100%' },
-  child: {
-    flex: '1',
-    border: 'solid 1px gray',
+  th: { borderBottom: 'solid 1px gray' },
+  evenTr: { backgroundColor: 'black' },
+  cell: {
+    textOverflowX: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
 });
 const selector = ({
@@ -46,15 +50,19 @@ const selector = ({
 });
 
 const FOCUSED_COLOR = '#1E90FF';
-const BLURED_COLOR = 'black';
+const EVEN_BLURED_COLOR = '#000000';
+const ODD_BLURED_COLOR = '#313131';
+const BLURED_COLOR = '#717171';
+const UP = 1;
+const DOWN = -1;
 
 const LyricTable = () => {
-  const { list, searchList, searchIndex } = useSelector(selector);
-  const dispatch = useDispatch();
+  const { list, searchList, searchIndex } = useSelector(selector, shallowEqual);
   const classes = useStyles();
+  const dispatch = useDispatch();
   const tbody = useRef<HTMLTableSectionElement>(null);
 
-  const getFocusedRow = useCallback(() => (
+  const getCurrentRow = useCallback(() => (
     tbody.current?.childNodes[searchIndex] as HTMLTableRowElement),
   [searchIndex]);
   const getIndexOfNode = (target: HTMLTableRowElement) => {
@@ -65,78 +73,100 @@ const LyricTable = () => {
     }
     return 0;
   };
-  const changeRowBgColor = (target: HTMLTableRowElement, color: string) => {
+  const getCurrentRowColor = useCallback(() => (
+    searchIndex % 2 === 0 ? EVEN_BLURED_COLOR : ODD_BLURED_COLOR),
+  [searchIndex]);
+  const changeRowBgColor = useCallback((target: HTMLTableRowElement, color: string) => {
     target.style.backgroundColor = color; // eslint-disable-line no-param-reassign
-  };
-  const moveRow = (target: HTMLTableRowElement, gap: number) => {
-    target.blur();
+  }, []);
+  const moveRow = useCallback((gap: number) => {
     dispatch(musicActions.setSearchIndex(searchIndex + gap));
-  };
-  const handleOnBlur = () => {
-    changeRowBgColor(getFocusedRow(), BLURED_COLOR);
-  };
-  const handleOnFocus = (e: React.FocusEvent<HTMLTableRowElement>) => {
-    const target = e.target.closest('tr');
+    changeRowBgColor(getCurrentRow(), getCurrentRowColor());
+  }, [searchIndex, dispatch, changeRowBgColor, getCurrentRow, getCurrentRowColor]);
+  const handleOnBlur = useCallback(() => {
+    changeRowBgColor(getCurrentRow(), BLURED_COLOR);
+  }, [changeRowBgColor, getCurrentRow]);
+  const handleOnFocus = useCallback((e: React.FocusEvent) => {
+    const { target } = e;
 
-    if (target) {
-      changeRowBgColor(target, FOCUSED_COLOR);
-      dispatch(musicActions.setSearchIndex(getIndexOfNode(target)));
+    if (target.tagName === 'TR') {
+      changeRowBgColor(getCurrentRow(), getCurrentRowColor());
+      changeRowBgColor(target as HTMLTableRowElement, FOCUSED_COLOR);
+      dispatch(musicActions.setSearchIndex(getIndexOfNode(target as HTMLTableRowElement)));
     }
-  };
+  }, [changeRowBgColor, dispatch, getCurrentRow, getCurrentRowColor]);
 
-  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+  const handleOnKeyDown = useCallback((e: React.KeyboardEvent) => {
     switch (e.key) {
       case 'ArrowUp':
         if (searchList.length === 0) {
           if (searchIndex > 0) {
-            moveRow(getFocusedRow(), -1);
+            moveRow(DOWN);
           }
         } else if (searchIndex > 0) {
-          moveRow(getFocusedRow(), -1);
+          moveRow(DOWN);
         }
         break;
       case 'ArrowDown':
         if (searchList.length === 0) {
           if (searchIndex < list.length - 1) {
-            moveRow(getFocusedRow(), 1);
+            moveRow(UP);
           }
         } else if (searchIndex < searchList.length - 1) {
-          moveRow(getFocusedRow(), 1);
+          moveRow(UP);
         }
         break;
       default: break;
     }
-  };
-  useEffect(() => {
-    getFocusedRow()?.focus();
-  }, [searchIndex, getFocusedRow]);
+  }, [list.length, moveRow, searchIndex, searchList.length]);
+  useEffect(() => { // 새로 검색을 할때마다 0번째 인덱스에 포커스
+    if (searchList.length > 0) getCurrentRow()?.focus();
+    else if (list.length > 0) getCurrentRow()?.focus();
+  }, [searchList, getCurrentRow, list]);
+  useEffect(() => { // 인덱스가 변경 될 때마다 포커스 변경
+    getCurrentRow()?.focus();
+  }, [searchIndex, getCurrentRow]);
   return (
-    <table className={classes.table}>
-      <thead className={classes.th}>
-        <tr className={classes.rowWrapper}>
-          <th className={classes.child}>제목</th>
-          <th className={classes.child}>아티스트</th>
-          <th className={classes.child}>소스</th>
-        </tr>
-      </thead>
-      <tbody ref={tbody}>
-        { searchList?.length === 0
-          ? list.map((info) => (
-            <tr className={classes.rowWrapper} onFocus={handleOnFocus} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} role='row' tabIndex={0}>
-              <td className={classes.child}>{info.title}</td>
-              <td className={classes.child}>{info.artist}</td>
-              <td className={classes.child}>{info.source}</td>
-            </tr>
-          ))
-          : searchList.map((info) => (
-            <tr className={classes.rowWrapper} onFocus={handleOnFocus} onBlur={handleOnBlur} onKeyDown={handleOnKeyDown} role='row' tabIndex={0}>
-              <td className={classes.child}>{info.title}</td>
-              <td className={classes.child}>{info.artist}</td>
-              <td className={classes.child}>{info.source}</td>
-            </tr>
-          ))}
-      </tbody>
-    </table>
+    <TableContainer
+      component={Paper}
+      onKeyDown={handleOnKeyDown}
+      onFocus={handleOnFocus}
+    >
+      <Table size='small'>
+        <TableHead className={classes.th}>
+          <TableRow>
+            <TableCell align='left'>제목</TableCell>
+            <TableCell align='left'>아티스트</TableCell>
+            <TableCell align='left'>출처</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody ref={tbody}>
+          {searchList.length === 0
+            ? list.map(({ title, artist, source }, i) => (
+              <TableRow
+                className={i % 2 === 0 ? classes.evenTr : undefined}
+                onBlur={handleOnBlur}
+                tabIndex={0}
+              >
+                <TableCell align='left' className={classes.cell}>{title}</TableCell>
+                <TableCell align='left' className={classes.cell}>{artist}</TableCell>
+                <TableCell align='left' className={classes.cell}>{source}</TableCell>
+              </TableRow>
+            ))
+            : searchList.map(({ title, artist, source }, i) => (
+              <TableRow
+                className={i % 2 === 0 ? classes.evenTr : undefined}
+                onBlur={handleOnBlur}
+                tabIndex={0}
+              >
+                <TableCell align='left' className={classes.cell}>{title}</TableCell>
+                <TableCell align='left' className={classes.cell}>{artist}</TableCell>
+                <TableCell align='left' className={classes.cell}>{source}</TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

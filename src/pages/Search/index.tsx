@@ -16,7 +16,7 @@ const useStyle = makeStyles({
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
-    height: '20px',
+    height: 'auto',
     borderBottom: 'solid gray 1px',
   },
   content: {
@@ -26,8 +26,6 @@ const useStyle = makeStyles({
     height: '30vh',
     width: '100%',
     borderBottom: 'solid gray 1px',
-    overflowY: 'scroll',
-    overflowX: 'hidden',
   },
   lyric: {
     display: 'flex',
