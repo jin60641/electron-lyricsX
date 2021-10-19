@@ -40,6 +40,7 @@ const searchMusic = async (info: LyricRequest) => {
     name,
     artists,
   }: { id: string, name: string, artists: { name: string }[] }) => ({
+
     id,
     name,
     artist: artists?.[0].name,

@@ -10,7 +10,6 @@ import { Music } from 'store/music/types';
 interface Props {
   className: string
 }
-
 const Nav: React.FC<Props> = ({ className }) => {
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
