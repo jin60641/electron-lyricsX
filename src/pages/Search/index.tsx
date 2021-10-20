@@ -32,7 +32,7 @@ const useStyle = makeStyles({
     flexDirection: 'column',
     alignContent: 'center',
     height: '60vh',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     overflowX: 'hidden',
   },
 });

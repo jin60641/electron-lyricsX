@@ -29,37 +29,34 @@ const Nav: React.FC<Props> = ({ className }) => {
   const handleOnClick = useCallback(() => {
     window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
   }, [title, artist]);
-  const handleOnKeyDown = useCallback((e: React.KeyboardEvent) => {
-    switch (e.key) {
-      case 'Enter':
-        window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
-        break;
-      default: break;
-    }
+  const handleOnSubmit = useCallback(() => {
+    window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
   }, [title, artist]);
   return (
-    <nav className={className}>
-      <TextField
-        id='title-text-field'
-        label='Title'
-        variant='outlined'
-        type='text'
-        value={title}
-        onChange={handleOnTitleChange}
-        onKeyDown={handleOnKeyDown}
-        fullWidth
-      />
-      <TextField
-        id='artist-text-field'
-        label='Artist'
-        variant='outlined'
-        type='text'
-        value={artist}
-        onChange={handleOnArtistChange}
-        onKeyDown={handleOnKeyDown}
-        fullWidth
-      />
-      <Button variant='contained' onClick={handleOnClick}>검색</Button>
+    <nav>
+      <form onSubmit={handleOnSubmit} className={className}>
+        <TextField
+          id='title-text-field'
+          label='Title'
+          variant='outlined'
+          type='text'
+          value={title}
+          onChange={handleOnTitleChange}
+          onKeyDown={handleOnSubmit}
+          fullWidth
+        />
+        <TextField
+          id='artist-text-field'
+          label='Artist'
+          variant='outlined'
+          type='text'
+          value={artist}
+          onChange={handleOnArtistChange}
+          onKeyDown={handleOnSubmit}
+          fullWidth
+        />
+        <Button variant='contained' onClick={handleOnClick}>검색</Button>
+      </form>
     </nav>
   );
 };
