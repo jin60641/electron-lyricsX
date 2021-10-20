@@ -50,8 +50,10 @@ class Playback extends EventTarget {
             this.emit(EventName.SEEK, track);
           }
           this.prevTrack = track;
-        } else {
+        } else if (this.isPlaying) {
+          this.isPlaying = false;
           this.emit(EventName.STOP, this.prevTrack);
+          this.prevTrack = undefined;
         }
       });
     }, 1000);
