@@ -19,6 +19,7 @@ const createWindow = () => {
   // Create the browser window.
   const win = new BrowserWindow({
     transparent: true,
+    show: false,
     frame: false,
     resizable: false,
     alwaysOnTop: true,
@@ -101,7 +102,7 @@ const createWindow = () => {
   });
   playback.on(EventName.STOP, () => {
     stopMusic(win);
-    win.hide();
+    // win.hide();
   });
   playback.on(EventName.PAUSE, () => { pauseMusic(win); });
   playback.on(EventName.SEEK, ({ detail }) => { seekMusic(win, detail); });
