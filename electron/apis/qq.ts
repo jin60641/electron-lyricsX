@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { Info, LyricResponse } from '../types';
+import { LyricRequest, LyricResponse } from '../types';
 
 const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
   const res = await axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
@@ -21,10 +21,9 @@ const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = asyn
     ...info,
     lyric: res.data.lyric,
   } as LyricResponse;
-}
+};
 
-
-const searchMusic = async (data: Info) => {
+const searchMusic = async (data: LyricRequest) => {
   const res = await axios.get('https://c.y.qq.com/soso/fcgi-bin/client_search_cp', {
     params: {
       new_json: 1,
@@ -39,21 +38,22 @@ const searchMusic = async (data: Info) => {
   if (!songs) {
     return [];
   }
+  // eslint-disable-next-line max-len
   const infos: LyricResponse[] = songs.reduce((arr: LyricResponse[], { name, singer, mid, file: { media_mid: mmid } }: any) => [
     ...arr,
     {
       id: mid,
       name,
-      artist: singer[0]?.name
+      artist: singer[0]?.name,
     },
     {
       id: mmid,
       name,
-      artist: singer[0]?.name
+      artist: singer[0]?.name,
     },
   ], [] as LyricResponse[]);
-  const lyricInfos = await Promise.all(infos.map(searchLyric))
-  return lyricInfos.filter(lyric => !!lyric) as LyricResponse[];
+  const lyricInfos = await Promise.all(infos.map(searchLyric));
+  return lyricInfos.filter((lyric) => !!lyric) as LyricResponse[];
 };
 
 export default searchMusic;

@@ -39,7 +39,7 @@ const Settings: React.FC = () => {
       />
       <FormControl>
         <FormControlLabel
-          control={<Checkbox defaultChecked />}
+          control={<Checkbox defaultChecked color='primary' />}
           label='Draggable ON'
           value={draggable}
           onChange={() => handleOnChangeDraggable(!draggable)}

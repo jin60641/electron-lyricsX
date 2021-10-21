@@ -59,7 +59,43 @@ class Playback extends EventTarget {
     super();
     /*
     setInterval(() => {
-      this.runTransportScript(this.handleData);
+      this.runTransportScript((data: Info | any) => {
+        if (data || this.isPlaying) {
+          let track: Info;
+          try {
+            track = JSON.parse(data) as Info;
+          } catch (e) {
+            track = data;
+          }
+          if (!track) {
+            if (this.isPlaying) {
+              this.isPlaying = false;
+              this.emit(EventName.STOP, this.prevTrack);
+              this.prevTrack = undefined;
+            }
+            return;
+          }
+          if (!this.isPlaying) {
+            if (this.prevTrack && track.position !== this.prevTrack.position) {
+              this.isPlaying = true;
+              this.emit(EventName.START, track);
+            }
+          } else if (this.prevTrack?.name !== data.name) {
+            this.emit(EventName.STOP, this.prevTrack);
+            this.emit(EventName.START, track);
+          } else if (this.prevTrack && track.position === this.prevTrack.position) {
+            this.isPlaying = false;
+            this.emit(EventName.PAUSE, track);
+          } else {
+            this.emit(EventName.SEEK, track);
+          }
+          this.prevTrack = track;
+        } else if (this.isPlaying) {
+          this.isPlaying = false;
+          this.emit(EventName.STOP, this.prevTrack);
+          this.prevTrack = undefined;
+        }
+      });
     }, 1000);
     */
   }

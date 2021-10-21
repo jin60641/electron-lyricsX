@@ -8,6 +8,11 @@ export interface Info {
   finish: number
 }
 
+export interface LyricRequest {
+  name: string;
+  artist: string;
+}
+
 export interface LyricResponse {
   id: string | number;
   name: string;

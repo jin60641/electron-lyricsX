@@ -1,32 +1,77 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import { useDispatch, useSelector } from 'react-redux';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 
-import actions from 'store/layout/actions';
-import { Palette } from 'store/layout/types';
-import { RootState } from 'store/types';
+import { BackgroundColor, FontColor, Palette } from 'store/layout/types'; // FontColor
 
-const paletteSelector = ({ layout: { palette } }: RootState) => palette;
+import MenuSelector from '../../../components/MenuSelector';
+import MenuTextInput from '../../../components/MenuTextInput';
+import { useThemeCustom } from '../../../hooks/useCustom';
+
+const useStyles = makeStyles(() => createStyles({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+  },
+}));
 
 const Theme: React.FC = () => {
-  const palette = useSelector(paletteSelector);
-  const dispatch = useDispatch();
-
-  const handleChange = useCallback((e) => {
-    dispatch(actions.setPalette(e.target.value));
-  }, [dispatch]);
+  const classes = useStyles();
+  const {
+    palette,
+    lineCount,
+    lyricSize,
+    fontColor,
+    backgroundOpacity,
+    backgroundColor,
+    handleChangePalette,
+    handleChangeLineCount,
+    handleChangeFontSize,
+    handleChangeFontColor,
+    handleChangeBackgroundColor,
+    handleChangeBackgroundOpacity,
+  } = useThemeCustom();
 
   return (
-    <Select
-      value={palette}
-      onChange={handleChange}
-    >
-      {Object.entries(Palette).map(([key, value]) => (
-        <MenuItem key={`Preference-Theme-Palette-${key}`} value={value}>{key}</MenuItem>
-      ))}
-    </Select>
+    <div className={classes.container}>
+      <MenuSelector
+        label='palette'
+        changeHandler={handleChangePalette}
+        menuState={palette}
+        obj={Palette}
+      />
+      <MenuSelector
+        label='font color'
+        changeHandler={handleChangeFontColor}
+        menuState={fontColor}
+        obj={FontColor}
+      />
+      <MenuSelector
+        label='background color'
+        changeHandler={handleChangeBackgroundColor}
+        menuState={backgroundColor}
+        obj={BackgroundColor}
+      />
+      <MenuTextInput
+        label='line count'
+        menuState={lineCount}
+        changeHandler={handleChangeLineCount}
+        stepSize={1}
+      />
+      <MenuTextInput
+        label='font size'
+        menuState={lyricSize}
+        changeHandler={handleChangeFontSize}
+        stepSize={1}
+      />
+      <MenuTextInput
+        label='background opacity'
+        menuState={backgroundOpacity}
+        changeHandler={handleChangeBackgroundOpacity}
+        stepSize={0.1}
+      />
+    </div>
   );
 };
 

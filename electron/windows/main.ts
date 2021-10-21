@@ -4,7 +4,6 @@ import {
   screen,
 } from 'electron';
 import * as path from 'path';
-import { Simulate } from 'react-dom/test-utils';
 
 import {
   pauseMusic,
@@ -16,12 +15,11 @@ import { isDev } from '../constants';
 import playback from '../playback';
 import { EventName } from '../types';
 
-import drag = Simulate.drag;
-
 const createWindow = () => {
   // Create the browser window.
   const win = new BrowserWindow({
     transparent: true,
+    show: false,
     frame: false,
     resizable: false,
     alwaysOnTop: true,
@@ -104,7 +102,7 @@ const createWindow = () => {
   });
   playback.on(EventName.STOP, () => {
     stopMusic(win);
-    win.hide();
+    // win.hide();
   });
   playback.on(EventName.PAUSE, () => { pauseMusic(win); });
   playback.on(EventName.SEEK, ({ detail }) => { seekMusic(win, detail); });
