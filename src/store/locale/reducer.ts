@@ -10,6 +10,13 @@ const persistConfig = {
 };
 
 const localeReducer = createReducer<LocaleState>(initialState)
-  .handleAction(localeActions.setLocale, (_, action) => ({ code: action.payload }));
+  .handleAction(localeActions.setLocale, (state, action) => ({
+    ...state,
+    code: action.payload,
+  }))
+  .handleAction(localeActions.setPlayer, (state, action) => ({
+    ...state,
+    player: action.payload,
+  }));
 
 export default persistReducer(persistConfig, localeReducer);
