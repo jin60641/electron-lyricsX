@@ -6,6 +6,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 
 import layoutAction from 'store/layout/actions';
+import localeAction from 'store/locale/actions';
 import actions from 'store/music/actions';
 
 import { RootState } from '../../../store/types';
@@ -13,11 +14,16 @@ import { RootState } from '../../../store/types';
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const [offset, setOffset] = useState(-0.5);
-  const selector = ({ layout: { draggable } }: RootState) => ({ draggable });
-  const { draggable } = useSelector(selector);
+  // eslint-disable-next-line max-len
+  const selector = ({ layout: { draggable }, locale: { player } }: RootState) => ({ draggable, player });
+  const { draggable, player } = useSelector(selector);
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
     setOffset(() => Number(e.target.value));
+  }, [dispatch]);
+
+  const handleOnChangePlayer = useCallback((e) => {
+    dispatch(localeAction.setPlayer(e.target.value));
   }, [dispatch]);
 
   const handleOnChangeDraggable = useCallback((value) => {
@@ -49,9 +55,10 @@ const Settings: React.FC = () => {
         </FormLabel>
         <RadioGroup
           aria-label='musicPlayer'
-          defaultValue='chrome'
           name='radio-buttons-group'
+          value={player}
           style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px', padding: '3px 10px', justifyContent: 'space-between' }}
+          onChange={handleOnChangePlayer}
         >
           <FormControlLabel value='chrome' control={<Radio color='primary' />} label='chrome(only Mac)' />
           <FormControlLabel value='itunes' control={<Radio color='primary' />} label='itunes' />
