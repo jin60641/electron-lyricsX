@@ -1,6 +1,7 @@
 import { isDev } from './constants';
 import EventTarget from './event';
-import { EventName, Info } from './types';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
+import { ClientEvent, EventName, Info } from './types';
 
 const { spawn } = require('child_process');
 const path = require('path');
@@ -15,6 +16,8 @@ class Playback extends EventTarget {
   private isPlaying: boolean = false;
 
   private prevTrack?: Info;
+
+  private player: string = 'chrome';
 
   public handleData(data: Info | any) {
     if (data || this.isPlaying) {
@@ -57,8 +60,11 @@ class Playback extends EventTarget {
 
   constructor() {
     super();
-    /*
-    setInterval(() => {
+    this.on(EventName.SET_PLAYER, ({ detail }) => {
+      this.player = detail;
+    });
+    const timer = setInterval(() => {
+      console.log(this.player);
       this.runTransportScript((data: Info | any) => {
         if (data || this.isPlaying) {
           let track: Info;
@@ -97,14 +103,15 @@ class Playback extends EventTarget {
         }
       });
     }, 1000);
-    */
   }
 
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(SCRIPT_DIR, 'windows', 'ITunesTransport.ps1')
-      : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-      // : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+      : this.player === 'chrome'
+        ? path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt')
+        : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+
     if (!callback) {
       return;
     }
