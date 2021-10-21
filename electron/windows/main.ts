@@ -1,19 +1,11 @@
-import {
-  BrowserWindow,
-  ipcMain,
-  screen,
-} from 'electron';
+import {BrowserWindow, ipcMain, screen,} from 'electron';
 import * as path from 'path';
 
-import {
-  pauseMusic,
-  seekMusic,
-  startMusic,
-  stopMusic,
-} from '../apis/index';
-import { isDev } from '../constants';
+import {pauseMusic, seekMusic, startMusic, stopMusic,} from '../apis/index';
+import {isDev} from '../constants';
 import playback from '../playback';
-import { EventName } from '../types';
+import {EventName} from '../types';
+import {Simulate} from "react-dom/test-utils";
 
 const createWindow = () => {
   // Create the browser window.
@@ -94,6 +86,11 @@ const createWindow = () => {
     const { draggable } = payload;
     if (draggable) win.setIgnoreMouseEvents(false);
     else win.setIgnoreMouseEvents(true);
+  });
+
+  ipcMain.on('LOCALE.CHANGE_PLAYER', (_event, payload) => {
+    const { player } = payload;
+    playback.emit(EventName.SET_PLAYER, player);
   });
 
   playback.on(EventName.START, ({ detail }) => {
