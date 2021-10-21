@@ -7,4 +7,6 @@ import {
 
 const setLocale = createAction(Actions.SET_LOCALE)<LocaleState['code']>();
 
-export default { setLocale };
+const setPlayer = createAction(Actions.SET_PLAYER)<LocaleState['player']>();
+
+export default { setLocale, setPlayer };
