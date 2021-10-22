@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+
 import playback from '../playback';
 
 const router = new Router();
@@ -13,4 +14,3 @@ router.post('/chrome', (ctx) => {
 });
 
 export default router;
-
