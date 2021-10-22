@@ -17,9 +17,10 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
-  private player: string = 'chrome';
+  private player: string;
 
-  public handleData(data: Info | any) {
+  public handleData = (data: Info | any) => {
+    console.log(1);
     if (data || this.isPlaying) {
       let track: Info;
       try {
@@ -56,53 +57,18 @@ class Playback extends EventTarget {
     } else {
       this.emit(EventName.STOP, this.prevTrack);
     }
-  }
+  };
 
   constructor() {
     super();
     this.on(EventName.SET_PLAYER, ({ detail }) => {
       this.player = detail;
     });
-    const timer = setInterval(() => {
-      console.log(this.player);
-      this.runTransportScript((data: Info | any) => {
-        if (data || this.isPlaying) {
-          let track: Info;
-          try {
-            track = JSON.parse(data) as Info;
-          } catch (e) {
-            track = data;
-          }
-          if (!track) {
-            if (this.isPlaying) {
-              this.isPlaying = false;
-              this.emit(EventName.STOP, this.prevTrack);
-              this.prevTrack = undefined;
-            }
-            return;
-          }
-          if (!this.isPlaying) {
-            if (this.prevTrack && track.position !== this.prevTrack.position) {
-              this.isPlaying = true;
-              this.emit(EventName.START, track);
-            }
-          } else if (this.prevTrack?.name !== data.name) {
-            this.emit(EventName.STOP, this.prevTrack);
-            this.emit(EventName.START, track);
-          } else if (this.prevTrack && track.position === this.prevTrack.position) {
-            this.isPlaying = false;
-            this.emit(EventName.PAUSE, track);
-          } else {
-            this.emit(EventName.SEEK, track);
-          }
-          this.prevTrack = track;
-        } else if (this.isPlaying) {
-          this.isPlaying = false;
-          this.emit(EventName.STOP, this.prevTrack);
-          this.prevTrack = undefined;
-        }
-      });
-    }, 1000);
+    if (this.player !== 'chromeExtension') {
+      setInterval(() => {
+        this.runTransportScript(this.handleData);
+      }, 1000);
+    }
   }
 
   private runTransportScript(callback: DefaultCallback) {
