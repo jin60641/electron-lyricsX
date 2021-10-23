@@ -9,6 +9,7 @@ import layoutAction from 'store/layout/actions';
 import localeAction from 'store/locale/actions';
 import actions from 'store/music/actions';
 
+import { Player } from '../../../store/preference/types';
 import { RootState } from '../../../store/types';
 
 const Settings: React.FC = () => {
@@ -60,9 +61,9 @@ const Settings: React.FC = () => {
           style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px', padding: '3px 10px', justifyContent: 'space-between' }}
           onChange={handleOnChangePlayer}
         >
-          <FormControlLabel value='chrome' control={<Radio color='primary' />} label='chrome(only Mac)' />
-          <FormControlLabel value='itunes' control={<Radio color='primary' />} label='itunes' />
-          <FormControlLabel value='chromeExtension' control={<Radio color='primary' />} label='chrome Extension' />
+          <FormControlLabel value={Player.CHROME} control={<Radio color='primary' />} label='chrome(only Mac)' />
+          <FormControlLabel value={Player.ITUNES} control={<Radio color='primary' />} label='itunes' />
+          <FormControlLabel value={Player.CHROME_EXTENSION} control={<Radio color='primary' />} label='chrome Extension' />
         </RadioGroup>
       </FormControl>
       <FormControl>
