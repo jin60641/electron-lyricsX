@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import {
   Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField,
 } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 
 import actions from 'store/music/actions';
@@ -11,11 +12,33 @@ import preferenceAction from 'store/preference/actions';
 import { Player } from '../../../store/preference/types';
 import { RootState } from '../../../store/types';
 
+const useStyles = makeStyles<Theme>(() => createStyles({
+  radioGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: '10px',
+    padding: '3px 10px',
+    justifyContent: 'space-between',
+  },
+  formControl: {
+    border: '0.2px solid rgba(0, 0, 0, .3)',
+    borderRadius: '5px',
+    marginTop: '7px',
+  },
+  formLabel:
+    {
+      fontSize: '12px',
+      marginLeft: '9px',
+      padding: '0 3px',
+    },
+}));
+
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const [offset, setOffset] = useState(-0.5);
   const selector = ({ preference: { draggable, player } }: RootState) => ({ draggable, player });
   const { draggable, player } = useSelector(selector);
+  const classes = useStyles();
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
     setOffset(() => Number(e.target.value));
@@ -43,20 +66,20 @@ const Settings: React.FC = () => {
         onChange={handleOnChange}
       />
       <FormControl
+        className={classes.formControl}
         component='fieldset'
-        style={{ border: '0.2px solid rgba(0, 0, 0, .3)', borderRadius: '5px', marginTop: '7px' }}
       >
         <FormLabel
+          className={classes.formLabel}
           component='legend'
-          style={{ fontSize: '12px', marginLeft: '9px', padding: '0 3px' }}
         >
           Music Player
         </FormLabel>
         <RadioGroup
+          className={classes.radioGroup}
           aria-label='musicPlayer'
           name='radio-buttons-group'
           value={player}
-          style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px', padding: '3px 10px', justifyContent: 'space-between' }}
           onChange={handleOnChangePlayer}
         >
           <FormControlLabel value={Player.CHROME} control={<Radio color='primary' />} label='chrome(only Mac)' />
