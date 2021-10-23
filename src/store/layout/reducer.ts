@@ -14,10 +14,6 @@ const layoutReducer = createReducer<LayoutState>(initialState)
     ...state,
     palette: action.payload,
   }))
-  .handleAction(layoutActions.setDraggable, (state, action) => ({
-    ...state,
-    draggable: action.payload,
-  }))
   .handleAction(layoutActions.setLineCount, (state, action) => ({
     ...state,
     lineCount: action.payload,

@@ -3,20 +3,20 @@ import { ActionType } from 'typesafe-actions';
 
 import layoutActions from './layout/actions';
 import { LayoutState } from './layout/types';
-import localeActions from './locale/actions';
-import { LocaleState } from './locale/types';
 import musicActions from './music/actions';
 import { MusicState } from './music/types';
+import preferenceActions from './preference/actions';
+import { PreferenceState } from './preference/types';
 
 export interface RootState {
   music: MusicState,
   layout: LayoutState,
-  locale: LocaleState,
+  preference: PreferenceState,
 }
 
 export type RootAction =
   ActionType<typeof musicActions> |
-  ActionType<typeof localeActions> |
+  ActionType<typeof preferenceActions> |
   ActionType<typeof layoutActions>;
 
 export const channels = [
