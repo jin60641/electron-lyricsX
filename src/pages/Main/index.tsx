@@ -63,14 +63,13 @@ const selector = ({
     globalOffset,
   },
   layout: {
-    draggable,
     lineCount,
     lyricSize,
     fontColor,
     backgroundOpacity,
     backgroundColor,
   },
-  locale: { player },
+  preference: { player, draggable },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,
@@ -163,7 +162,7 @@ const Main: React.FC = () => {
   }, [draggable]);
 
   useEffect(() => {
-    window.bridge.ipc.send('LOCALE.CHANGE_PLAYER', { player });
+    window.bridge.ipc.send('PREFERENCE.CHANGE_PLAYER', { player });
   }, [player]);
 
   useEffect(() => {
