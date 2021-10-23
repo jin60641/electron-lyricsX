@@ -1,7 +1,6 @@
 import { isDev } from './constants';
 import EventTarget from './event';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-import { ClientEvent, EventName, Info } from './types';
+import { EventName, Info } from './types';
 
 const { spawn } = require('child_process');
 const path = require('path');
@@ -17,10 +16,7 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
-  private player: string;
-
-  public handleData = (data: Info | any) => {
-    console.log(1);
+  public handleData(data: Info | any) {
     if (data || this.isPlaying) {
       let track: Info;
       try {
@@ -57,27 +53,56 @@ class Playback extends EventTarget {
     } else {
       this.emit(EventName.STOP, this.prevTrack);
     }
-  };
+  }
 
   constructor() {
     super();
-    this.on(EventName.SET_PLAYER, ({ detail }) => {
-      this.player = detail;
-    });
-    if (this.player !== 'chromeExtension') {
-      setInterval(() => {
-        this.runTransportScript(this.handleData);
-      }, 1000);
-    }
+    setInterval(() => {
+      this.runTransportScript((data: Info | any) => {
+        if (data || this.isPlaying) {
+          let track: Info;
+          try {
+            track = JSON.parse(data) as Info;
+          } catch (e) {
+            track = data;
+          }
+          if (!track) {
+            if (this.isPlaying) {
+              this.isPlaying = false;
+              this.emit(EventName.STOP, this.prevTrack);
+              this.prevTrack = undefined;
+            }
+            return;
+          }
+          if (!this.isPlaying) {
+            if (this.prevTrack && track.position !== this.prevTrack.position) {
+              this.isPlaying = true;
+              this.emit(EventName.START, track);
+            }
+          } else if (this.prevTrack?.name !== data.name) {
+            this.emit(EventName.STOP, this.prevTrack);
+            this.emit(EventName.START, track);
+          } else if (this.prevTrack && track.position === this.prevTrack.position) {
+            this.isPlaying = false;
+            this.emit(EventName.PAUSE, track);
+          } else {
+            this.emit(EventName.SEEK, track);
+          }
+          this.prevTrack = track;
+        } else if (this.isPlaying) {
+          this.isPlaying = false;
+          this.emit(EventName.STOP, this.prevTrack);
+          this.prevTrack = undefined;
+        }
+      });
+    }, 1000);
   }
 
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(SCRIPT_DIR, 'windows', 'ITunesTransport.ps1')
-      : this.player === 'chrome'
-        ? path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt')
-        : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-
+      // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+      : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
     if (!callback) {
       return;
     }
