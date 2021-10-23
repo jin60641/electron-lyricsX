@@ -22,7 +22,7 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
-  private player: Player = Player.CHROME;
+  private player: Player;
 
   public handleData = (data: Info | any) => {
     if (data || this.isPlaying) {
@@ -61,50 +61,15 @@ class Playback extends EventTarget {
     } else {
       this.emit(EventName.STOP, this.prevTrack);
     }
-  }
+  };
 
-  constructor() {
-    super();
+  public setPlayer = (playerData: Player) => {
+    this.player = playerData;
+    if (this.player === Player.CHROME_EXTENSION) return;
     setInterval(() => {
-      this.runTransportScript((data: Info | any) => {
-        if (data || this.isPlaying) {
-          let track: Info;
-          try {
-            track = JSON.parse(data) as Info;
-          } catch (e) {
-            track = data;
-          }
-          if (!track) {
-            if (this.isPlaying) {
-              this.isPlaying = false;
-              this.emit(EventName.STOP, this.prevTrack);
-              this.prevTrack = undefined;
-            }
-            return;
-          }
-          if (!this.isPlaying) {
-            if (this.prevTrack && track.position !== this.prevTrack.position) {
-              this.isPlaying = true;
-              this.emit(EventName.START, track);
-            }
-          } else if (this.prevTrack?.name !== data.name) {
-            this.emit(EventName.STOP, this.prevTrack);
-            this.emit(EventName.START, track);
-          } else if (this.prevTrack && track.position === this.prevTrack.position) {
-            this.isPlaying = false;
-            this.emit(EventName.PAUSE, track);
-          } else {
-            this.emit(EventName.SEEK, track);
-          }
-          this.prevTrack = track;
-        } else if (this.isPlaying) {
-          this.isPlaying = false;
-          this.emit(EventName.STOP, this.prevTrack);
-          this.prevTrack = undefined;
-        }
-      });
+      this.runTransportScript(this.handleData);
     }, 1000);
-  }
+  };
 
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = path.join(SCRIPT_DIR, this.isWindows ? 'windows' : 'mac', `${this.player}Transport.scpt`);
