@@ -5,9 +5,8 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 
-import layoutAction from 'store/layout/actions';
-import localeAction from 'store/locale/actions';
 import actions from 'store/music/actions';
+import preferenceAction from 'store/preference/actions';
 
 import { Player } from '../../../store/preference/types';
 import { RootState } from '../../../store/types';
@@ -15,8 +14,7 @@ import { RootState } from '../../../store/types';
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
   const [offset, setOffset] = useState(-0.5);
-  // eslint-disable-next-line max-len
-  const selector = ({ layout: { draggable }, locale: { player } }: RootState) => ({ draggable, player });
+  const selector = ({ preference: { draggable, player } }: RootState) => ({ draggable, player });
   const { draggable, player } = useSelector(selector);
   const handleOnChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
@@ -24,11 +22,11 @@ const Settings: React.FC = () => {
   }, [dispatch]);
 
   const handleOnChangePlayer = useCallback((e) => {
-    dispatch(localeAction.setPlayer(e.target.value));
+    dispatch(preferenceAction.setPlayer(e.target.value));
   }, [dispatch]);
 
   const handleOnChangeDraggable = useCallback((value) => {
-    dispatch(layoutAction.setDraggable(value));
+    dispatch(preferenceAction.setDraggable(value));
   }, [dispatch]);
 
   return (
