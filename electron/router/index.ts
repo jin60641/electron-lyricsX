@@ -1,10 +1,10 @@
 import Router from 'koa-router';
+
 import playback from '../playback';
 
 const router = new Router();
 
 router.get('/health', (ctx) => {
-  console.log('health');
   ctx.status = 200;
 });
 router.post('/chrome', (ctx) => {
@@ -13,4 +13,3 @@ router.post('/chrome', (ctx) => {
 });
 
 export default router;
-

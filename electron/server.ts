@@ -1,14 +1,13 @@
+import koaCors from '@koa/cors';
 import http from 'http';
 import Koa from 'koa';
-import koaCors from '@koa/cors'
 import koaBody from 'koa-body';
+
 import router from './router';
 
 const app = new Koa();
 
-app.use(koaCors({
-  origin: '*',
-}));
+app.use(koaCors({ origin: '*' }));
 app.use(koaBody());
 app.use(router.routes());
 
