@@ -41,7 +41,7 @@ interface Props {
   isOpen: boolean,
   onClose: () => void,
   title: string,
-  styleProps?: any
+  styleProps: any
 }
 
 const Modal: React.FC<Props> = ({ children, isOpen, onClose, title, styleProps }) => {
