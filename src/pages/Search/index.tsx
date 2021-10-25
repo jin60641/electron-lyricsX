@@ -17,7 +17,7 @@ const useStyle = makeStyles({
     justifyContent: 'center',
     width: '100%',
     height: 'auto',
-    borderBottom: 'solid gray 1px',
+    marginBottom: '8px',
   },
   content: {
     display: 'flex',
