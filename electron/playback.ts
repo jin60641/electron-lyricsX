@@ -57,7 +57,6 @@ class Playback extends EventTarget {
 
   constructor() {
     super();
-    /*
     setInterval(() => {
       this.runTransportScript((data: Info | any) => {
         if (data || this.isPlaying) {
@@ -97,7 +96,6 @@ class Playback extends EventTarget {
         }
       });
     }, 1000);
-    */
   }
 
   private runTransportScript(callback: DefaultCallback) {

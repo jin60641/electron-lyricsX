@@ -5,9 +5,9 @@ import playback from '../playback';
 const router = new Router();
 
 router.get('/health', (ctx) => {
-  console.log('health');
   ctx.status = 200;
 });
+
 router.post('/chrome', (ctx) => {
   playback.handleData(ctx.request.body);
   ctx.status = 200;
