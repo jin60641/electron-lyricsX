@@ -14,7 +14,7 @@
     "inlineSourceMap": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "sourceRoot": "./src",
     "baseUrl": "./src",
     "allowJs": true,

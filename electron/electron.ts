@@ -3,6 +3,7 @@ import { app } from 'electron';
 import { isMac } from './constants';
 import createMenu from './menu';
 import createWindows from './windows';
+import './server';
 
 const close = () => null;
 

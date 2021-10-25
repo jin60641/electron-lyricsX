@@ -16,6 +16,45 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
+  public handleData(data: Info | any) {
+    if (data || this.isPlaying) {
+      let track: Info;
+      try {
+        track = JSON.parse(data) as Info;
+      } catch (e) {
+        track = data;
+      }
+      if (!track) {
+        if (this.isPlaying) {
+          this.isPlaying = false;
+          this.emit(EventName.STOP, this.prevTrack);
+          this.prevTrack = undefined;
+        }
+        return;
+      }
+      if (!this.isPlaying) {
+        if (this.prevTrack && track.position !== this.prevTrack.position) {
+          this.isPlaying = true;
+          this.emit(EventName.START, track);
+        } else if (!this.prevTrack) {
+          this.isPlaying = true;
+          this.emit(EventName.START, track);
+        }
+      } else if (this.prevTrack?.name !== track.name) {
+        this.emit(EventName.STOP, this.prevTrack);
+        this.emit(EventName.START, track);
+      } else if (this.prevTrack && track.position === this.prevTrack.position) {
+        this.isPlaying = false;
+        this.emit(EventName.PAUSE, track);
+      } else {
+        this.emit(EventName.SEEK, track);
+      }
+      this.prevTrack = track;
+    } else {
+      this.emit(EventName.STOP, this.prevTrack);
+    }
+  }
+
   constructor() {
     super();
     setInterval(() => {
@@ -62,8 +101,8 @@ class Playback extends EventTarget {
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(SCRIPT_DIR, 'windows', 'ITunesTransport.ps1')
-      // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-      : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+      : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+      // : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
     if (!callback) {
       return;
     }
@@ -91,10 +130,6 @@ class Playback extends EventTarget {
     process.on('error', () => {
       callback(null);
     });
-  }
-
-  currentTrack(callback: DefaultCallback) {
-    this.runTransportScript(callback);
   }
 }
 
