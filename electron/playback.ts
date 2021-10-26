@@ -101,8 +101,8 @@ class Playback extends EventTarget {
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = this.isWindows
       ? path.join(SCRIPT_DIR, 'windows', 'ITunesTransport.ps1')
-      : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
-      // : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
+      // : path.join(SCRIPT_DIR, 'mac', 'ITunesTransport.scpt');
+      : path.join(SCRIPT_DIR, 'mac', 'ChromeTransport.scpt');
     if (!callback) {
       return;
     }

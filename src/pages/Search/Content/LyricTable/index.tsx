@@ -19,15 +19,6 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import musicActions from 'store/music/actions';
 import { RootState } from 'store/types';
 
-/**
- * todo
- *
- * 1. 각 div resizable하게 변경
- * 2. 이벤트 처리 리팩토링
- * 3. lyric area에서 onBlur시 row 배경 회색으로 변경 √
- * 4. 가사에 나오는 한자 변환
- */
-
 const useStyles = makeStyles({
   th: { borderBottom: 'solid 1px gray' },
   evenTr: { backgroundColor: 'black' },

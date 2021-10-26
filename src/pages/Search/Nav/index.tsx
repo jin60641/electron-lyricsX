@@ -26,8 +26,8 @@ const Nav: React.FC<Props> = ({ className }) => {
   const handleOnArtistChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setArtist(e.target.value);
   }, []);
-  const handleOnSubmit = useCallback(() => {
-    console.log('동작', { title, artist });
+  const handleOnSubmit = useCallback((e: React.SyntheticEvent) => {
+    e.preventDefault();
     window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
   }, [title, artist]);
   return (
