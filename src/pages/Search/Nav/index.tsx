@@ -31,13 +31,13 @@ const Nav: React.FC<Props> = ({ className }) => {
     window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
   }, [title, artist]);
   return (
-    <Grid
-      container
-      spacing={2}
-      className={className}
-    >
-      <Grid item xs={5}>
-        <form onSubmit={handleOnSubmit}>
+    <form onSubmit={handleOnSubmit}>
+      <Grid
+        container
+        spacing={2}
+        className={className}
+      >
+        <Grid item xs={5}>
           <TextField
             id='title-text-field'
             label='Title'
@@ -48,10 +48,8 @@ const Nav: React.FC<Props> = ({ className }) => {
             fullWidth
             size='small'
           />
-        </form>
-      </Grid>
-      <Grid item xs={5}>
-        <form onSubmit={handleOnSubmit}>
+        </Grid>
+        <Grid item xs={5}>
           <TextField
             id='artist-text-field'
             label='Artist'
@@ -62,10 +60,8 @@ const Nav: React.FC<Props> = ({ className }) => {
             fullWidth
             size='small'
           />
-        </form>
-      </Grid>
-      <Grid item xs='auto'>
-        <form onSubmit={handleOnSubmit}>
+        </Grid>
+        <Grid item xs='auto'>
           <Button
             style={{ maxWidth: '80px', maxHeight: '40px', minWidth: '80px', minHeight: '40px' }}
             variant='contained'
@@ -73,10 +69,9 @@ const Nav: React.FC<Props> = ({ className }) => {
           >
             검색
           </Button>
-        </form>
+        </Grid>
       </Grid>
-    </Grid>
-    // </form>
+    </form>
   );
 };
 
