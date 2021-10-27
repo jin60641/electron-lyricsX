@@ -1,7 +1,7 @@
 export interface PreferenceState {
   draggable: boolean;
   player: Player;
-  code: string;
+  locale: LocaleState,
 }
 
 export type LocaleState = {
@@ -23,5 +23,5 @@ export enum Actions {
 export const initialState: PreferenceState = {
   draggable: false,
   player: Player.CHROME,
-  code: 'en',
+  locale: { code: 'en' },
 };
