@@ -1,3 +1,5 @@
+import { Player } from '../src/store/preference/types';
+
 import { isDev } from './constants';
 import EventTarget from './event';
 import { EventName, Info } from './types';
@@ -9,11 +11,11 @@ const SCRIPT_DIR = path.join(isDev ? path.join(__dirname, '..') : process.resour
 
 type DefaultCallback = (data: Info | null) => void;
 
-enum Player {
-  CHROME = 'Chrome',
-  ITUNES = 'ITunes',
-  CHROME_EXTENSION = 'ChromeExtension',
-}
+// enum Player {
+//   CHROME = 'Chrome',
+//   ITUNES = 'ITunes',
+//   CHROME_EXTENSION = 'ChromeExtension',
+// }
 
 class Playback extends EventTarget {
   private isWindows = !!process.platform.match(/^win/);
