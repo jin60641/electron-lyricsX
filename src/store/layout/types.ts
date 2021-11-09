@@ -1,6 +1,5 @@
 export interface LayoutState {
   palette: Palette;
-  draggable: boolean;
   lineCount: number;
   lyricSize: number;
   fontColor: FontColor;
@@ -11,8 +10,6 @@ export interface LayoutState {
 export enum Actions {
   SET_PALETTE = 'LAYOUT.SET_PALETTE',
   CLOSE_PREFERENCE = 'LAYOUT.CLOSE_PREFERENCE',
-
-  SET_DRAGGABLE = 'LAYOUT.SET_DRAGGABLE',
 
   SET_LINE_COUNT = 'LAYOUT.SET_LINE_COUNT',
   SET_LYRIC_SIZE = 'LAYOUT.SET_LYRIC_SIZE',
@@ -45,8 +42,6 @@ export enum BackgroundColor {
 
 export const initialState: LayoutState = {
   palette: Palette.DEVICE,
-
-  draggable: false,
 
   lineCount: 2,
   lyricSize: 28,

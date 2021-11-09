@@ -1,15 +1,8 @@
-import {
-  BrowserWindow,
-  ipcMain,
-  screen,
-} from 'electron';
+import { BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 
 import {
-  pauseMusic,
-  seekMusic,
-  startMusic,
-  stopMusic,
+  pauseMusic, seekMusic, startMusic, stopMusic,
 } from '../apis/index';
 import { isDev } from '../constants';
 import playback from '../playback';

@@ -20,11 +20,18 @@ export interface LyricResponse {
   lyric: string;
 }
 
+export enum Player {
+  CHROME = 'Chrome',
+  ITUNES = 'ITunes',
+  CHROME_EXTENSION = 'ChromeExtension',
+}
+
 export enum EventName {
   START = 'start',
   STOP = 'stop',
   PAUSE = 'pause',
   SEEK = 'seek',
+  SET_PLAYER = 'setPlayer',
 }
 
 export namespace ClientEvent {
@@ -33,6 +40,7 @@ export namespace ClientEvent {
     [EventName.STOP]: Info;
     [EventName.PAUSE]: Info;
     [EventName.SEEK]: Info;
+    [EventName.SET_PLAYER]: any;
   };
 
   export type HandlersEventMap = {

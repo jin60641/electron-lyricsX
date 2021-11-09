@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
 import layout from './layout/reducer';
-import locale from './locale/reducer';
 import music from './music/reducer';
+import preference from './preference/reducer';
 
-const rootReducer = combineReducers({ music, layout, locale });
+const rootReducer = combineReducers({ music, layout, preference });
 
 export default rootReducer;
