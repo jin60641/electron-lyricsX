@@ -24,6 +24,8 @@ class Playback extends EventTarget {
 
   private player: Player;
 
+  private timer?: number;
+
   public handleData = (data: Info | any) => {
     if (data || this.isPlaying) {
       let track: Info;
@@ -63,12 +65,32 @@ class Playback extends EventTarget {
     }
   };
 
-  public setPlayer = (playerData: Player) => {
-    this.player = playerData;
-    if (this.player === Player.CHROME_EXTENSION) return;
-    setInterval(() => {
+  constructor() {
+    super();
+    startTimer();
+  }
+  public startTimer() {
+    if (timer) {
+        return;
+    }
+    this.timer = setInterval(() => {
       this.runTransportScript(this.handleData);
     }, 1000);
+  }
+  public pauseTimer() {
+    if (!timer) {
+        return;
+    }
+    clearInterval(this.timer);  
+    this.timer = undefined;     
+  }
+  public setPlayer(playerData: Player) {
+    this.player = playerData;
+    if (this.player === Player.CHROME_EXTENSION) {
+        pauseTimer();
+    } else {
+        startTimer();
+    }
   };
 
   private runTransportScript(callback: DefaultCallback) {

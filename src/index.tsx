@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
