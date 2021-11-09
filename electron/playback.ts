@@ -63,6 +63,7 @@ class Playback extends EventTarget {
     super();
     this.startTimer();
   }
+
   public startTimer() {
     if (this.timer) {
       return;
@@ -71,13 +72,15 @@ class Playback extends EventTarget {
       this.runTransportScript(this.handleData);
     }, 1000);
   }
+
   public pauseTimer() {
     if (!this.timer) {
       return;
     }
-    clearInterval(this.timer);  
-    this.timer = undefined;     
+    clearInterval(this.timer);
+    this.timer = undefined;
   }
+
   public setPlayer(player: Player) {
     this.player = player;
     this.pauseTimer();
@@ -89,7 +92,7 @@ class Playback extends EventTarget {
     if (this.player !== Player.CHROME_EXTENSION) {
       this.startTimer();
     }
-  };
+  }
 
   private runTransportScript(callback: DefaultCallback) {
     const scriptPath = path.join(SCRIPT_DIR, this.isWindows ? 'windows' : 'mac', `${this.player}Transport.scpt`);
