@@ -46,7 +46,7 @@ const searchWindow = () => {
   ipcMain.on('LAYOUT.CLOSE_PREFERENCE', () => {
     win.hide();
   });
-  ipcMain.on('MUSIC.SEARCH_MUSIC', (_event, payload) => {
+  ipcMain.on('MUSIC.SEARCH_MUSIC#REQUEST', (_event, payload) => {
     searchMusic(win, payload);
   });
   return win;

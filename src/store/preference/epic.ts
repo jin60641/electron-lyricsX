@@ -9,7 +9,7 @@ import { isActionOf } from 'typesafe-actions';
 import { Epic } from '../types';
 
 import actions from './actions';
-import { requestSetPlayer } from './apis';
+import { requestSetDraggable, requestSetPlayer } from './apis';
 
 const setPlayerEpic: Epic = (action$) => action$.pipe(
   filter(isActionOf(actions.setPlayer.request)),
@@ -18,6 +18,14 @@ const setPlayerEpic: Epic = (action$) => action$.pipe(
   )),
 );
 
+const setDraggableEpic: Epic = (action$) => action$.pipe(
+  filter(isActionOf(actions.setDraggable)),
+  mergeMap((action) => from(requestSetDraggable(action.payload)).pipe(
+    mergeMap(() => []),
+  )),
+);
+
 export default combineEpics(
+  setDraggableEpic,
   setPlayerEpic,
 );

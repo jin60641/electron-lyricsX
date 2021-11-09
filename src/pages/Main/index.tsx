@@ -156,10 +156,6 @@ const Main: React.FC = () => {
   }, [width, height]);
 
   useEffect(() => {
-    window.bridge.ipc.send('LAYOUT.CHANGE_DRAGGABLE', { draggable });
-  }, [draggable]);
-
-  useEffect(() => {
     // avoid using redux for update immediately
     window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Music) => {
       if (data.position) {

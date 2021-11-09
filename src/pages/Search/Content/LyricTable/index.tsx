@@ -133,24 +133,24 @@ const LyricTable = () => {
         </TableHead>
         <TableBody ref={tbody}>
           {searchList.length === 0
-            ? list.map(({ title, artist, source }, i) => (
+            ? list.map(({ name, artist, source }, i) => (
               <TableRow
                 className={i % 2 === 0 ? classes.evenTr : undefined}
                 onBlur={handleOnBlur}
                 tabIndex={0}
               >
-                <TableCell align='left' className={classes.cell}>{title}</TableCell>
+                <TableCell align='left' className={classes.cell}>{name}</TableCell>
                 <TableCell align='left' className={classes.cell}>{artist}</TableCell>
                 <TableCell align='left' className={classes.cell}>{source}</TableCell>
               </TableRow>
             ))
-            : searchList.map(({ title, artist, source }, i) => (
+            : searchList.map(({ name, artist, source }, i) => (
               <TableRow
                 className={i % 2 === 0 ? classes.evenTr : undefined}
                 onBlur={handleOnBlur}
                 tabIndex={0}
               >
-                <TableCell align='left' className={classes.cell}>{title}</TableCell>
+                <TableCell align='left' className={classes.cell}>{name}</TableCell>
                 <TableCell align='left' className={classes.cell}>{artist}</TableCell>
                 <TableCell align='left' className={classes.cell}>{source}</TableCell>
               </TableRow>

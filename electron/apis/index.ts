@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import { v4 as uuid } from 'uuid';
 
-import { Info, Player, LyricResponse } from '../types';
+import { Info, LyricResponse, Player } from '../types';
 import { timeTagToTimestamp } from '../utils/parse';
 import { filterRegex, timeTagRegex } from '../utils/regex';
 
@@ -82,18 +82,23 @@ export const getLyrics = async (data: Info) => {
   }
   const lyricRes = await getLyricRes(data);
   const filteredLyrics = lyricRes
-    .reduce((a, b) => [...a.map((e) => ({ ...e, title: e.name, source: '163' })), ...b.map((e) => ({ ...e, title: e.name, source: 'QQ' }))]);
+    .reduce((a, b) => [...a.map((e) => ({ ...e, source: '163' })), ...b.map((e) => ({ ...e, source: 'QQ' }))]);
 
   const lyrics = await parseRowData(filteredLyrics);
   return lyrics;
 };
 export const searchMusic = async (win: BrowserWindow, data: Info) => {
   const lyrics = await getLyrics(data);
-  win.webContents.send('MUSIC.SEARCH_MUSIC', lyrics);
+  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics);
 };
 export const startMusic = async (win: BrowserWindow, data: Info) => {
   const lyrics = await getLyrics(data);
-  win.webContents.send('MUSIC.START_MUSIC', lyrics);
+  const { name, artist } = data;
+  win.webContents.send('MUSIC.START_MUSIC', {
+    name,
+    artist,
+    list: lyrics,
+  });
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {

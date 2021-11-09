@@ -1,6 +1,12 @@
-import { createAction } from 'typesafe-actions';
+import { createAction, createAsyncAction } from 'typesafe-actions';
 
-import { Actions, Music } from './types';
+import {
+  Actions,
+  Music,
+  SearchMusicRequestPayload,
+  SearchMusicSuccessPayload,
+  StartMusicPayload,
+} from './types';
 
 const selectMusic = createAction(
   Actions.SELECT_MUSIC,
@@ -30,11 +36,15 @@ const setGlobalOffset = createAction(
 number
 >();
 
-const startMusic = createAction(Actions.START_MUSIC)<Music[]>();
+const startMusic = createAction(Actions.START_MUSIC)<StartMusicPayload>();
 const stopMusic = createAction(Actions.STOP_MUSIC)();
 const pauseMusic = createAction(Actions.PAUSE_MUSIC)();
 const seekMusic = createAction(Actions.SEEK_MUSIC)<Music>();
-const searchMusic = createAction(Actions.SEARCH_MUSIC)<Music[]>();
+const searchMusic = createAsyncAction(
+  Actions.SEARCH_MUSIC_REQUEST,
+  Actions.SEARCH_MUSIC_SUCCESS,
+  Actions.SEARCH_MUSIC_FAILURE,
+)<SearchMusicRequestPayload, SearchMusicSuccessPayload, void>();
 const setSearchIndex = createAction(Actions.SET_SEARCH_INDEX)<number>();
 
 export default {

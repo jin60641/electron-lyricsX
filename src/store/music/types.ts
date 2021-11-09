@@ -8,6 +8,8 @@ export interface MusicState {
   isPlaying: boolean,
   currentOffset: number,
   globalOffset: number,
+  name?: string,
+  artist?: string,
 }
 
 export enum Actions {
@@ -17,8 +19,10 @@ export enum Actions {
   STOP_MUSIC = 'MUSIC.STOP_MUSIC',
   PAUSE_MUSIC = 'MUSIC.PAUSE_MUSIC',
   SEEK_MUSIC = 'MUSIC.SEEK_MUSIC',
-  SEARCH_MUSIC = 'MUSIC.SEARCH_MUSIC',
-  SET_SEARCH_INDEX = 'MUSIC.SEARCH_INDEX',
+  SEARCH_MUSIC_REQUEST = 'MUSIC.SEARCH_MUSIC#REQUEST',
+  SEARCH_MUSIC_SUCCESS = 'MUSIC.SEARCH_MUSIC#SUCCESS',
+  SEARCH_MUSIC_FAILURE = 'MUSIC.SEARCH_MUSIC#FAILURE',
+  SET_SEARCH_INDEX = 'MUSIC.SET_SEARCH_INDEX',
 
   SELECT_MUSIC = 'MUSIC.SELECT_MUSIC',
   RESET_MUSIC = 'MUSIC.RESET_MUSIC',
@@ -38,7 +42,7 @@ export const initialState: MusicState = {
 };
 
 export interface Music {
-  title?: string,
+  name?: string,
   artist?: string,
   duration?: number,
   position?: number,
@@ -52,3 +56,8 @@ interface Row {
   text: string,
   id: ReturnType<typeof uuid>,
 }
+
+export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist'>;
+export type SearchMusicSuccessPayload = MusicState['searchList'];
+
+export type StartMusicPayload = Pick<MusicState, 'list' | 'name' | 'artist'>;

@@ -24,9 +24,10 @@ const musicReducer = createReducer<MusicState>(initialState)
   }))
   .handleAction(musicActions.startMusic, (state, action) => ({
     ...state,
-    count: 1,
     lastSelected: 0,
-    list: action.payload,
+    ...action.payload,
+    searchList: action.payload.list,
+    searchIndex: 0,
     isPlaying: true,
   }))
   .handleAction(musicActions.stopMusic, () => ({ ...initialState }))
@@ -42,7 +43,7 @@ const musicReducer = createReducer<MusicState>(initialState)
       isSelected: i === action.payload,
     })),
   }))
-  .handleAction(musicActions.searchMusic, (state, action) => ({
+  .handleAction(musicActions.searchMusic.success, (state, action) => ({
     ...state,
     searchList: action.payload,
   }))
@@ -57,6 +58,8 @@ const musicReducer = createReducer<MusicState>(initialState)
   .handleAction(musicActions.setSearchIndex, (state, action) => ({
     ...state,
     searchIndex: action.payload,
+    list: state.searchList,
+    lastSelected: action.payload,
   }));
 
 export default persistReducer(persistConfig, musicReducer);

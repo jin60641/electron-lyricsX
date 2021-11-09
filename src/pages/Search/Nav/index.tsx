@@ -1,35 +1,43 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { Button, Grid, TextField } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { getType } from 'typesafe-actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 import musicActions from 'store/music/actions';
-import { Music } from 'store/music/types';
+import { RootState } from 'store/types';
 
 interface Props {
   className: string
 }
+
+const selector = ({ music: { name, artist } }: RootState) => ({ name, artist });
+
 const Nav: React.FC<Props> = ({ className }) => {
-  const [title, setTitle] = useState('');
-  const [artist, setArtist] = useState('');
+  const { name = '', artist = '' } = useSelector(selector);
+  const [payload, setPayload] = useState({ name, artist });
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    window.bridge.ipc.receive(getType(musicActions.searchMusic), (data: Music[]) => {
-      dispatch(musicActions.searchMusic(data));
-    });
-  }, [dispatch]);
-  const handleOnTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    e.persist();
+    setPayload((p) => ({
+      ...p,
+      [e.target.name]: e.target.value,
+    }));
   }, []);
-  const handleOnArtistChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setArtist(e.target.value);
-  }, []);
-  const handleOnSubmit = useCallback((e: React.SyntheticEvent) => {
+
+  const handleOnSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    window.bridge.ipc.send(getType(musicActions.searchMusic), { name: title, artist });
-  }, [title, artist]);
+    dispatch(musicActions.searchMusic.request(payload));
+  }, [dispatch, payload]);
+
+  useEffect(() => {
+    setPayload({ name, artist });
+  }, [name, artist]);
+
   return (
     <form onSubmit={handleOnSubmit}>
       <Grid
@@ -39,24 +47,24 @@ const Nav: React.FC<Props> = ({ className }) => {
       >
         <Grid item xs={5}>
           <TextField
-            id='title-text-field'
-            label='Title'
+            name='name'
+            label='Name'
             variant='outlined'
             type='text'
-            value={title}
-            onChange={handleOnTitleChange}
+            value={payload.name}
+            onChange={handleChange}
             fullWidth
             size='small'
           />
         </Grid>
         <Grid item xs={5}>
           <TextField
-            id='artist-text-field'
+            name='artist'
             label='Artist'
             variant='outlined'
             type='text'
-            value={artist}
-            onChange={handleOnArtistChange}
+            value={payload.artist}
+            onChange={handleChange}
             fullWidth
             size='small'
           />
