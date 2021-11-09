@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import { v4 as uuid } from 'uuid';
 
-import { Info, Player } from '../types';
+import { Info, LyricResponse, Player } from '../types';
 import { timeTagToTimestamp } from '../utils/parse';
 import { filterRegex, timeTagRegex } from '../utils/regex';
 
@@ -30,16 +30,19 @@ const checkAnalyzer = async () => {
 
 checkAnalyzer();
 
-export const startMusic = async (win: BrowserWindow, data: Info) => {
-  try {
-    await checkAnalyzer();
-  } catch (e) {
-    // error logging
-  }
+/**
+ * 검색 인자를 받아서 가사 검색 결과를 반환합니다.
+ * @param {Info} data 검색 인자
+ */
+export const getLyricRes = async (data: Info): Promise<[LyricResponse[], LyricResponse[]]> => {
   const lyricRes = await Promise.all([searchQQ(data), search163(data)]);
-  const filteredLyrics = lyricRes
-    .reduce((a, b) => [...a, ...b])
-    .filter(({ lyric }) => lyric?.length && timeTagRegex.test(lyric));
+  return lyricRes;
+};
+/**
+ * 가사 검색 결과를 받아서 Row 데이터 변환 결과를 반환합니다.
+ * @param {LyricResponse[]} filteredLyrics 조건에 맞게 필터링 된 데이터
+ */
+export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
   const lyrics = await Promise.all(filteredLyrics.map(async ({ lyric, ...info }) => {
     const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
       const matches = row.match(timeTagRegex);
@@ -65,7 +68,37 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
       lyric: ret,
     };
   }));
-  win.webContents.send('MUSIC.START_MUSIC', lyrics);
+  return lyrics;
+};
+/**
+ * 검색 인자를 받아서 변환이 완료된 가사 데이터를 반환합니다.
+ * @param data 검색 인자
+ */
+export const getLyrics = async (data: Info) => {
+  try {
+    await checkAnalyzer();
+  } catch (e) {
+    // error logging
+  }
+  const lyricRes = await getLyricRes(data);
+  const filteredLyrics = lyricRes
+    .reduce((a, b) => [...a.map((e) => ({ ...e, source: '163' })), ...b.map((e) => ({ ...e, source: 'QQ' }))]);
+
+  const lyrics = await parseRowData(filteredLyrics);
+  return lyrics;
+};
+export const searchMusic = async (win: BrowserWindow, data: Info) => {
+  const lyrics = await getLyrics(data);
+  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics);
+};
+export const startMusic = async (win: BrowserWindow, data: Info) => {
+  const lyrics = await getLyrics(data);
+  const { name, artist } = data;
+  win.webContents.send('MUSIC.START_MUSIC', {
+    name,
+    artist,
+    list: lyrics,
+  });
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {

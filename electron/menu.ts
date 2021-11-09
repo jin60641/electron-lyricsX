@@ -25,6 +25,17 @@ const createTemplate = (windows: Windows) => ([
   }] : []),
   // { role: 'viewMenu' }
   {
+    label: 'Search',
+    submenu: [
+      {
+        label: 'Search Lyrics',
+        click: () => {
+          windows.search.show();
+        },
+      },
+    ],
+  },
+  {
     label: 'View',
     submenu: [
       { role: 'reload' },

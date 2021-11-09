@@ -2,10 +2,14 @@ import { v4 as uuid } from 'uuid';
 
 export interface MusicState {
   list: Music[],
+  searchList: Music[],
+  searchIndex: number,
   lastSelected?: number,
   isPlaying: boolean,
   currentOffset: number,
   globalOffset: number,
+  name?: string,
+  artist?: string,
 }
 
 export enum Actions {
@@ -15,6 +19,10 @@ export enum Actions {
   STOP_MUSIC = 'MUSIC.STOP_MUSIC',
   PAUSE_MUSIC = 'MUSIC.PAUSE_MUSIC',
   SEEK_MUSIC = 'MUSIC.SEEK_MUSIC',
+  SEARCH_MUSIC_REQUEST = 'MUSIC.SEARCH_MUSIC#REQUEST',
+  SEARCH_MUSIC_SUCCESS = 'MUSIC.SEARCH_MUSIC#SUCCESS',
+  SEARCH_MUSIC_FAILURE = 'MUSIC.SEARCH_MUSIC#FAILURE',
+  SET_SEARCH_INDEX = 'MUSIC.SET_SEARCH_INDEX',
 
   SELECT_MUSIC = 'MUSIC.SELECT_MUSIC',
   RESET_MUSIC = 'MUSIC.RESET_MUSIC',
@@ -26,16 +34,19 @@ export enum Actions {
 
 export const initialState: MusicState = {
   list: [],
+  searchList: [],
+  searchIndex: 0,
   isPlaying: false,
   currentOffset: 0,
   globalOffset: -0.5,
 };
 
 export interface Music {
-  title?: string,
+  name?: string,
   artist?: string,
   duration?: number,
   position?: number,
+  source?: string,
   lyric?: Row[],
 }
 
@@ -45,3 +56,8 @@ interface Row {
   text: string,
   id: ReturnType<typeof uuid>,
 }
+
+export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist'>;
+export type SearchMusicSuccessPayload = MusicState['searchList'];
+
+export type StartMusicPayload = Pick<MusicState, 'list' | 'name' | 'artist'>;

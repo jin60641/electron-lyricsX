@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import {
   Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField,
@@ -35,13 +35,14 @@ const useStyles = makeStyles<Theme>(() => createStyles({
 
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
-  const [offset, setOffset] = useState(-0.5);
-  const selector = ({ preference: { draggable, player } }: RootState) => ({ draggable, player });
-  const { draggable, player } = useSelector(selector);
+  const selector = ({
+    preference: { draggable, player },
+    music: { globalOffset },
+  }: RootState) => ({ draggable, player, globalOffset });
+  const { draggable, player, globalOffset } = useSelector(selector);
   const classes = useStyles();
   const handleChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
-    setOffset(() => Number(e.target.value));
   }, [dispatch]);
 
   const handleChangePlayer = useCallback((e) => {
@@ -56,7 +57,7 @@ const Settings: React.FC = () => {
     <>
       <TextField
         type='number'
-        value={offset}
+        value={globalOffset}
         label='Offset'
         variant='outlined'
         inputProps={{

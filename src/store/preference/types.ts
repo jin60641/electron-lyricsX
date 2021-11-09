@@ -28,5 +28,6 @@ export const initialState: PreferenceState = {
   locale: { code: 'en' },
 };
 
+export type SetDraggablePayload = PreferenceState['draggable'];
 export type SetPlayerRequestPayload = PreferenceState['player'];
 export type SetPlayerSuccessPayload = SetPlayerRequestPayload;

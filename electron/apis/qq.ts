@@ -38,8 +38,12 @@ const searchMusic = async (data: LyricRequest) => {
   if (!songs) {
     return [];
   }
-  // eslint-disable-next-line max-len
-  const infos: LyricResponse[] = songs.reduce((arr: LyricResponse[], { name, singer, mid, file: { media_mid: mmid } }: any) => [
+  const infos: LyricResponse[] = songs.reduce((arr: LyricResponse[], {
+    name,
+    singer,
+    mid,
+    file: { media_mid: mmid },
+  }: any) => [
     ...arr,
     {
       id: mid,
