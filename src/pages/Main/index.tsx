@@ -63,13 +63,13 @@ const selector = ({
     globalOffset,
   },
   layout: {
-    draggable,
     lineCount,
     lyricSize,
     fontColor,
     backgroundOpacity,
     backgroundColor,
   },
+  preference: { draggable },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,

@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import { persistor, store } from './store';
 import { initializeI18next } from './utils/i18next';
 
-const { locale: { code } } = store.getState();
+const { preference: { locale: { code } } } = store.getState();
 
 (async () => {
   const i18n = await initializeI18next(code);

@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import { v4 as uuid } from 'uuid';
 
-import { Info, LyricResponse } from '../types';
+import { Info, Player, LyricResponse } from '../types';
 import { timeTagToTimestamp } from '../utils/parse';
 import { filterRegex, timeTagRegex } from '../utils/regex';
 
@@ -106,4 +106,8 @@ export const pauseMusic = async (win: BrowserWindow) => {
 
 export const stopMusic = async (win: BrowserWindow) => {
   win.webContents.send('MUSIC.STOP_MUSIC', '');
+};
+
+export const setPlayer = async (win: BrowserWindow, data: Player) => {
+  win.webContents.send('PREFERENCE.SET_PLAYER#SUCCESS', data);
 };

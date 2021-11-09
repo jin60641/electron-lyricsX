@@ -1,7 +1,4 @@
-import {
-  createAction,
-  // createAsyncAction,
-} from 'typesafe-actions';
+import { createAction } from 'typesafe-actions';
 
 import { Actions, Music } from './types';
 
