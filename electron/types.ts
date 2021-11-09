@@ -20,6 +20,12 @@ export interface LyricResponse {
   lyric: string;
 }
 
+export enum Player {
+  CHROME = 'Chrome',
+  ITUNES = 'ITunes',
+  CHROME_EXTENSION = 'ChromeExtension',
+}
+
 export enum EventName {
   START = 'start',
   STOP = 'stop',

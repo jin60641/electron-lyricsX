@@ -1,6 +1,6 @@
 import { isDev } from './constants';
 import EventTarget from './event';
-import { EventName, Info } from './types';
+import { EventName, Info, Player } from './types';
 
 const { spawn } = require('child_process');
 const path = require('path');
@@ -9,12 +9,6 @@ const SCRIPT_DIR = path.join(isDev ? path.join(__dirname, '..') : process.resour
 
 type DefaultCallback = (data: Info | null) => void;
 
-enum Player {
-  CHROME = 'Chrome',
-  ITUNES = 'ITunes',
-  CHROME_EXTENSION = 'ChromeExtension',
-}
-
 class Playback extends EventTarget {
   private isWindows = !!process.platform.match(/^win/);
 
@@ -22,9 +16,9 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
-  private player: Player;
+  private player: Player = Player.CHROME;
 
-  private timer?: number;
+  private timer?: ReturnType<typeof setInterval>;
 
   public handleData = (data: Info | any) => {
     if (data || this.isPlaying) {
@@ -67,29 +61,33 @@ class Playback extends EventTarget {
 
   constructor() {
     super();
-    startTimer();
+    this.startTimer();
   }
   public startTimer() {
-    if (timer) {
-        return;
+    if (this.timer) {
+      return;
     }
     this.timer = setInterval(() => {
       this.runTransportScript(this.handleData);
     }, 1000);
   }
   public pauseTimer() {
-    if (!timer) {
-        return;
+    if (!this.timer) {
+      return;
     }
     clearInterval(this.timer);  
     this.timer = undefined;     
   }
-  public setPlayer(playerData: Player) {
-    this.player = playerData;
-    if (this.player === Player.CHROME_EXTENSION) {
-        pauseTimer();
-    } else {
-        startTimer();
+  public setPlayer(player: Player) {
+    this.player = player;
+    this.pauseTimer();
+    if (this.prevTrack) {
+      this.isPlaying = false;
+      this.emit(EventName.STOP, this.prevTrack);
+      this.prevTrack = undefined;
+    }
+    if (this.player !== Player.CHROME_EXTENSION) {
+      this.startTimer();
     }
   };
 

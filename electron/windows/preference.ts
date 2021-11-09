@@ -2,6 +2,10 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
 import { isDev } from '../constants';
+import playback from '../playback';
+import {
+  setPlayer,
+} from '../apis/index';
 
 const preferenceWindow = () => {
   let isBeforeQuit = false;
@@ -44,6 +48,11 @@ const preferenceWindow = () => {
 
   ipcMain.on('LAYOUT.CLOSE_PREFERENCE', () => {
     win.hide();
+  });
+
+  ipcMain.on('PREFERENCE.SET_PLAYER#REQUEST', (_event, player) => {
+    playback.setPlayer(player);
+    setPlayer(win, player);
   });
 
   return win;

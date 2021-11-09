@@ -89,11 +89,6 @@ const createWindow = () => {
     else win.setIgnoreMouseEvents(true);
   });
 
-  ipcMain.on('PREFERENCE.CHANGE_PLAYER', (_event, payload) => {
-    const { player } = payload;
-    playback.setPlayer(player);
-  });
-
   playback.on(EventName.START, ({ detail }) => {
     win.show();
     startMusic(win, detail);

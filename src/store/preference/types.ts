@@ -16,8 +16,10 @@ export enum Player {
 
 export enum Actions {
   SET_DRAGGABLE = 'PREFERENCE.SET_DRAGGABLE',
-  SET_PLAYER = 'PREFERENCE.SET_PLAYER',
   SET_LOCALE = 'PREFERENCE.LOCALE.SET_LOCALE',
+  SET_PLAYER_REQUEST = 'PREFERENCE.SET_PLAYER#REQUEST',
+  SET_PLAYER_SUCCESS = 'PREFERENCE.SET_PLAYER#SUCCES',
+  SET_PLAYER_FAILURE = 'PREFERENCE.SET_PLAYER#FAILURE',
 }
 
 export const initialState: PreferenceState = {
@@ -25,3 +27,6 @@ export const initialState: PreferenceState = {
   player: Player.CHROME,
   locale: { code: 'en' },
 };
+
+export type SetPlayerRequestPayload = PreferenceState['player'];
+export type SetPlayerSuccessPayload = SetPlayerRequestPayload;

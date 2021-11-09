@@ -14,7 +14,7 @@ const preferenceReducer = createReducer<PreferenceState>(initialState)
     ...state,
     draggable: action.payload,
   }))
-  .handleAction(preferenceAction.setPlayer, (state, action) => ({
+  .handleAction(preferenceAction.setPlayer.success, (state, action) => ({
     ...state,
     player: action.payload,
   }))

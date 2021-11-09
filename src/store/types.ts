@@ -24,6 +24,7 @@ export const channels = [
   musicActions.startMusic,
   musicActions.stopMusic,
   musicActions.pauseMusic,
+  preferenceActions.setPlayer.success,
 ];
 
 export type Epic = RxEpic<

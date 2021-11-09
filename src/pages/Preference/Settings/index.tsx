@@ -39,18 +39,18 @@ const Settings: React.FC = () => {
   const selector = ({ preference: { draggable, player } }: RootState) => ({ draggable, player });
   const { draggable, player } = useSelector(selector);
   const classes = useStyles();
-  const handleOnChange = useCallback((e) => {
+  const handleChange = useCallback((e) => {
     dispatch(actions.setGlobalOffset(e.target.value));
     setOffset(() => Number(e.target.value));
   }, [dispatch]);
 
-  const handleOnChangePlayer = useCallback((e) => {
-    dispatch(preferenceAction.setPlayer(e.target.value));
+  const handleChangePlayer = useCallback((e) => {
+    dispatch(preferenceAction.setPlayer.request(e.target.value));
   }, [dispatch]);
 
-  const handleOnChangeDraggable = useCallback((value) => {
-    dispatch(preferenceAction.setDraggable(value));
-  }, [dispatch]);
+  const handleToggleDraggable = useCallback(() => {
+    dispatch(preferenceAction.setDraggable(!draggable));
+  }, [dispatch, draggable]);
 
   return (
     <>
@@ -63,7 +63,7 @@ const Settings: React.FC = () => {
           maxLength: 13,
           step: '0.1',
         }}
-        onChange={handleOnChange}
+        onChange={handleChange}
       />
       <FormControl
         className={classes.formControl}
@@ -79,8 +79,8 @@ const Settings: React.FC = () => {
           className={classes.radioGroup}
           aria-label='musicPlayer'
           name='radio-buttons-group'
-          value={player}
-          onChange={handleOnChangePlayer}
+          defaultValue={player}
+          onChange={handleChangePlayer}
         >
           <FormControlLabel value={Player.CHROME} control={<Radio color='primary' />} label='chrome(only Mac)' />
           <FormControlLabel value={Player.ITUNES} control={<Radio color='primary' />} label='itunes' />
@@ -92,7 +92,7 @@ const Settings: React.FC = () => {
           control={<Checkbox defaultChecked color='primary' />}
           label='Draggable ON'
           value={draggable}
-          onChange={() => handleOnChangeDraggable(!draggable)}
+          onChange={handleToggleDraggable}
           checked={draggable}
         />
       </FormControl>

@@ -69,7 +69,7 @@ const selector = ({
     backgroundOpacity,
     backgroundColor,
   },
-  preference: { player, draggable },
+  preference: { draggable },
 }: RootState) => ({
   music: (lastSelected !== undefined ? list[lastSelected] : undefined),
   isPlaying,
@@ -81,7 +81,6 @@ const selector = ({
   fontColor,
   backgroundOpacity,
   backgroundColor,
-  player,
 }
 );
 
@@ -101,7 +100,6 @@ const Main: React.FC = () => {
     lyricSize, fontColor,
     backgroundOpacity,
     backgroundColor,
-    player,
   } = useSelector(selector);
   const classes = useStyles({
     lineCount,
@@ -160,10 +158,6 @@ const Main: React.FC = () => {
   useEffect(() => {
     window.bridge.ipc.send('LAYOUT.CHANGE_DRAGGABLE', { draggable });
   }, [draggable]);
-
-  useEffect(() => {
-    window.bridge.ipc.send('PREFERENCE.CHANGE_PLAYER', { player });
-  }, [player]);
 
   useEffect(() => {
     // avoid using redux for update immediately
