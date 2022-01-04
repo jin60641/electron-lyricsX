@@ -7,8 +7,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 
 import actions from 'store/music/actions';
-import preferenceAction from 'store/preference/actions';
 
+import { preferenceActions } from '../../../store/preference/preferenceSlice';
 import { Player } from '../../../store/preference/types';
 import { RootState } from '../../../store/types';
 
@@ -46,11 +46,11 @@ const Settings: React.FC = () => {
   }, [dispatch]);
 
   const handleChangePlayer = useCallback((e) => {
-    dispatch(preferenceAction.setPlayer.request(e.target.value));
+    dispatch(preferenceActions.setPlayer.success(e.target.value));
   }, [dispatch]);
 
   const handleToggleDraggable = useCallback(() => {
-    dispatch(preferenceAction.setDraggable(!draggable));
+    dispatch(preferenceActions.setDraggable(!draggable));
   }, [dispatch, draggable]);
 
   return (
