@@ -5,7 +5,8 @@ import layoutActions from './layout/actions';
 import { LayoutState } from './layout/types';
 import musicActions from './music/actions';
 import { MusicState } from './music/types';
-import preferenceActions from './preference/actions';
+// import preferenceActions from './preference/actions';
+import { preferenceActions } from './preference/preferenceSlice';
 import { PreferenceState } from './preference/types';
 
 export interface RootState {

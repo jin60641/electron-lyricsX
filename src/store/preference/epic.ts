@@ -10,6 +10,7 @@ import { Epic } from '../types';
 
 import actions from './actions';
 import { requestSetDraggable, requestSetPlayer } from './apis';
+// import { preferenceActions } from './preferenceSlice';
 
 const setPlayerEpic: Epic = (action$) => action$.pipe(
   filter(isActionOf(actions.setPlayer.request)),
