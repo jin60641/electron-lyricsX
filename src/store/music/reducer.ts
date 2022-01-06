@@ -45,6 +45,7 @@ const musicReducer = createReducer<MusicState>(initialState)
   }))
   .handleAction(musicActions.searchMusic.success, (state, action) => ({
     ...state,
+    searchIndex: 0,
     searchList: action.payload,
   }))
   .handleAction(musicActions.setCurrentOffset, (state, action) => ({
