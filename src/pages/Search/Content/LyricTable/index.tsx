@@ -68,7 +68,7 @@ const LyricTable = () => {
         break;
       default: break;
     }
-  }, [searchIndex, searchList, dispatch, tbodyRef]);
+  }, [searchIndex, searchList, tbodyRef]);
 
   return (
     <TableContainer

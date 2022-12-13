@@ -95,13 +95,13 @@ class Playback extends EventTarget {
   }
 
   private runTransportScript(callback: DefaultCallback) {
-    const scriptPath = path.join(SCRIPT_DIR, this.isWindows ? 'windows' : 'mac', `${this.player}Transport.scpt`);
     if (!callback) {
       return;
     }
+    const scriptPath = path.join(SCRIPT_DIR, this.isWindows ? 'windows' : 'mac', `${this.player}Transport.scpt`);
     const process = this.isWindows
       ? spawn('powershell.exe', [scriptPath])
-      : spawn('osascript', [scriptPath], { shell: true, detached: true } );
+      : spawn('osascript', [scriptPath], { shell: true, detached: true });
     process.stdout.on('data', (result: string | Buffer) => {
       let data: Info | null = null;
       if (typeof result === 'string') {

@@ -1,14 +1,8 @@
+import { LyricRequest, LyricResponse } from '../types';
 import axios from '../utils/axios';
 
-import { LyricRequest, LyricResponse } from '../types';
-
 const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
-  const res = await axios.get('https://music.163.com/api/song/media', {
-    params: {
-      id: info.id,
-    },
-  });
-  console.log(res.data);
+  const res = await axios.get('https://music.163.com/api/song/media', { params: { id: info.id } });
   if (res?.data?.code !== 200 || !res?.data?.lyric) {
     return;
   }
@@ -45,7 +39,8 @@ const searchMusic = async (data: LyricRequest) => {
     },
   ], [] as LyricResponse[]);
   const lyricInfos = await Promise.all(infos.map(searchLyric));
-  return lyricInfos.filter((lyric) => !!lyric) as LyricResponse[];
+  const filterdLyricInfos = lyricInfos.filter((lyricInfo) => !!lyricInfo?.lyric);
+  return filterdLyricInfos as LyricResponse[];
 };
 
 export default searchMusic;
