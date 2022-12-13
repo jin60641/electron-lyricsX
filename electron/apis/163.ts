@@ -35,7 +35,7 @@ const searchMusic = async (data: LyricRequest) => {
   const infos: LyricResponse[] = songs.reduce((arr: LyricResponse[], {
     id,
     name,
-    ar: { name: artist },
+    ar: [{ name: artist }],
   }: any) => [
     ...arr,
     {
