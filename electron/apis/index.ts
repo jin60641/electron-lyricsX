@@ -6,7 +6,6 @@ import { timeTagToTimestamp } from '../utils/parse';
 import { filterRegex, timeTagRegex } from '../utils/regex';
 
 import search163 from './163';
-import searchQQ from './qq';
 
 interface Row {
   timestamp: string,
@@ -34,9 +33,9 @@ checkAnalyzer();
  * 검색 인자를 받아서 가사 검색 결과를 반환합니다.
  * @param {Info} data 검색 인자
  */
-export const getLyricRes = async (data: Info): Promise<[LyricResponse[], LyricResponse[]]> => {
-  const lyricRes = await Promise.all([searchQQ(data), search163(data)]);
-  return lyricRes;
+export const getLyricRes = async (data: Info): Promise<LyricResponse[]> => {
+  const lyricRes = await Promise.all([search163(data)]);
+  return lyricRes.flat();
 };
 /**
  * 가사 검색 결과를 받아서 Row 데이터 변환 결과를 반환합니다.
@@ -81,10 +80,8 @@ export const getLyrics = async (data: Info) => {
     // error logging
   }
   const lyricRes = await getLyricRes(data);
-  const filteredLyrics = lyricRes
-    .reduce((a, b) => [...a.map((e) => ({ ...e, source: '163' })), ...b.map((e) => ({ ...e, source: 'QQ' }))]);
 
-  const lyrics = await parseRowData(filteredLyrics);
+  const lyrics = await parseRowData(lyricRes);
   return lyrics;
 };
 export const searchMusic = async (win: BrowserWindow, data: Info) => {
