@@ -3,50 +3,48 @@ import axios from '../utils/axios';
 import { LyricRequest, LyricResponse } from '../types';
 
 const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
-  const res = await axios.get('https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg', {
+  const res = await axios.get('https://music.163.com/api/song/media', {
     params: {
-      songmid: info.id,
-      g_tk: 5381,
-      nobase64: 1,
-      format: 'json',
-      platform: 'yqq.json',
-      needNewCode: 0,
+      id: info.id,
     },
-    headers: { referer: 'https://c.y.qq.com/portal/player.html' },
   });
-  if (!res?.data?.lrc?.lyric) {
+  console.log(res.data);
+  if (res?.data?.code !== 200 || !res?.data?.lyric) {
     return;
   }
   return {
     ...info,
-    lyric: res.data.lrc.lyric,
+    lyric: res.data.lyric,
+    source: '163',
   } as LyricResponse;
 };
 
-const searchMusic = async (info: LyricRequest) => {
-  const res = await axios.get('https://c.y.qq.com/soso/fcgi-bin/client_search_cp', {
+const searchMusic = async (data: LyricRequest) => {
+  const res = await axios.get('https://music.163.com/api/cloudsearch/pc', {
     params: {
+      type: 1,
       offset: 0,
       limit: 10,
-      type: 1,
-      s: `${info.artist} - ${info.name}`,
+      s: `${data.artist} - ${data.name}`,
     },
   });
-  if (!res?.data?.results?.songs?.length) {
+  const songs = res?.data?.result?.songs;
+  if (!songs) {
     return [];
   }
-  const infos: LyricResponse[] = res.data.results.songs.map(({
+  const infos: LyricResponse[] = songs.reduce((arr: LyricResponse[], {
     id,
     name,
-    artists,
-  }: { id: string, name: string, artists: { name: string }[] }) => ({
-
-    id,
-    name,
-    artist: artists?.[0].name,
-  }));
+    ar: { name: artist },
+  }: any) => [
+    ...arr,
+    {
+      id,
+      name,
+      artist,
+    },
+  ], [] as LyricResponse[]);
   const lyricInfos = await Promise.all(infos.map(searchLyric));
-
   return lyricInfos.filter((lyric) => !!lyric) as LyricResponse[];
 };
 
