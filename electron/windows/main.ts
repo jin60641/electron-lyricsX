@@ -7,6 +7,7 @@ import {
 import { isDev } from '../constants';
 import playback from '../playback';
 import { EventName } from '../types';
+import '../utils/polyfill';
 
 const createWindow = () => {
   // Create the browser window.
@@ -74,14 +75,7 @@ const createWindow = () => {
       width: Math.round(payload.width),
       height: Math.round(payload.height),
     };
-    if (nextBounds.width < bounds.width) {
-      win.setBounds({ ...nextBounds, width: bounds.width });
-      setTimeout(() => {
-        win.setBounds(nextBounds);
-      }, 400);
-    } else {
-      win.setBounds(nextBounds);
-    }
+    win.setBounds(nextBounds, true);
   });
 
   ipcMain.on('LAYOUT.CHANGE_DRAGGABLE', (_event, payload) => {

@@ -27,20 +27,29 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     flexDirection: 'column',
     borderRadius: theme.spacing(2),
     flexGrow: 1,
-    backgroundColor: ({ backgroundColor }) => backgroundColor,
     alignItems: 'center',
     textAlign: 'center',
     whiteSpace: 'nowrap',
-    transition: 'width .3s, height .3s, opacity .3s',
-    overflow: 'hidden',
-    opacity: ({ backgroundOpacity }) => backgroundOpacity,
+    transition: 'width .3s, height .3s',
+    width: '100%',
+    height: '100%',
     '-webkit-app-region': 'drag',
+  },
+  background: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    transition: 'width .3s, height .3s, opacity .3s',
+    backgroundColor: ({ backgroundColor }) => backgroundColor,
+    opacity: ({ backgroundOpacity }) => backgroundOpacity,
+    zIndex: 0,
   },
   draggableOff: {
     '-webkit-app-region': 'no-drag',
     '&:hover': { opacity: 0 },
   },
   wrap: {
+    zIndex: 1,
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     display: 'inline-flex',
     flexDirection: 'column',
@@ -86,8 +95,6 @@ const selector = ({
 
 const Main: React.FC = () => {
   const domRef = useRef<HTMLDivElement | null>(null);
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
   const [index, setIndex] = useState(0);
@@ -146,14 +153,12 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (index >= 0 && domRef.current) {
-      setWidth(domRef.current.scrollWidth);
-      setHeight(domRef.current.scrollHeight);
+      window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', {
+        width: domRef.current.scrollWidth,
+        height: domRef.current.scrollHeight,
+      });
     }
   }, [index, domRef]);
-
-  useEffect(() => {
-    window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', { width, height });
-  }, [width, height]);
 
   useEffect(() => {
     // avoid using redux for update immediately
@@ -173,8 +178,10 @@ const Main: React.FC = () => {
     <>
       <div
         className={clsx(classes.main, { [classes.draggableOff]: !draggable })}
-        style={{ width, height }}
       >
+        <div
+          className={classes.background}
+        />
         <div className={classes.wrap} ref={domRef}>
           {selectedLyrics.map(({
             text,
