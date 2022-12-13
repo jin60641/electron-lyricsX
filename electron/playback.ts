@@ -101,7 +101,7 @@ class Playback extends EventTarget {
     }
     const process = this.isWindows
       ? spawn('powershell.exe', [scriptPath])
-      : spawn('osascript', [scriptPath], { shell: true });
+      : spawn('osascript', [scriptPath], { shell: true, detached: true } );
     process.stdout.on('data', (result: string | Buffer) => {
       let data: Info | null = null;
       if (typeof result === 'string') {
