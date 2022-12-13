@@ -41,8 +41,8 @@ const Settings: React.FC = () => {
   }: RootState) => ({ draggable, player, globalOffset });
   const { draggable, player, globalOffset } = useSelector(selector);
   const classes = useStyles();
-  const handleChange = useCallback((e) => {
-    dispatch(actions.setGlobalOffset(e.target.value));
+  const handleChangeGlobalOffset = useCallback((e) => {
+    dispatch(actions.setGlobalOffset(parseFloat(e.target.value)));
   }, [dispatch]);
 
   const handleChangePlayer = useCallback((e) => {
@@ -64,7 +64,7 @@ const Settings: React.FC = () => {
           maxLength: 13,
           step: '0.1',
         }}
-        onChange={handleChange}
+        onChange={handleChangeGlobalOffset}
       />
       <FormControl
         className={classes.formControl}
