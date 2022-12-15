@@ -6,11 +6,7 @@ import createWindows from './windows';
 import './server';
 
 const close = () => null;
-
-if (isMac) {
-  app.dock.hide();
-}
-
+app.dock.hide();
 app.on('window-all-closed', () => {
   close();
   app.quit();
@@ -23,4 +19,7 @@ app.on('will-quit', close);
 app.whenReady().then(() => {
   const windows = createWindows();
   createTray(windows);
+  if (isMac) {
+    app.dock.hide();
+  }
 });

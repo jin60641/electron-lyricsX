@@ -110,6 +110,11 @@
     "wait-on": "^5.2.0"
   },
   "build": {
+    "mac": {
+      "extendInfo": {
+        "LSUIElement": 1
+      }
+    },
     "directories": {
       "buildResources": "./build/"
     },

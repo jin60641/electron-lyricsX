@@ -14,7 +14,7 @@ const searchWindow = () => {
     minimizable: false,
     width: 800,
     height: 700,
-
+    skipTaskbar: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
