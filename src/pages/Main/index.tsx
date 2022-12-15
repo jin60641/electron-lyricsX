@@ -19,15 +19,13 @@ import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
 
-import { BackgroundColor, FontColor } from '../../store/layout/types';
-
-type Props = {
+interface Props {
   lineCount: number;
   lyricSize: number;
-  fontColor: FontColor;
+  fontColor: string;
   backgroundOpacity: number;
-  backgroundColor: BackgroundColor;
-};
+  backgroundColor: string;
+}
 
 const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   main: {
@@ -108,8 +106,7 @@ const selector = ({
   fontColor,
   backgroundOpacity,
   backgroundColor,
-}
-);
+});
 
 const Main: React.FC = () => {
   const theme = useTheme();
@@ -122,8 +119,10 @@ const Main: React.FC = () => {
     music,
     currentOffset,
     globalOffset,
-    draggable, lineCount,
-    lyricSize, fontColor,
+    lineCount,
+    lyricSize,
+    fontColor,
+    draggable,
     backgroundOpacity,
     backgroundColor,
   } = useSelector(selector);
@@ -167,7 +166,14 @@ const Main: React.FC = () => {
   }, [time, lyrics, globalOffset, currentOffset]);
 
   useEffect(() => {
-    if (index >= 0 && domRef.current) {
+    if (
+      index >= 0
+      && domRef.current
+      && lineCount
+      && lyricSize
+      && currentOffset !== undefined
+      && globalOffset !== undefined
+    ) {
       const selectedEls = [...domRef.current.children].filter((el) => el.getAttribute('data-selected') === 'true');
       const { width, height } = selectedEls.reduce((obj, selectedEl) => ({
         ...obj,
@@ -184,7 +190,15 @@ const Main: React.FC = () => {
         domRef.current.style.top = `${parentTop - childTop + theme.spacing(1)}px`;
       }
     }
-  }, [index, domRef, theme]);
+  }, [
+    index,
+    domRef,
+    theme,
+    lineCount,
+    currentOffset,
+    globalOffset,
+    lyricSize,
+  ]);
 
   useEffect(() => {
     // avoid using redux for update immediately

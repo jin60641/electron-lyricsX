@@ -6,43 +6,19 @@ import { useDispatch } from 'react-redux';
 import Modal from 'components/Modal';
 import layoutActions from 'store/layout/actions';
 
-import Content from './Content/index';
-import Lyric from './Lyric/index';
-import Nav from './Nav/index';
+import Content from './Content';
+import Lyric from './Lyric';
+import Nav from './Nav';
 
 const useStyle = makeStyles({
-  nav: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-    height: 'auto',
-    marginBottom: '8px',
-  },
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    height: '30vh',
-    width: '100%',
-    borderBottom: 'solid gray 1px',
-  },
-  lyric: {
+  wrap: {
     display: 'flex',
     flexDirection: 'column',
-    alignContent: 'center',
-    height: '60vh',
-    overflowY: 'auto',
-    overflowX: 'hidden',
+    width: '100%',
+    flexGrow: 1,
   },
 });
 
-const styleProps = {
-  flexDirection: 'column',
-  display: 'flex',
-  flexGrow: 1,
-  overflowY: 'hidden',
-};
 const Search: React.FC = () => {
   const classes = useStyle();
   const dispatch = useDispatch();
@@ -54,11 +30,12 @@ const Search: React.FC = () => {
       isOpen
       onClose={handleClose}
       title='Search'
-      styleProps={styleProps}
     >
-      <Nav className={classes.nav} />
-      <Content className={classes.content} />
-      <Lyric className={classes.lyric} />
+      <div className={classes.wrap}>
+        <Nav />
+        <Content />
+        <Lyric />
+      </div>
     </Modal>
   );
 };

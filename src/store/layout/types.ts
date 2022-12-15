@@ -2,9 +2,9 @@ export interface LayoutState {
   palette: Palette;
   lineCount: number;
   lyricSize: number;
-  fontColor: FontColor;
+  fontColor: string;
   backgroundOpacity: number;
-  backgroundColor: BackgroundColor.BLACK,
+  backgroundColor: string;
 }
 
 export enum Actions {
@@ -24,28 +24,12 @@ export enum Palette {
   LIGHT = 'light',
 }
 
-export enum FontColor {
-  BLACK = 'black',
-  RED = 'red',
-  YELLOW = 'yellow',
-  GREEN = 'green',
-  BLUE = 'blue',
-  WHITE = 'white',
-}
-
-export enum BackgroundColor {
-  BLACK = 'rgba(0,0,0,.6)',
-  RED = 'rgba(255,0,0,.6)',
-  GREEN = 'rgba(0,255,0,.6)',
-  BLUE = 'rgba(0,0,255,.6)',
-}
-
 export const initialState: LayoutState = {
   palette: Palette.DEVICE,
 
   lineCount: 2,
   lyricSize: 28,
-  fontColor: FontColor.WHITE,
   backgroundOpacity: 1,
-  backgroundColor: BackgroundColor.BLACK,
+  backgroundColor: '#000000',
+  fontColor: '#ffffff',
 };

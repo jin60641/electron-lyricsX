@@ -5,18 +5,28 @@ import React, {
 } from 'react';
 
 import { Button, Grid, TextField } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 
 import musicActions from 'store/music/actions';
 import { RootState } from 'store/types';
 
-interface Props {
-  className: string
-}
+const useStyle = makeStyles({
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    height: 'auto',
+    marginBottom: '8px',
+  },
+});
 
 const selector = ({ music: { name, artist } }: RootState) => ({ name, artist });
 
-const Nav: React.FC<Props> = ({ className }) => {
+const Nav: React.FC = () => {
+  const classes = useStyle();
+
   const { name = '', artist = '' } = useSelector(selector);
   const [payload, setPayload] = useState({ name, artist });
   const dispatch = useDispatch();
@@ -43,7 +53,7 @@ const Nav: React.FC<Props> = ({ className }) => {
       <Grid
         container
         spacing={2}
-        className={className}
+        className={classes.root}
       >
         <Grid item xs={5}>
           <TextField

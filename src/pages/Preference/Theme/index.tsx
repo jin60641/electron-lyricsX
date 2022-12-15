@@ -1,23 +1,13 @@
 import React from 'react';
 
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 
-import { BackgroundColor, FontColor, Palette } from 'store/layout/types'; // FontColor
-
-import MenuSelector from '../../../components/MenuSelector';
-import MenuTextInput from '../../../components/MenuTextInput';
-import { useThemeCustom } from '../../../hooks/useCustom';
-
-const useStyles = makeStyles(() => createStyles({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-  },
-}));
+import Selector from 'components/Selector';
+import { useThemeCustom } from 'hooks/useCustom';
+import { Palette } from 'store/layout/types'; // FontColor
 
 const Theme: React.FC = () => {
-  const classes = useStyles();
   const {
     palette,
     lineCount,
@@ -34,44 +24,71 @@ const Theme: React.FC = () => {
   } = useThemeCustom();
 
   return (
-    <div className={classes.container}>
-      <MenuSelector
-        label='palette'
-        changeHandler={handleChangePalette}
-        menuState={palette}
-        obj={Palette}
-      />
-      <MenuSelector
-        label='font color'
-        changeHandler={handleChangeFontColor}
-        menuState={fontColor}
-        obj={FontColor}
-      />
-      <MenuSelector
-        label='background color'
-        changeHandler={handleChangeBackgroundColor}
-        menuState={backgroundColor}
-        obj={BackgroundColor}
-      />
-      <MenuTextInput
-        label='line count'
-        menuState={lineCount}
-        changeHandler={handleChangeLineCount}
-        stepSize={1}
-      />
-      <MenuTextInput
-        label='font size'
-        menuState={lyricSize}
-        changeHandler={handleChangeFontSize}
-        stepSize={1}
-      />
-      <MenuTextInput
-        label='background opacity'
-        menuState={backgroundOpacity}
-        changeHandler={handleChangeBackgroundOpacity}
-        stepSize={0.1}
-      />
-    </div>
+    <Grid container spacing={4}>
+      <Grid
+        container
+        item
+        spacing={2}
+        xs={12}
+      >
+        <Grid item xs={4}>
+          <Selector
+            label='Palette'
+            onChange={handleChangePalette}
+            value={palette}
+            items={Palette}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            label='Font color'
+            type='color'
+            onChange={handleChangeFontColor}
+            value={fontColor}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            type='color'
+            label='Background color'
+            onChange={handleChangeBackgroundColor}
+            value={backgroundColor}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <Grid container item xs={12} spacing={2}>
+        <Grid item xs={4}>
+          <TextField
+            type='number'
+            label='Max line count'
+            value={lineCount}
+            onChange={handleChangeLineCount}
+            inputProps={{ step: 1 }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            type='number'
+            label='Font size'
+            value={lyricSize}
+            onChange={handleChangeFontSize}
+            inputProps={{ step: 1 }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            type='number'
+            label='Background opacity'
+            value={backgroundOpacity}
+            onChange={handleChangeBackgroundOpacity}
+            inputProps={{ step: 0.1 }}
+          />
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

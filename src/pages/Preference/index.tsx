@@ -66,7 +66,6 @@ const Preference: React.FC = () => {
       isOpen
       onClose={handleClose}
       title='Preferences'
-      styleProps
     >
       <div className={classes.menu}>
         {Object.entries(Tabs).map(([key, value]) => (

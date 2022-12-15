@@ -41,11 +41,10 @@ interface Props {
   isOpen: boolean,
   onClose: () => void,
   title: string,
-  styleProps: any
 }
 
-const Modal: React.FC<Props> = ({ children, isOpen, onClose, title, styleProps }) => {
-  const classes = useStyles(styleProps);
+const Modal: React.FC<Props> = ({ children, isOpen, onClose, title }) => {
+  const classes = useStyles();
 
   if (!isOpen) {
     return null;
