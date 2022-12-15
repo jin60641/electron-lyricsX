@@ -1,7 +1,7 @@
 import { app } from 'electron';
 
 import { isMac } from './constants';
-import createMenu from './menu';
+import createTray from './tray';
 import createWindows from './windows';
 import './server';
 
@@ -21,5 +21,6 @@ app.on('before-quit', close);
 app.on('will-quit', close);
 
 app.whenReady().then(() => {
-  createMenu(createWindows());
+  const windows = createWindows();
+  createTray(windows);
 });

@@ -1,11 +1,11 @@
-import { isDev } from './constants';
+import { resourcePath } from './constants';
 import EventTarget from './event';
 import { EventName, Info, Player } from './types';
 
 const { spawn } = require('child_process');
 const path = require('path');
 
-const SCRIPT_DIR = path.join(isDev ? path.join(__dirname, '..') : process.resourcesPath, 'scripts');
+const SCRIPT_DIR = path.join(resourcePath, 'scripts');
 
 type DefaultCallback = (data: Info | null) => void;
 

@@ -38,7 +38,6 @@ const createWindow = () => {
   }
 
   win.setVisibleOnAllWorkspaces(true);
-  win.setBackgroundColor('#00000000');
 
   ipcMain.on('LAYOUT.RESIZE_WINDOW', (_event, payload) => {
     const bounds = win.getBounds();
