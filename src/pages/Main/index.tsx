@@ -75,6 +75,8 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     fontSize: ({ lyricSize }) => lyricSize,
     userSelect: 'none',
     transition: 'opacity .3s',
+    alignItems: 'flex-end',
+    flexDirection: 'row',
   },
   hidden: { opacity: 0 },
 }));
