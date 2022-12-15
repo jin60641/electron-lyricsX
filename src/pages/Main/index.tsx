@@ -1,8 +1,16 @@
 import React, {
-  useEffect, useMemo, useRef, useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
@@ -23,6 +31,7 @@ type Props = {
 
 const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   main: {
+    position: 'fixed',
     display: 'inline-flex',
     flexDirection: 'column',
     borderRadius: theme.spacing(2),
@@ -34,11 +43,12 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     width: '100%',
     height: '100%',
     '-webkit-app-region': 'drag',
+    overflow: 'hidden',
   },
   background: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
+    position: 'fixed',
     transition: 'width .3s, height .3s, opacity .3s',
     backgroundColor: ({ backgroundColor }) => backgroundColor,
     opacity: ({ backgroundOpacity }) => backgroundOpacity,
@@ -49,18 +59,24 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     '&:hover': { opacity: 0 },
   },
   wrap: {
+    position: 'absolute',
+    top: 0,
     zIndex: 1,
-    padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     display: 'inline-flex',
     flexDirection: 'column',
+    alignItems: 'center',
+    overflow: 'hidden',
+    transition: 'top .3s',
   },
   row: {
-    display: 'inline-block',
+    display: 'inline-flex',
     color: ({ fontColor }) => fontColor,
     textShadow: '0px 0px 8px rgba(0,255,255,.68)',
     fontSize: ({ lyricSize }) => lyricSize,
     userSelect: 'none',
+    transition: 'opacity .3s',
   },
+  hidden: { opacity: 0 },
 }));
 
 const selector = ({
@@ -94,6 +110,7 @@ const selector = ({
 );
 
 const Main: React.FC = () => {
+  const theme = useTheme();
   const domRef = useRef<HTMLDivElement | null>(null);
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
@@ -115,7 +132,13 @@ const Main: React.FC = () => {
     backgroundOpacity,
     backgroundColor,
   });
-  const lyrics = useMemo(() => music?.lyric, [music?.lyric]);
+  const lyrics = useMemo(() => music?.lyric?.map((lyric, i) => ({
+    ...lyric,
+    isSelected: !!lyric.text.length
+      && (i === index || lyric.time <= (time + 10 * index))
+      && i < index + lineCount
+      && i >= index,
+  })), [music?.lyric, time, index, lineCount]);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -141,24 +164,25 @@ const Main: React.FC = () => {
     }
   }, [time, lyrics, globalOffset, currentOffset]);
 
-  const selectedLyrics = useMemo(() => (lyrics ? lyrics
-    .slice(index, index + lineCount)
-    .filter(({
-      time: rowTime,
-      text,
-    }, i) => (
-      text.length
-      && (i === 0 || rowTime <= (time + 10 * i))
-    )) : null), [lyrics, index, time, lineCount]);
-
   useEffect(() => {
     if (index >= 0 && domRef.current) {
+      const selectedEls = [...domRef.current.children].filter((el) => el.getAttribute('data-selected') === 'true');
+      const { width, height } = selectedEls.reduce((obj, selectedEl) => ({
+        ...obj,
+        width: Math.max(obj.width, selectedEl.clientWidth),
+        height: obj.height + selectedEl.clientHeight,
+      }), { width: 0, height: 0 });
       window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', {
-        width: domRef.current.scrollWidth,
-        height: domRef.current.scrollHeight,
+        width: width + theme.spacing(8),
+        height: height + theme.spacing(2),
       });
+      if (selectedEls[0]) {
+        const [parentTop, childTop] = [domRef.current, selectedEls[0]]
+          .map((el) => el.getBoundingClientRect().top);
+        domRef.current.style.top = `${parentTop - childTop + theme.spacing(1)}px`;
+      }
     }
-  }, [index, domRef]);
+  }, [index, domRef, theme]);
 
   useEffect(() => {
     // avoid using redux for update immediately
@@ -170,7 +194,7 @@ const Main: React.FC = () => {
     });
   }, []);
 
-  if (!selectedLyrics?.length) {
+  if (!lyrics?.length) {
     return null;
   }
 
@@ -182,13 +206,22 @@ const Main: React.FC = () => {
         <div
           className={classes.background}
         />
-        <div className={classes.wrap} ref={domRef}>
-          {selectedLyrics.map(({
+        <div
+          className={classes.wrap}
+          ref={domRef}
+        >
+          {lyrics.map(({
             text,
+            isSelected,
             id,
           }) => (
-            // eslint-disable-next-line react/no-danger
-            <div key={`lyric-row-${id}`} className={classes.row} dangerouslySetInnerHTML={{ __html: text }} />
+            <div
+              key={`lyric-row-${id}`}
+              data-selected={isSelected}
+              className={clsx(classes.row, !isSelected && classes.hidden)}
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: text }}
+            />
           ))}
         </div>
       </div>
