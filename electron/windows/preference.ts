@@ -27,7 +27,7 @@ const preferenceWindow = () => {
   if (isDev) {
     win.loadURL('http://localhost:3000/#/preference/theme');
   } else {
-    win.loadURL(`file://${path.join(__dirname, '..', '..', 'build', 'index.html#/preference/theme')}`);
+    win.loadURL(`file://${path.join(__dirname, '..', '..', 'index.html#/preference/theme')}`);
   }
 
   const handleClose = (e: Event) => {

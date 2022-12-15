@@ -26,7 +26,7 @@ const searchWindow = () => {
   if (isDev) {
     win.loadURL('http://localhost:3000/#/Search');
   } else {
-    win.loadURL(`file://${path.join(__dirname, '..', '..', 'build', 'index.html#/Search')}`);
+    win.loadURL(`file://${path.join(__dirname, '..', '..', 'index.html#/Search')}`);
   }
 
   const handleClose = (e: Event) => {

@@ -70,11 +70,11 @@
     "react:build": "react-app-rewired build",
     "react:test": "react-app-rewired test",
     "react:eject": "react-scripts eject",
-    "electron:build": "yarn tsc -p ./tsconfig.electron.json",
-    "electron:dev": "yarn tsc --watch -p ./tsconfig.electron.json",
+    "electron:build": "yarn tsc -p ./electron/tsconfig.json",
+    "electron:dev": "yarn tsc --watch -p ./electron/tsconfig.json",
     "electron": "cross-env NODE_ENV=dev nodemon --exec \"\"electron .\"\"",
     "start": "concurrently \"yarn electron:dev\" \"yarn react:start\" \"wait-on http://localhost:3000 && yarn electron\"",
-    "build": "yarn react:build && yarn electron:build && electron-builder",
+    "build": "yarn react:build && yarn electron:build && electron-builder --config \"electron-builder.json\" ",
     "lint": "eslint -c .eslintrc.js '{src,electron}/**/*.{ts,tsx}'"
   },
   "main": "build/electron/index.js",
@@ -108,22 +108,5 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "nodemon": "^2.0.6",
     "wait-on": "^5.2.0"
-  },
-  "build": {
-    "mac": {
-      "extendInfo": {
-        "LSUIElement": 1
-      }
-    },
-    "directories": {
-      "buildResources": "./build/"
-    },
-    "extraResources": {
-      "from": "./scripts/",
-      "to": "scripts",
-      "filter": [
-        "**/*"
-      ]
-    }
   }
 }

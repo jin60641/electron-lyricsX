@@ -37,7 +37,7 @@ const createWindow = () => {
     // caution: can't transparent if open devtools
     win.loadURL('http://localhost:3000');
   } else {
-    win.loadFile(path.join(__dirname, '../../build/index.html'));
+    win.loadFile(path.join(__dirname, '../../index.html'));
   }
 
   win.setVisibleOnAllWorkspaces(true);

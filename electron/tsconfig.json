@@ -15,17 +15,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react",
-    "sourceRoot": "./electron",
+    "sourceRoot": ".",
     "allowJs": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "./build"
+    "outDir": "../build"
   },
   "include": [
-    "types",
-    "electron"
+    "."
   ]
 }
-  

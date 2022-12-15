@@ -3,12 +3,12 @@ import {
 } from 'electron';
 import path from 'path';
 
-import { resourcePath } from './constants';
+import { publicPath } from './constants';
 import { Windows } from './windows';
 
 let tray;
 const createTray = (windows: Windows) => {
-  const icon = nativeImage.createFromPath(path.join(resourcePath, 'public/IconTemplate.png'));
+  const icon = nativeImage.createFromPath(path.join(publicPath, 'IconTemplate.png'));
   tray = new Tray(icon);
   const contextMenu = Menu.buildFromTemplate([
     {
