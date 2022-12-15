@@ -41,14 +41,15 @@ BrowserWindow.prototype.setBounds = function setBounds(
   const updateBounds = (currentFrame: number) => {
     const eased = Object.keys(targetBounds).reduce((obj, k) => {
       const key = k as keyof Rectangle;
+      const diff = targetBounds[key] - currentBounds[key];
       return {
         ...obj,
-        [key]: Math.round(easing(
+        [key]: diff ? Math.round(easing(
           currentFrame,
           currentBounds[key],
-          targetBounds[key] - currentBounds[key],
+          diff,
           duration,
-        )),
+        )) : targetBounds[key],
       };
     }, {} as Rectangle);
     originSetBounds.apply(this, [eased]);
