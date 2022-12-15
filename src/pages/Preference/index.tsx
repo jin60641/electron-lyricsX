@@ -1,4 +1,9 @@
-import React, { lazy, useCallback, useMemo } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useMemo,
+} from 'react';
 
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
@@ -86,18 +91,20 @@ const Preference: React.FC = () => {
         ))}
       </div>
       <div className={classes.content}>
-        <Switch>
-          {routes.map(({
-            key,
-            ...props
-          }) => (
-            <Route
-              key={`app-route-${key}`}
-              path={`${path}/${key}`}
-              {...props}
-            />
-          ))}
-        </Switch>
+        <Suspense fallback={<></>}>
+          <Switch>
+            {routes.map(({
+              key,
+              ...props
+            }) => (
+              <Route
+                key={`app-route-${key}`}
+                path={`${path}/${key}`}
+                {...props}
+              />
+            ))}
+          </Switch>
+        </Suspense>
       </div>
     </Modal>
   );
