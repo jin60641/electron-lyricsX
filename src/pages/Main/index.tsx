@@ -9,7 +9,6 @@ import {
   createStyles,
   makeStyles,
   Theme,
-  useTheme,
 } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
@@ -75,8 +74,17 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     transition: 'opacity .3s',
     alignItems: 'flex-end',
     flexDirection: 'row',
+    opacity: 0,
   },
-  hidden: { opacity: 0 },
+  shown: {
+    opacity: 1,
+    padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
+    '& ~ &': {
+      marginTop: theme.spacing(-1),
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+  },
 }));
 
 const selector = ({
@@ -109,7 +117,6 @@ const selector = ({
 });
 
 const Main: React.FC = () => {
-  const theme = useTheme();
   const domRef = useRef<HTMLDivElement | null>(null);
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
@@ -136,10 +143,12 @@ const Main: React.FC = () => {
   const lyrics = useMemo(() => music?.lyric?.map((lyric, i) => ({
     ...lyric,
     isSelected: !!lyric.text.length
-      && (i === index || lyric.time <= (time + 10 * index))
+      && (lyric.time <= (time + 10))
       && i < index + lineCount
       && i >= index,
   })), [music?.lyric, time, index, lineCount]);
+  const selectedLyricsCount = useMemo(() => lyrics
+    ?.filter(({ isSelected }) => isSelected)?.length, [lyrics]);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -167,42 +176,41 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (
-      index >= 0
-      && domRef.current
+      domRef.current
+      && index >= 0
       && lineCount
+      && selectedLyricsCount !== undefined
       && lyricSize
       && currentOffset !== undefined
       && globalOffset !== undefined
     ) {
       const selectedEls = [...domRef.current.children].filter((el) => el.getAttribute('data-selected') === 'true');
-      const { width, height } = selectedEls.reduce((obj, selectedEl) => ({
+      const windowSize = selectedEls.reduce((obj, selectedEl) => ({
         ...obj,
         width: Math.max(obj.width, selectedEl.clientWidth),
         height: obj.height + selectedEl.clientHeight,
       }), { width: 0, height: 0 });
-      window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', {
-        width: width + theme.spacing(8),
-        height: height + theme.spacing(2),
-      });
+      window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', windowSize);
       if (selectedEls[0]) {
         const [parentTop, childTop] = [domRef.current, selectedEls[0]]
           .map((el) => el.getBoundingClientRect().top);
-        domRef.current.style.top = `${parentTop - childTop + theme.spacing(1)}px`;
+        domRef.current.style.top = `${parentTop - childTop}px`;
       }
     }
   }, [
-    index,
     domRef,
-    theme,
+    index,
     lineCount,
     currentOffset,
     globalOffset,
     lyricSize,
+    selectedLyricsCount,
   ]);
 
   useEffect(() => {
     // avoid using redux for update immediately
     window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Music) => {
+      console.log(data);
       if (data.position) {
         setTime(data.position);
         setPosition(data.position);
@@ -234,7 +242,7 @@ const Main: React.FC = () => {
             <div
               key={`lyric-row-${id}`}
               data-selected={isSelected}
-              className={clsx(classes.row, !isSelected && classes.hidden)}
+              className={clsx(classes.row, isSelected && classes.shown)}
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: text }}
             />

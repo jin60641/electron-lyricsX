@@ -21,6 +21,8 @@ const createWindow = () => {
     minimizable: false,
     width: 300,
     height: 60,
+    minHeight: 1,
+    minWidth: 1,
     hasShadow: false,
     webPreferences: {
       nodeIntegration: true,
@@ -89,7 +91,7 @@ const createWindow = () => {
   });
   playback.on(EventName.STOP, () => {
     stopMusic(win);
-    // win.hide();
+    win.hide();
   });
   playback.on(EventName.PAUSE, () => { pauseMusic(win); });
   playback.on(EventName.SEEK, ({ detail }) => { seekMusic(win, detail); });
