@@ -141,8 +141,8 @@ const Main: React.FC = () => {
       && i < index + lineCount
       && i >= index,
   })), [music?.lyric, time, index, lineCount]);
-  const selectedLyricsCount = useMemo(() => lyrics
-    ?.filter(({ isSelected }) => isSelected)?.length, [lyrics]);
+  const filteredLyricsCount = useMemo(() => lyrics
+    ?.filter(({ isSelected, text }) => !!text.length && isSelected)?.length, [lyrics]);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -180,7 +180,7 @@ const Main: React.FC = () => {
         width: Math.max(prev.width, selectedEl.clientWidth + theme.spacing(8)),
         height: prev.height + selectedEl.clientHeight,
       }), { width: 0, height: theme.spacing(2) });
-      if (selectedLyricsCount) {
+      if (filteredLyricsCount) {
         window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', windowSize);
       } else {
         window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', { width: 0, height: 0 });
@@ -196,7 +196,7 @@ const Main: React.FC = () => {
     index,
     lineCount,
     lyricSize,
-    selectedLyricsCount,
+    filteredLyricsCount,
     theme,
   ]);
 

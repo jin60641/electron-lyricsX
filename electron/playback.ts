@@ -1,5 +1,6 @@
 import { resourcePath } from './constants';
 import EventTarget from './event';
+import { getStore } from './storage';
 import { EventName, Info, Player } from './types';
 
 const { spawn } = require('child_process');
@@ -16,7 +17,7 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
-  private player: Player = Player.CHROME;
+  private player: Player = getStore()?.preference.player || Player.CHROME;
 
   private timer?: ReturnType<typeof setInterval>;
 

@@ -4,4 +4,4 @@ import path from 'path';
 
 export const isDev = _isDev;
 export const isMac = process.platform === 'darwin';
-export const resourcePath = isDev ? path.join(__dirname, '..') : process.resourcesPath;
+export const resourcePath = isDev ? path.join(__dirname, '../..') : process.resourcesPath;

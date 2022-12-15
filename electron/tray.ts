@@ -17,9 +17,7 @@ const createTray = (windows: Windows) => {
         windows.search.show();
       },
     },
-    {
-      label: 'Lyrics Offset',
-    },
+    { label: 'Lyrics Offset' },
     { type: 'separator' },
     {
       label: 'Preferences',

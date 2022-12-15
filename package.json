@@ -77,7 +77,7 @@
     "build": "yarn react:build && yarn electron:build && electron-builder",
     "lint": "eslint -c .eslintrc.js '{src,electron}/**/*.{ts,tsx}'"
   },
-  "main": "build/electron.js",
+  "main": "build/electron/index.js",
   "homepage": "./",
   "eslintConfig": {
     "extends": "react-app"
