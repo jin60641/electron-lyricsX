@@ -11,5 +11,5 @@ export const timeTagToTimestamp = (str: string) => {
     .reverse()
     .map(Number);
 
-  return mm * 60 + ss + ms * 0.01;
+  return mm * 60 + ss + ms * (10 ** -(`${ms}`.length));
 };
