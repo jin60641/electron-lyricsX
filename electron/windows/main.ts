@@ -86,7 +86,7 @@ const createWindow = () => {
   });
 
   playback.on(EventName.START, ({ detail }) => {
-    win.show();
+    win.showInactive();
     startMusic(win, detail);
   });
   playback.on(EventName.STOP, () => {
