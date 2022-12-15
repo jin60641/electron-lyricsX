@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import {
-  Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField,
+  Checkbox, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,15 +88,19 @@ const Settings: React.FC = () => {
           <FormControlLabel value={Player.CHROME_EXTENSION} control={<Radio color='primary' />} label='chrome Extension' />
         </RadioGroup>
       </FormControl>
-      <FormControl>
-        <FormControlLabel
-          control={<Checkbox defaultChecked color='primary' />}
-          label='Draggable ON'
-          value={draggable}
-          onChange={handleToggleDraggable}
-          checked={draggable}
-        />
-      </FormControl>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <FormControl>
+            <FormControlLabel
+              control={<Checkbox defaultChecked color='primary' />}
+              label='Draggable'
+              value={draggable}
+              onChange={handleToggleDraggable}
+              checked={draggable}
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
     </>
   );
 };
