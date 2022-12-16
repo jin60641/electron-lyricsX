@@ -1,6 +1,12 @@
 import { LyricRequest, LyricResponse } from '../types';
 import axios from '../utils/axios';
 
+interface I163LyricResponse {
+  id: string;
+  name: string;
+  ar: { name: string }[];
+}
+
 const searchLyric: (info: LyricResponse) => Promise<LyricResponse | void> = async (info) => {
   const res = await axios.get('https://music.163.com/api/song/media', { params: { id: info.id } });
   if (res?.data?.code !== 200 || !res?.data?.lyric) {
@@ -30,7 +36,7 @@ const searchMusic = async (data: LyricRequest) => {
     id,
     name,
     ar: [{ name: artist }],
-  }: any) => [
+  }: I163LyricResponse) => [
     ...arr,
     {
       id,
