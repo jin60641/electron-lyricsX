@@ -1,21 +1,19 @@
 export interface LayoutState {
   palette: Palette;
   lineCount: number;
-  lyricSize: number;
+  fontSize: number;
   fontColor: string;
-  backgroundOpacity: number;
+  fontOpacity: number;
+  textShadowSize: number;
+  textShadowColor: string;
+  textShadowOpacity: number;
   backgroundColor: string;
+  backgroundOpacity: number;
 }
 
 export enum Actions {
-  SET_PALETTE = 'LAYOUT.SET_PALETTE',
+  SET_LAYOUT = 'LAYOUT.SET_LAYOUT',
   CLOSE_PREFERENCE = 'LAYOUT.CLOSE_PREFERENCE',
-
-  SET_LINE_COUNT = 'LAYOUT.SET_LINE_COUNT',
-  SET_LYRIC_SIZE = 'LAYOUT.SET_LYRIC_SIZE',
-  SET_FONT_COLOR = 'LAYOUT.SET_FONT_COLOR',
-  SET_BACKGROUND_OPACITY = 'LAYOUT.SET_BACKGROUND_OPACITY',
-  SET_BACKGROUND_COLOR = 'LAYOUT.SET_BACKGROUND_COLOR',
 }
 
 export enum Palette {
@@ -28,8 +26,12 @@ export const initialState: LayoutState = {
   palette: Palette.DEVICE,
 
   lineCount: 2,
-  lyricSize: 28,
-  backgroundOpacity: 1,
-  backgroundColor: '#000000',
+  fontSize: 28,
   fontColor: '#ffffff',
+  fontOpacity: 1,
+  textShadowSize: 28,
+  textShadowColor: '#ffffff',
+  textShadowOpacity: 1,
+  backgroundColor: '#000000',
+  backgroundOpacity: 1,
 };

@@ -2,27 +2,35 @@ import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Selector from 'components/Selector';
-import { useThemeCustom } from 'hooks/useCustom';
+import Selector, { Props as SelectorProps } from 'components/Selector';
+import actions from 'store/layout/actions';
 import { Palette } from 'store/layout/types'; // FontColor
+import { RootState } from 'store/types';
 
 const Theme: React.FC = () => {
+  const dispatch = useDispatch();
+  const layout = useSelector((state: RootState) => state.layout);
   const {
-    palette,
-    lineCount,
-    lyricSize,
+    fontSize,
     fontColor,
-    backgroundOpacity,
+    fontOpacity,
+    textShadowSize,
+    textShadowColor,
+    textShadowOpacity,
     backgroundColor,
-    handleChangePalette,
-    handleChangeLineCount,
-    handleChangeFontSize,
-    handleChangeFontColor,
-    handleChangeBackgroundColor,
-    handleChangeBackgroundOpacity,
-  } = useThemeCustom();
-
+    backgroundOpacity,
+    lineCount,
+    palette,
+  } = layout;
+  const handleChangePalette: SelectorProps['onChange'] = (e) => {
+    dispatch(actions.setLayout({ ...layout, palette: e.target.value as Palette }));
+  };
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
+    dispatch(actions.setLayout({ ...layout, [e.target.name]: value }));
+  };
   return (
     <Grid container spacing={4}>
       <Grid
@@ -34,6 +42,7 @@ const Theme: React.FC = () => {
         <Grid item xs={4}>
           <Selector
             label='Palette'
+            name='palette'
             onChange={handleChangePalette}
             value={palette}
             items={Palette}
@@ -42,49 +51,114 @@ const Theme: React.FC = () => {
         </Grid>
         <Grid item xs={4}>
           <TextField
+            type='number'
+            name='lineCount'
+            label='Max line count'
+            value={lineCount}
+            onChange={handleChange}
+            inputProps={{ step: 1, min: 1 }}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        item
+        spacing={2}
+        xs={12}
+      >
+        <Grid item xs={4}>
+          <TextField
+            type='number'
+            label='Font size'
+            name='fontSize'
+            value={fontSize}
+            onChange={handleChange}
+            inputProps={{ step: 1, min: 0 }}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
             label='Font color'
             type='color'
-            onChange={handleChangeFontColor}
+            name='fontColor'
+            onChange={handleChange}
             value={fontColor}
             fullWidth
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
-            type='color'
-            label='Background color'
-            onChange={handleChangeBackgroundColor}
-            value={backgroundColor}
+            type='number'
+            label='Font Opacity'
+            name='fontOpacity'
+            onChange={handleChange}
+            value={fontOpacity}
             fullWidth
+            inputProps={{ step: 0.1, min: 0, max: 1 }}
+          />
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        item
+        spacing={2}
+        xs={12}
+      >
+        <Grid item xs={4}>
+          <TextField
+            type='number'
+            label='Text Shadow size'
+            name='textShadowSize'
+            value={textShadowSize}
+            onChange={handleChange}
+            inputProps={{ step: 1, min: 0 }}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            label='Text Shadow color'
+            type='color'
+            name='textShadowColor'
+            onChange={handleChange}
+            value={textShadowColor}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            label='Text Shadow Opacity'
+            type='number'
+            name='textShadowOpacity'
+            onChange={handleChange}
+            value={textShadowOpacity}
+            fullWidth
+            inputProps={{ step: 0.1, min: 0, max: 1 }}
           />
         </Grid>
       </Grid>
       <Grid container item xs={12} spacing={2}>
         <Grid item xs={4}>
           <TextField
-            type='number'
-            label='Max line count'
-            value={lineCount}
-            onChange={handleChangeLineCount}
-            inputProps={{ step: 1 }}
+            type='color'
+            name='backgroudColor'
+            label='Background color'
+            onChange={handleChange}
+            value={backgroundColor}
+            fullWidth
           />
         </Grid>
         <Grid item xs={4}>
           <TextField
             type='number'
-            label='Font size'
-            value={lyricSize}
-            onChange={handleChangeFontSize}
-            inputProps={{ step: 1 }}
-          />
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            type='number'
+            name='backgroundOpacity'
             label='Background opacity'
             value={backgroundOpacity}
-            onChange={handleChangeBackgroundOpacity}
-            inputProps={{ step: 0.1 }}
+            onChange={handleChange}
+            inputProps={{ step: 0.1, min: 0, max: 1 }}
+            fullWidth
           />
         </Grid>
       </Grid>

@@ -8,7 +8,7 @@ import {
   SelectProps,
 } from '@material-ui/core';
 
-interface Props extends SelectProps {
+export interface Props extends SelectProps {
   items: Record<string, string>
 }
 

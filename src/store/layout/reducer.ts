@@ -10,29 +10,9 @@ const persistConfig = {
 };
 
 const layoutReducer = createReducer<LayoutState>(initialState)
-  .handleAction(layoutActions.setPalette, (state, action) => ({
+  .handleAction(layoutActions.setLayout, (state, action) => ({
     ...state,
-    palette: action.payload,
-  }))
-  .handleAction(layoutActions.setLineCount, (state, action) => ({
-    ...state,
-    lineCount: action.payload,
-  }))
-  .handleAction(layoutActions.setLyricSize, (state, action) => ({
-    ...state,
-    lyricSize: action.payload,
-  }))
-  .handleAction(layoutActions.setFontColor, (state, action) => ({
-    ...state,
-    fontColor: action.payload,
-  }))
-  .handleAction(layoutActions.setBackgroundOpacity, (state, action) => ({
-    ...state,
-    backgroundOpacity: action.payload,
-  }))
-  .handleAction(layoutActions.setBackgroundColor, (state, action) => ({
-    ...state,
-    backgroundColor: action.payload,
+    ...action.payload,
   }));
 
 export default persistReducer(persistConfig, layoutReducer);

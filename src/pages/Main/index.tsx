@@ -11,6 +11,7 @@ import {
   Theme,
   useTheme,
 } from '@material-ui/core/styles';
+import { alpha } from '@material-ui/core/styles/colorManipulator';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
@@ -19,13 +20,7 @@ import musicActions from 'store/music/actions';
 import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
 
-interface Props {
-  lineCount: number;
-  lyricSize: number;
-  fontColor: string;
-  backgroundOpacity: number;
-  backgroundColor: string;
-}
+type Props = Omit<RootState['layout'], 'lineCount' | 'palette'>;
 
 const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   main: {
@@ -70,15 +65,15 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   row: {
     display: 'inline-flex',
     color: ({ fontColor }) => fontColor,
-    textShadow: '0px 0px 8px rgba(0,255,255,.68)',
-    fontSize: ({ lyricSize }) => lyricSize,
+    textShadow: ({ textShadowSize, textShadowColor, textShadowOpacity }) => `0px 0px ${textShadowSize}px ${alpha(textShadowColor, textShadowOpacity)}`,
+    fontSize: ({ fontSize }) => fontSize,
     userSelect: 'none',
     alignItems: 'flex-end',
     flexDirection: 'row',
     opacity: 0,
     transition: 'opacity .3s',
   },
-  shown: { opacity: 1 },
+  shown: { opacity: ({ fontOpacity }) => fontOpacity },
 }));
 
 const selector = ({
@@ -91,10 +86,8 @@ const selector = ({
   },
   layout: {
     lineCount,
-    lyricSize,
-    fontColor,
-    backgroundOpacity,
-    backgroundColor,
+    palette,
+    ...layout
   },
   preference: { draggable },
 }: RootState) => ({
@@ -104,10 +97,7 @@ const selector = ({
   globalOffset,
   draggable,
   lineCount,
-  lyricSize,
-  fontColor,
-  backgroundOpacity,
-  backgroundColor,
+  layout,
 });
 
 const Main: React.FC = () => {
@@ -121,20 +111,11 @@ const Main: React.FC = () => {
     music,
     currentOffset,
     globalOffset,
-    lineCount,
-    lyricSize,
-    fontColor,
     draggable,
-    backgroundOpacity,
-    backgroundColor,
-  } = useSelector(selector);
-  const classes = useStyles({
+    layout,
     lineCount,
-    lyricSize,
-    fontColor,
-    backgroundOpacity,
-    backgroundColor,
-  });
+  } = useSelector(selector);
+  const classes = useStyles(layout);
   const lyrics = useMemo(() => music?.lyric?.map((lyric, i) => ({
     ...lyric,
     isSelected: (lyric.time <= (time + 10))
@@ -173,7 +154,6 @@ const Main: React.FC = () => {
       domRef.current
       && index >= 0
       && lineCount
-      && lyricSize
     ) {
       const selectedEls = [...domRef.current.querySelectorAll('[data-selected=true]')];
       const windowSize = selectedEls.reduce((prev, selectedEl) => ({
@@ -195,7 +175,6 @@ const Main: React.FC = () => {
     domRef,
     index,
     lineCount,
-    lyricSize,
     filteredLyricsCount,
     theme,
   ]);
