@@ -12,6 +12,18 @@ const createTray = (windows: Windows) => {
   tray = new Tray(icon);
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: 'Toggle Lyrics',
+      type: 'checkbox',
+      checked: true,
+      click: (menuItem) => {
+        if (menuItem.checked) {
+          windows.main.show();
+        } else {
+          windows.main.hide();
+        }
+      },
+    },
+    {
       label: 'Search Lyrics',
       click: () => {
         windows.search.show();

@@ -16,6 +16,7 @@ const createWindow = () => {
     show: false,
     frame: false,
     resizable: false,
+    closable: false,
     alwaysOnTop: true,
     skipTaskbar: true,
     maximizable: false,
@@ -39,7 +40,7 @@ const createWindow = () => {
   } else {
     win.loadFile(path.join(__dirname, '../../index.html'));
   }
-
+  win.setMenu(null);
   win.setVisibleOnAllWorkspaces(true);
 
   ipcMain.on('LAYOUT.RESIZE_WINDOW', (_event, payload) => {
