@@ -15,14 +15,13 @@ const parseObj = (
     [`${key}`.replace('persist:', '')]: cnt ? parseObj(JSON.parse(`${value}`), cnt - 1) : value,
   }), {});
 
-
 export const getStore = (): RootState | void => {
   try {
     return parseObj(store.store, 1) as unknown as RootState;
   } catch (e) {
-    return;
+    return undefined;
   }
-}
+};
 
 const storage = {
   getItem: (key: string) => new Promise((resolve) => {

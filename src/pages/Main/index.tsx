@@ -74,6 +74,19 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     transition: 'opacity .3s',
   },
   shown: { opacity: ({ fontOpacity }) => fontOpacity },
+  '@keyframes stripes': { to: { backgroundPositionX: '0px' } },
+  word: {
+    backgroundImage: ({ fontColor, textShadowColor }) => `linear-gradient(to right, ${textShadowColor} 50%, ${fontColor} 50%)`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPositionX: '100%',
+    backgroundSize: '200%',
+    'text-fill-color': 'transparent',
+    'background-clip': 'text',
+    '-webkit-background-clip': 'text',
+    animationName: '$stripes',
+    animationTimingFunction: 'linear',
+    animationFillMode: 'forwards',
+  },
 }));
 
 const selector = ({
@@ -123,7 +136,7 @@ const Main: React.FC = () => {
       && i >= index,
   })), [music?.lyric, time, index, lineCount]);
   const filteredLyricsCount = useMemo(() => lyrics
-    ?.filter(({ isSelected, text }) => !!text.length && isSelected)?.length, [lyrics]);
+    ?.filter(({ isSelected }) => isSelected)?.length, [lyrics]);
 
   useEffect(() => {
     let timerId: number | null = null;
@@ -141,13 +154,13 @@ const Main: React.FC = () => {
     };
   }, [position, isPlaying]);
 
+  const offsetSum = useMemo(() => currentOffset + globalOffset, [currentOffset, globalOffset]);
   useEffect(() => {
     if (lyrics) {
-      const offsetSum = currentOffset + globalOffset;
       const nextIndex = lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - offsetSum);
       setIndex((nextIndex === -1 ? lyrics.length : nextIndex) - 1);
     }
-  }, [time, lyrics, globalOffset, currentOffset]);
+  }, [time, lyrics, offsetSum]);
 
   useEffect(() => {
     if (
@@ -197,18 +210,42 @@ const Main: React.FC = () => {
         ref={domRef}
       >
         {lyrics?.map(({
-          text,
           isSelected,
           id,
-        }) => (
+          ...lyric
+        }) => ((lyric.format === 'krc' ? (
+          <div
+            key={`lyric-row-${id}`}
+            data-selected={isSelected}
+            className={clsx(classes.row, isSelected && classes.shown)}
+          >
+            {lyric.words.map((word, i) => (
+              <span
+                // eslint-disable-next-line
+                key={`lyric-row-${id}-word-${i}`}
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: word.text }}
+                className={clsx({
+                  [classes.word]: (word.time + lyric.time
+                  + offsetSum) <= time,
+                })}
+                style={{
+                  animationDuration: `${(word.time + lyric.time
+                  + currentOffset + globalOffset + word.duration) <= time
+                    ? 0 : word.duration}s`,
+                }}
+              />
+            ))}
+          </div>
+        ) : (
           <div
             key={`lyric-row-${id}`}
             data-selected={isSelected}
             className={clsx(classes.row, isSelected && classes.shown)}
             // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: text }}
+            dangerouslySetInnerHTML={{ __html: lyric.text }}
           />
-        ))}
+        ))))}
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ export interface Info {
 export interface LyricRequest {
   name: string;
   artist: string;
+  duration: number;
 }
 
 export interface LyricResponse {
@@ -18,6 +19,7 @@ export interface LyricResponse {
   name: string;
   artist: string;
   lyric: string;
+  source: string;
 }
 
 export enum Player {

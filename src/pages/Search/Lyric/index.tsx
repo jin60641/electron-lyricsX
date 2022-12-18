@@ -40,9 +40,24 @@ const Lyric: React.FC = () => {
     <div className={classes.root}>
       {targetList[searchIndex]?.lyric?.map((lyric) => (
         <p className={classes.lyric}>
-          {lyric.timestamp}
-          {' '}
-          {lyric.text}
+          {lyric.format === 'krc' ? (
+            <div
+              key={`lyric-row-${lyric.id}`}
+            >
+              {lyric.words.map((word) => (
+                <span
+                  // eslint-disable-next-line
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: word.text }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: lyric.text }}
+            />
+          )}
         </p>
       ))}
     </div>

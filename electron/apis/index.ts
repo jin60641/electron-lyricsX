@@ -1,18 +1,21 @@
 import { BrowserWindow } from 'electron';
 import { v4 as uuid } from 'uuid';
 
+import {
+  KrcRow, KrcWord, LrcRow, Row,
+} from '../../types/root';
 import { Info, LyricResponse, Player } from '../types';
-import { timeTagToTimestamp } from '../utils/parse';
-import { filterRegex, timeTagRegex } from '../utils/regex';
+import { lrcTimeTagToTime } from '../utils/parse';
+import {
+  filterRegex,
+  krcLineRegex,
+  krcTimeTagRegex,
+  krcWordRegex,
+  lrcTimeTagRegex,
+} from '../utils/regex';
 
 import search163 from './163';
-
-interface Row {
-  timestamp: string,
-  time: number,
-  text: string,
-  id: ReturnType<typeof uuid>,
-}
+import searchKugou from './kugou';
 
 const Kuroshiro = require('kuroshiro').default;
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
@@ -34,9 +37,32 @@ checkAnalyzer();
  * @param {Info} data 검색 인자
  */
 export const getLyricRes = async (data: Info): Promise<LyricResponse[]> => {
-  const lyricRes = await Promise.all([search163(data)]);
+  const lyricRes = await Promise.all([
+    searchKugou(data),
+    search163(data),
+  ]);
   return lyricRes.flat();
 };
+
+const parseWords = async (str: string): Promise<KrcWord[]> => {
+  const matches = [...str.matchAll(krcWordRegex)];
+  if (!matches) {
+    return [];
+  }
+  const words = await Promise.all(matches.map(async ([_sub, _offset, duration, _, text]) => ({
+    text: text ? await kuroshiro.convert(text, { mode: 'furigana', to: 'hiragana' }) as string : '',
+    duration: parseInt(duration, 10) / 1000,
+    time: 0,
+  })));
+  return words.reduce((arr, word, i) => [
+    ...arr,
+    {
+      ...word,
+      time: i ? (arr[i - 1].time + arr[i - 1].duration) : 0,
+    },
+  ], [] as KrcWord[]);
+};
+
 /**
  * 가사 검색 결과를 받아서 Row 데이터 변환 결과를 반환합니다.
  * @param {LyricResponse[]} filteredLyrics 조건에 맞게 필터링 된 데이터
@@ -44,21 +70,39 @@ export const getLyricRes = async (data: Info): Promise<LyricResponse[]> => {
 export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
   const lyrics = await Promise.all(filteredLyrics.map(async ({ lyric, ...info }) => {
     const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
-      const matches = row.match(timeTagRegex);
-      if (!matches) {
+      if (filterRegex.test(row)) {
         return arr;
       }
-      if (filterRegex.test(row)) {
+      if (info.source === 'kugou') {
+        const matches = row.match(krcLineRegex);
+        if (!matches) return arr;
+        const timeTags = matches[1].match(krcTimeTagRegex);
+        if (!timeTags) {
+          return arr;
+        }
+        const [time, duration] = timeTags.slice(1, 2).map((num) => parseFloat(num) / 1000);
+        const body = matches[3];
+        const item: KrcRow = {
+          time,
+          duration,
+          id: uuid(),
+          words: await parseWords(body),
+          format: 'krc',
+        };
+        return (await arr).concat([item]);
+      }
+      const matches = row.match(lrcTimeTagRegex);
+      if (!matches) {
         return arr;
       }
       const [timestamp] = matches;
       const text = row.replace(timestamp, '').replace('/\r/', '');
-
-      const item: Row = {
+      const item: LrcRow = {
+        time: lrcTimeTagToTime(timestamp),
         timestamp,
-        time: timeTagToTimestamp(timestamp),
-        text: text ? await kuroshiro.convert(text, { mode: 'furigana', to: 'hiragana' }) as string : '',
         id: uuid(),
+        text: text ? await kuroshiro.convert(text, { mode: 'furigana', to: 'hiragana' }) as string : '',
+        format: 'lrc',
       };
       return (await arr).concat([item]);
     }, Promise.resolve([])));

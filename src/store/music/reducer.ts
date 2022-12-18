@@ -24,9 +24,9 @@ const musicReducer = createReducer<MusicState>(initialState)
   }))
   .handleAction(musicActions.startMusic, (state, action) => ({
     ...state,
-    lastSelected: 0,
     ...action.payload,
     searchList: action.payload.list,
+    lastSelected: 0,
     searchIndex: 0,
     isPlaying: true,
   }))

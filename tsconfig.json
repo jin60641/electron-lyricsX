@@ -24,7 +24,8 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src"
+    "src",
+    "electron"
   ],
   "exclude": [
     "node_modules"

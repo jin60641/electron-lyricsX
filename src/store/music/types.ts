@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { Row } from '../../types/lyric';
 
 export interface MusicState {
   list: Music[],
@@ -42,22 +42,15 @@ export const initialState: MusicState = {
 };
 
 export interface Music {
+  duartion?: string,
   name?: string,
   artist?: string,
-  duration?: number,
   position?: number,
   source?: string,
   lyric?: Row[],
 }
 
-interface Row {
-  timestamp: string,
-  time: number,
-  text: string,
-  id: ReturnType<typeof uuid>,
-}
-
-export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist'>;
+export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist' | 'duartion'>;
 export type SearchMusicSuccessPayload = MusicState['searchList'];
 
 export type StartMusicPayload = Pick<MusicState, 'list' | 'name' | 'artist'>;
