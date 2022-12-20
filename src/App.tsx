@@ -1,7 +1,7 @@
 import React, { lazy, useMemo } from 'react';
 
 import { CssBaseline } from '@material-ui/core';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useSelector } from 'react-redux';
 import {
@@ -42,7 +42,7 @@ const App: React.FC = () => {
     return palette;
   }, [prefersDarkMode, palette]);
 
-  const theme = useMemo(() => createMuiTheme({
+  const theme = useMemo(() => createTheme({
     overrides,
     palette: {
       type: paletteType,
