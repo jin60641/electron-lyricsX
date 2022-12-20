@@ -143,7 +143,7 @@ const Theme: React.FC = () => {
         <Grid item xs={4}>
           <TextField
             type='color'
-            name='backgroudColor'
+            name='backgroundColor'
             label='Background color'
             onChange={handleChange}
             value={backgroundColor}
