@@ -22,9 +22,10 @@ const uesStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     alignContent: 'center',
-    height: '60vh',
+    minHeight: 0,
     overflowY: 'auto',
     overflowX: 'hidden',
+    flex: '1 1 auto',
   },
   lyric: {
     padding: '0',

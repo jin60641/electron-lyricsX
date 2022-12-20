@@ -19,6 +19,8 @@ const TableContainer = withStyles({
     height: '30vh',
     width: '100%',
     borderBottom: 'solid gray 1px',
+    flexGrow: 1,
+    flexShrink: 0,
   },
 })(MuiTableContainer);
 

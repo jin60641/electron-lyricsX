@@ -26,15 +26,13 @@ const useStyles = makeStyles((theme) => ({
   },
   title: { fontWeight: 'bold' },
   close: { fontSize: 20 },
-  body: (props) => (
-    Object.keys(props).length ? { ...props, paddingTop: theme.spacing(2) }
-      : {
-        flexDirection: 'row',
-        display: 'flex',
-        flexGrow: 1,
-        paddingTop: theme.spacing(2),
-      }
-  ),
+  body: {
+    display: 'flex',
+    flexGrow: 1,
+    flexDirection: 'row',
+    minHeight: 0,
+    paddingTop: theme.spacing(2),
+  },
 }));
 
 interface Props {
