@@ -46,18 +46,12 @@ const Lyric: React.FC = () => {
           <span className={classes.lyricTimestamp}>
             {new Date(lyric.time).toISOString().replace(/.*T/, '[').replace('Z', ']')}
           </span>
-          {lyric.format === 'krc' ? lyric.words.map((word) => (
+          {(lyric.format === 'krc' ? lyric.words : [{ text: lyric.text }]).map((word) => (
             <span
-              // eslint-disable-next-line
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: word.text }}
             />
-          )) : (
-            <span
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: lyric.text }}
-            />
-          )}
+          ))}
         </p>
       ))}
     </div>

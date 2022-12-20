@@ -1,7 +1,7 @@
 import {
-  Menu, nativeImage, shell, Tray,
+  app, Menu, nativeImage, shell,
+  Tray,
 } from 'electron';
-import { app } from 'electron';
 import path from 'path';
 
 import { publicPath } from './constants';
@@ -49,7 +49,7 @@ const createTray = (windows: Windows) => {
     {
       label: 'Quit',
       click: () => {
-        Object.values(windows).forEach(window => {
+        Object.values(windows).forEach((window) => {
           window.setClosable(true);
           window.close();
         });

@@ -139,7 +139,7 @@ export const startMusic = async (win: BrowserWindow, data: Info) => {
     artist,
   });
   const lyrics = await getLyrics(data);
-  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics)
+  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics);
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {
