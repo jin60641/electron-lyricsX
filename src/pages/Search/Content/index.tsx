@@ -88,7 +88,7 @@ const LyricTable = () => {
     <TableContainer
       onKeyDown={handleOnKeyDown}
     >
-      <Table size='small'>
+      <Table size='small' stickyHeader>
         <TableHead>
           <MuiTableRow>
             <TableCell>제목</TableCell>
