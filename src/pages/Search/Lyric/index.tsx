@@ -8,13 +8,11 @@ import { RootState } from 'store/types';
 const selector = ({
   music: {
     list,
-    searchList,
-    searchIndex,
+    lastSelected,
   },
 }: RootState) => ({
   list,
-  searchList,
-  searchIndex,
+  lastSelected,
 });
 
 const uesStyles = makeStyles((theme) => ({
@@ -36,12 +34,11 @@ const uesStyles = makeStyles((theme) => ({
 }));
 
 const Lyric: React.FC = () => {
-  const { list, searchList, searchIndex } = useSelector(selector, shallowEqual);
+  const { list, lastSelected } = useSelector(selector, shallowEqual);
   const classes = uesStyles();
-  const targetList = searchList || list;
   return (
     <div className={classes.root}>
-      {targetList[searchIndex]?.lyric?.map((lyric) => (
+      {list[lastSelected]?.lyric?.map((lyric) => (
         <p className={classes.lyric} key={`lyric-row-${lyric.id}`}>
           <span className={classes.lyricTimestamp}>
             {new Date(lyric.time).toISOString().replace(/.*T/, '[').replace('Z', ']')}

@@ -2,9 +2,7 @@ import { Row } from '../../types/lyric';
 
 export interface MusicState {
   list: Music[],
-  searchList: Music[],
-  searchIndex: number,
-  lastSelected?: number,
+  lastSelected: number,
   isPlaying: boolean,
   currentOffset: number,
   globalOffset: number,
@@ -20,9 +18,8 @@ export enum Actions {
   SEARCH_MUSIC_REQUEST = 'MUSIC.SEARCH_MUSIC#REQUEST',
   SEARCH_MUSIC_SUCCESS = 'MUSIC.SEARCH_MUSIC#SUCCESS',
   SEARCH_MUSIC_FAILURE = 'MUSIC.SEARCH_MUSIC#FAILURE',
-  SET_SEARCH_INDEX = 'MUSIC.SET_SEARCH_INDEX',
+  SET_LAST_SELECTED = 'MUSIC.SET_LAST_SELECTED',
 
-  SELECT_MUSIC = 'MUSIC.SELECT_MUSIC',
   RESET_MUSIC = 'MUSIC.RESET_MUSIC',
   REMOVE_MUSIC = 'MUSIC.REMOVE_MUSIC',
 
@@ -32,8 +29,7 @@ export enum Actions {
 
 export const initialState: MusicState = {
   list: [],
-  searchList: [],
-  searchIndex: 0,
+  lastSelected: 0,
   isPlaying: false,
   currentOffset: 0,
   globalOffset: -0.5,
@@ -49,6 +45,6 @@ export interface Music {
 }
 
 export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist' | 'duartion'>;
-export type SearchMusicSuccessPayload = MusicState['searchList'];
+export type SearchMusicSuccessPayload = MusicState['list'];
 
 export type StartMusicPayload = Pick<MusicState, 'name' | 'artist'>;

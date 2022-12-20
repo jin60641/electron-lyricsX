@@ -105,7 +105,7 @@ const selector = ({
   },
   preference: { draggable },
 }: RootState) => ({
-  music: (lastSelected !== undefined ? list[lastSelected] : undefined),
+  music: list[lastSelected],
   isPlaying,
   currentOffset,
   globalOffset,

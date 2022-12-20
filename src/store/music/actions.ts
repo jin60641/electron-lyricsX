@@ -8,12 +8,6 @@ import {
   StartMusicPayload,
 } from './types';
 
-const selectMusic = createAction(
-  Actions.SELECT_MUSIC,
-)<
-number
->();
-
 const resetMusic = createAction(
   Actions.RESET_MUSIC,
 )();
@@ -39,17 +33,16 @@ const searchMusic = createAsyncAction(
   Actions.SEARCH_MUSIC_SUCCESS,
   Actions.SEARCH_MUSIC_FAILURE,
 )<SearchMusicRequestPayload, SearchMusicSuccessPayload, void>();
-const setSearchIndex = createAction(Actions.SET_SEARCH_INDEX)<number>();
+const setLastSelected = createAction(Actions.SET_LAST_SELECTED)<number>();
 
 export default {
   resetMusic,
-  selectMusic,
   startMusic,
   stopMusic,
   pauseMusic,
   seekMusic,
   searchMusic,
-  setSearchIndex,
+  setLastSelected,
   setCurrentOffset,
   setGlobalOffset,
 };

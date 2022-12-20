@@ -21,8 +21,6 @@ const musicReducer = createReducer<MusicState>(initialState)
   .handleAction(musicActions.startMusic, (state, action) => ({
     ...state,
     ...action.payload,
-    lastSelected: undefined,
-    searchIndex: 0,
     isPlaying: true,
   }))
   .handleAction(musicActions.stopMusic, () => ({ ...initialState }))
@@ -30,19 +28,9 @@ const musicReducer = createReducer<MusicState>(initialState)
     ...state,
     isPlaying: false,
   }))
-  .handleAction(musicActions.selectMusic, (state, action) => ({
-    ...state,
-    lastSelected: action.payload,
-    list: state.list.map((music, i) => ({
-      ...music,
-      isSelected: i === action.payload,
-    })),
-  }))
   .handleAction(musicActions.searchMusic.success, (state, action) => ({
     ...state,
-    lastSelected: 0,
-    searchIndex: 0,
-    searchList: action.payload,
+    list: action.payload,
   }))
   .handleAction(musicActions.setCurrentOffset, (state, action) => ({
     ...state,
@@ -52,10 +40,8 @@ const musicReducer = createReducer<MusicState>(initialState)
     ...state,
     globalOffset: action.payload,
   }))
-  .handleAction(musicActions.setSearchIndex, (state, action) => ({
+  .handleAction(musicActions.setLastSelected, (state, action) => ({
     ...state,
-    searchIndex: action.payload,
-    list: state.searchList,
     lastSelected: action.payload,
   }));
 

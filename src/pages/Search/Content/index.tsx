@@ -37,13 +37,11 @@ const TableHead = withStyles({ root: { borderBottom: 'solid 1px gray' } })(MuiTa
 const selector = ({
   music: {
     list,
-    searchList,
-    searchIndex,
+    lastSelected,
   },
 }: RootState) => ({
   list,
-  searchList,
-  searchIndex,
+  lastSelected,
 });
 
 const TableRow = withStyles((theme) => ({
@@ -68,10 +66,10 @@ const TableCell = withStyles({
 const LyricTable = () => {
   // const classes = useStyles();
   const tbodyRef = useRef<HTMLTableSectionElement | null>(null);
-  const { searchList, searchIndex } = useSelector(selector, shallowEqual);
+  const { list, lastSelected } = useSelector(selector, shallowEqual);
   const dispatch = useDispatch();
   const handleFocusRow = useCallback((i: number) => {
-    dispatch(musicActions.setSearchIndex(i));
+    dispatch(musicActions.setLastSelected(i));
   }, [dispatch]);
 
   const handleOnKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -79,18 +77,18 @@ const LyricTable = () => {
     e.stopPropagation();
     switch (e.key) {
       case 'ArrowUp':
-        if (searchIndex > 0) {
-          (tbodyRef.current?.children[searchIndex - 1] as HTMLElement)?.focus();
+        if (lastSelected > 0) {
+          (tbodyRef.current?.children[lastSelected - 1] as HTMLElement)?.focus();
         }
         break;
       case 'ArrowDown':
-        if (searchIndex < searchList.length - 1) {
-          (tbodyRef.current?.children[searchIndex + 1] as HTMLElement)?.focus();
+        if (lastSelected < list.length - 1) {
+          (tbodyRef.current?.children[lastSelected + 1] as HTMLElement)?.focus();
         }
         break;
       default: break;
     }
-  }, [searchIndex, searchList, tbodyRef]);
+  }, [lastSelected, list, tbodyRef]);
 
   return (
     <TableContainer
@@ -105,13 +103,13 @@ const LyricTable = () => {
           </MuiTableRow>
         </TableHead>
         <TableBody ref={tbodyRef}>
-          {searchList.map(({ name, artist, source }, i) => (
+          {list.map(({ name, artist, source }, i) => (
             <TableRow
               // eslint-disable-next-line react/no-array-index-key
               key={`SearchRow-${i}`}
               role='button'
               tabIndex={i}
-              selected={searchIndex === i}
+              selected={lastSelected === i}
               onFocus={() => handleFocusRow(i)}
             >
               <TableCell>{name}</TableCell>
