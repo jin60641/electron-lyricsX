@@ -133,13 +133,13 @@ export const searchMusic = async (win: BrowserWindow, data: Info) => {
   win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics);
 };
 export const startMusic = async (win: BrowserWindow, data: Info) => {
-  const lyrics = await getLyrics(data);
   const { name, artist } = data;
   win.webContents.send('MUSIC.START_MUSIC', {
     name,
     artist,
-    list: lyrics,
   });
+  const lyrics = await getLyrics(data);
+  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics)
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {

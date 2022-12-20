@@ -14,12 +14,6 @@ const selectMusic = createAction(
 number
 >();
 
-const setLastSelected = createAction(
-  Actions.SET_LAST_SELECTED,
-)<
-number
->();
-
 const resetMusic = createAction(
   Actions.RESET_MUSIC,
 )();
@@ -50,7 +44,6 @@ const setSearchIndex = createAction(Actions.SET_SEARCH_INDEX)<number>();
 export default {
   resetMusic,
   selectMusic,
-  setLastSelected,
   startMusic,
   stopMusic,
   pauseMusic,

@@ -18,15 +18,10 @@ const musicReducer = createReducer<MusicState>(initialState)
     ...state,
     list: [],
   }))
-  .handleAction(musicActions.setLastSelected, (state, action) => ({
-    ...state,
-    lastSelected: action.payload,
-  }))
   .handleAction(musicActions.startMusic, (state, action) => ({
     ...state,
     ...action.payload,
-    searchList: action.payload.list,
-    lastSelected: 0,
+    lastSelected: undefined,
     searchIndex: 0,
     isPlaying: true,
   }))
@@ -45,6 +40,7 @@ const musicReducer = createReducer<MusicState>(initialState)
   }))
   .handleAction(musicActions.searchMusic.success, (state, action) => ({
     ...state,
+    lastSelected: 0,
     searchIndex: 0,
     searchList: action.payload,
   }))

@@ -13,8 +13,6 @@ export interface MusicState {
 }
 
 export enum Actions {
-  SET_LAST_SELECTED = 'MUSIC.SET_LAST_SELECTED',
-
   START_MUSIC = 'MUSIC.START_MUSIC',
   STOP_MUSIC = 'MUSIC.STOP_MUSIC',
   PAUSE_MUSIC = 'MUSIC.PAUSE_MUSIC',
@@ -53,4 +51,4 @@ export interface Music {
 export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist' | 'duartion'>;
 export type SearchMusicSuccessPayload = MusicState['searchList'];
 
-export type StartMusicPayload = Pick<MusicState, 'list' | 'name' | 'artist'>;
+export type StartMusicPayload = Pick<MusicState, 'name' | 'artist'>;
