@@ -53,6 +53,7 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
     transition: 'opacity .3s',
   },
   wrap: {
+    whiteSpace: 'pre',
     position: 'absolute',
     top: 0,
     zIndex: 1,
