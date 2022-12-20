@@ -1,3 +1,4 @@
+import { LyricFormat } from '../../types';
 import { LyricRequest, LyricResponse } from '../types';
 import axios from '../utils/axios';
 import { makeKeyword } from '../utils/common';
@@ -45,13 +46,6 @@ const searchLyric: (info: KugouLyricRequest) => Promise<LyricResponse> = async (
     ...info,
     lyric: res.data.content,
   };
-  /*
-  return {
-    ...info,
-    lyric: res.data.lyric,
-    source: 'kugou',
-  } as LyricResponse;
-  */
 };
 
 const searchMusic = async (data: LyricRequest): Promise<LyricResponse[]> => {
@@ -85,6 +79,7 @@ const searchMusic = async (data: LyricRequest): Promise<LyricResponse[]> => {
     accesskey,
     lyric: '',
     source: 'kugou',
+    format: LyricFormat.KRC,
   }));
   const lyricInfos = await Promise.all(infos.map(searchLyric));
   return lyricInfos.filter((lyricInfo) => !!lyricInfo?.lyric);

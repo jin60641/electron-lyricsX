@@ -16,6 +16,7 @@ import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync
 import { ActionCreator, getType } from 'typesafe-actions';
 
 import rootEpic from './epic';
+import actions from './preference/actions';
 import rootReducer from './reducer';
 import { channels, RootAction, RootState } from './types';
 
@@ -52,12 +53,19 @@ const store = createStore(
 epicMiddleware.run(rootEpic);
 initMessageListener(store);
 
-const persistor = persistStore(store);
 channels.forEach((channel) => {
   window.bridge.ipc.receive(getType(channel as ActionCreator), (data) => {
     store.dispatch(channel(data));
   });
 });
+
+const persistHandler = () => {
+  const state = store.getState();
+  const { player } = state.preference;
+  window.bridge.ipc.send(getType(actions.setPlayer.request), player);
+};
+
+const persistor = persistStore(store, undefined, persistHandler);
 
 export {
   store,

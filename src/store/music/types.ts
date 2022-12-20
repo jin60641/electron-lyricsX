@@ -1,4 +1,4 @@
-import { Row } from '../../types/lyric';
+import { Music } from '../../types/lyric';
 
 export interface MusicState {
   list: Music[],
@@ -35,16 +35,7 @@ export const initialState: MusicState = {
   globalOffset: -0.5,
 };
 
-export interface Music {
-  duartion?: string,
-  name?: string,
-  artist?: string,
-  position?: number,
-  source?: string,
-  lyric?: Row[],
-}
-
-export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist' | 'duartion'>;
+export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist'>;
 export type SearchMusicSuccessPayload = MusicState['list'];
 
-export type StartMusicPayload = Pick<MusicState, 'name' | 'artist'>;
+export type StartMusicPayload = SearchMusicRequestPayload;

@@ -1,7 +1,8 @@
+import { Info } from '../types';
+
 import { resourcePath } from './constants';
 import EventTarget from './event';
-import { getStore } from './storage';
-import { EventName, Info, Player } from './types';
+import { EventName, Player } from './types';
 
 const { spawn } = require('child_process');
 const path = require('path');
@@ -17,7 +18,7 @@ class Playback extends EventTarget {
 
   private prevTrack?: Info;
 
-  private player: Player = getStore()?.preference.player || Player.CHROME;
+  private player?: Player;
 
   private timer?: ReturnType<typeof setInterval>;
 
@@ -38,9 +39,13 @@ class Playback extends EventTarget {
         return;
       }
       if (!this.isPlaying) {
-        if (this.prevTrack && track.position !== this.prevTrack.position) {
+        if (this.prevTrack) {
           this.isPlaying = true;
-          this.emit(EventName.START, track);
+          if (this.prevTrack?.name !== track.name) {
+            this.emit(EventName.START, track);
+          } else if (track.position !== this.prevTrack.position) {
+            this.emit(EventName.START);
+          }
         } else if (!this.prevTrack) {
           this.isPlaying = true;
           this.emit(EventName.START, track);
@@ -83,6 +88,9 @@ class Playback extends EventTarget {
   }
 
   public setPlayer(player: Player) {
+    if (this.player === player) {
+      return;
+    }
     this.player = player;
     this.pauseTimer();
     if (this.prevTrack) {
@@ -96,7 +104,7 @@ class Playback extends EventTarget {
   }
 
   private runTransportScript(callback: DefaultCallback) {
-    if (!callback) {
+    if (!callback || !this.player) {
       return;
     }
     const scriptPath = path.join(SCRIPT_DIR, this.isWindows ? 'windows' : 'mac', `${this.player}Transport.scpt`);

@@ -1,12 +1,4 @@
-export interface Info {
-  name: string;
-  artist: string;
-  album: string;
-  duration: number;
-  position: number;
-  start: number
-  finish: number
-}
+import { Info, Music } from '../../types';
 
 export interface LyricRequest {
   name: string;
@@ -14,12 +6,8 @@ export interface LyricRequest {
   duration: number;
 }
 
-export interface LyricResponse {
-  id: string | number;
-  name: string;
-  artist: string;
+export interface LyricResponse extends Omit<Music, 'lyric'> {
   lyric: string;
-  source: string;
 }
 
 export enum Player {
@@ -42,7 +30,7 @@ export namespace ClientEvent {
     [EventName.STOP]: Info;
     [EventName.PAUSE]: Info;
     [EventName.SEEK]: Info;
-    [EventName.SET_PLAYER]: any;
+    [EventName.SET_PLAYER]: Player;
   };
 
   export type HandlersEventMap = {

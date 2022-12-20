@@ -1,3 +1,4 @@
+import { LyricFormat } from '../../types';
 import { LyricRequest, LyricResponse } from '../types';
 import axios from '../utils/axios';
 import { makeKeyword } from '../utils/common';
@@ -45,6 +46,7 @@ const searchMusic = async (data: LyricRequest) => {
     name,
     artist,
     source: '163',
+    format: LyricFormat.LRC,
     lyric: '',
   }));
   const lyricInfos = await Promise.all(infos.map(searchLyric));

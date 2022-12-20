@@ -1,27 +1,6 @@
-import { RootState } from '../types/root';
-
 const Store = require('electron-store');
 
 export const store = new Store();
-
-type JsonObj = Record<string, Record<string, unknown>>;
-
-const parseObj = (
-  jsonObj: JsonObj,
-  cnt: number,
-): JsonObj => Object.entries(jsonObj)
-  .reduce((obj, [key, value]) => ({
-    ...obj,
-    [`${key}`.replace('persist:', '')]: cnt ? parseObj(JSON.parse(`${value}`), cnt - 1) : value,
-  }), {});
-
-export const getStore = (): RootState | void => {
-  try {
-    return parseObj(store.store, 1) as unknown as RootState;
-  } catch (e) {
-    return undefined;
-  }
-};
 
 const storage = {
   getItem: (key: string) => new Promise((resolve) => {

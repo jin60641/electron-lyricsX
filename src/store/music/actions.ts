@@ -1,8 +1,9 @@
 import { createAction, createAsyncAction } from 'typesafe-actions';
 
+import { Info } from '../../types/lyric';
+
 import {
   Actions,
-  Music,
   SearchMusicRequestPayload,
   SearchMusicSuccessPayload,
   StartMusicPayload,
@@ -27,7 +28,7 @@ number
 const startMusic = createAction(Actions.START_MUSIC)<StartMusicPayload>();
 const stopMusic = createAction(Actions.STOP_MUSIC)();
 const pauseMusic = createAction(Actions.PAUSE_MUSIC)();
-const seekMusic = createAction(Actions.SEEK_MUSIC)<Music>();
+const seekMusic = createAction(Actions.SEEK_MUSIC)<Info>();
 const searchMusic = createAsyncAction(
   Actions.SEARCH_MUSIC_REQUEST,
   Actions.SEARCH_MUSIC_SUCCESS,
