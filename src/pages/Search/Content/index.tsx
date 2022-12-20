@@ -1,11 +1,11 @@
 import React, { useCallback, useRef } from 'react';
 
 import {
+  Table as MuiTable,
   TableCell as MuiTableCell,
   TableContainer as MuiTableContainer,
   TableHead as MuiTableHead,
   TableRow as MuiTableRow,
-  Table,
   TableBody,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,6 +23,14 @@ const TableContainer = withStyles({
     flexShrink: 0,
   },
 })(MuiTableContainer);
+
+const Table = withStyles({
+  root: {
+    width: '100%',
+    tableLayout: 'fixed',
+    overflowWrap: 'break-word',
+  },
+})(MuiTable);
 
 const TableHead = withStyles({ root: { borderBottom: 'solid 1px gray' } })(MuiTableHead);
 
@@ -93,7 +101,7 @@ const LyricTable = () => {
           <MuiTableRow>
             <TableCell>제목</TableCell>
             <TableCell>아티스트</TableCell>
-            <TableCell>출처</TableCell>
+            <TableCell width={120}>출처</TableCell>
           </MuiTableRow>
         </TableHead>
         <TableBody ref={tbodyRef}>
