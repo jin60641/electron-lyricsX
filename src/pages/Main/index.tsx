@@ -17,8 +17,8 @@ import { useSelector } from 'react-redux';
 import { getType } from 'typesafe-actions';
 
 import musicActions from 'store/music/actions';
-import { Music } from 'store/music/types';
 import { RootState } from 'store/types';
+import { Info } from 'types/lyric';
 
 type Props = Omit<RootState['layout'], 'lineCount' | 'palette'>;
 
@@ -66,27 +66,29 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   row: {
     display: 'inline-flex',
     color: ({ fontColor }) => fontColor,
-    textShadow: ({ textShadowSize, textShadowColor, textShadowOpacity }) => `0px 0px ${textShadowSize}px ${alpha(textShadowColor, textShadowOpacity)}`,
     fontSize: ({ fontSize }) => fontSize,
     userSelect: 'none',
     alignItems: 'flex-end',
     flexDirection: 'row',
     opacity: 0,
     transition: 'opacity .3s',
+    '> span': { opacity: ({ fontOpacity }) => fontOpacity },
   },
-  shown: { opacity: ({ fontOpacity }) => fontOpacity },
-  '@keyframes stripes': { to: { backgroundPositionX: '0px' } },
+  shown: { opacity: 1 },
   word: {
-    backgroundImage: ({ fontColor, textShadowColor }) => `linear-gradient(to right, ${textShadowColor} 50%, ${fontColor} 50%)`,
+    backgroundImage: ({ fontColor, fontOpacity, progressColor, progressOpacity }) => `linear-gradient(to right, ${alpha(progressColor, progressOpacity)} 50%, ${alpha(fontColor, fontOpacity)} 50%)`,
     backgroundRepeat: 'no-repeat',
     backgroundPositionX: '100%',
     backgroundSize: '200%',
     'text-fill-color': 'transparent',
     'background-clip': 'text',
     '-webkit-background-clip': 'text',
-    animationName: '$stripes',
-    animationTimingFunction: 'linear',
-    animationFillMode: 'forwards',
+    transitionProperty: 'background-position-x',
+    '-webkit-filter': ({ textShadowSize, textShadowColor, textShadowOpacity }) => `drop-shadow(0px 0px ${textShadowSize}px ${alpha(textShadowColor, textShadowOpacity)})`,
+  },
+  lrcRow: {
+    // background-clip text와 text-shadow같이 사용할 때 shadow가 text를 침범하기 때문에 lrc 에만 text-shadow 사용
+    textShadow: ({ textShadowSize, textShadowColor, textShadowOpacity }) => `0px 0px ${textShadowSize}px ${alpha(textShadowColor, textShadowOpacity)}`,
   },
 }));
 
@@ -195,7 +197,7 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     // avoid using redux for update immediately
-    window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Music) => {
+    window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Info) => {
       if (data.position) {
         setTime(data.position);
         setPosition(data.position);
@@ -220,32 +222,34 @@ const Main: React.FC = () => {
             data-selected={isSelected}
             className={clsx(classes.row, isSelected && classes.shown)}
           >
-            {lyric.words.map((word, i) => (
-              <span
-                // eslint-disable-next-line
-                key={`lyric-row-${id}-word-${i}`}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: word.text }}
-                className={clsx({
-                  [classes.word]: (word.time + lyric.time
-                  + offsetSum) <= time,
-                })}
-                style={{
-                  animationDuration: `${(word.time + lyric.time
-                  + currentOffset + globalOffset + word.duration) <= time
-                    ? 0 : word.duration}s`,
-                }}
-              />
-            ))}
+            {lyric.words.map((word, i) => {
+              const wordStart = word.time + lyric.time + offsetSum;
+              const wordFinish = wordStart + word.duration;
+              const fullFill = wordFinish <= time;
+              const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
+              return (
+                <span
+                  // eslint-disable-next-line
+                  key={`lyric-row-${id}-word-${i}`}
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: word.text }}
+                  className={classes.word}
+                  style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
+                />
+              );
+            })}
           </div>
         ) : (
           <div
             key={`lyric-row-${id}`}
             data-selected={isSelected}
-            className={clsx(classes.row, isSelected && classes.shown)}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: lyric.text }}
-          />
+            className={clsx(classes.row, isSelected && classes.shown, classes.lrcRow)}
+          >
+            <span
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: lyric.text }}
+            />
+          </div>
         ))))}
       </div>
     </div>

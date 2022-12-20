@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { shallowEqual, useSelector } from 'react-redux';
 
 import { RootState } from 'store/types';
+import { LyricFormat } from 'types/lyric';
 
 const selector = ({
   music: {
@@ -43,7 +44,7 @@ const Lyric: React.FC = () => {
           <span className={classes.lyricTimestamp}>
             {new Date(lyric.time).toISOString().replace(/.*T/, '[').replace('Z', ']')}
           </span>
-          {(lyric.format === 'krc' ? lyric.words : [{ text: lyric.text }]).map((word) => (
+          {(lyric.format === LyricFormat.KRC ? lyric.words : [{ text: lyric.text }]).map((word) => (
             <span
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: word.text }}

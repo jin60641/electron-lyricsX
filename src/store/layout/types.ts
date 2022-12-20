@@ -9,6 +9,8 @@ export interface LayoutState {
   textShadowOpacity: number;
   backgroundColor: string;
   backgroundOpacity: number;
+  progressColor: string;
+  progressOpacity: number;
 }
 
 export enum Actions {
@@ -30,8 +32,10 @@ export const initialState: LayoutState = {
   fontColor: '#ffffff',
   fontOpacity: 1,
   textShadowSize: 28,
-  textShadowColor: '#ffffff',
-  textShadowOpacity: 1,
+  textShadowColor: '#00ffff',
+  textShadowOpacity: 0.68,
   backgroundColor: '#000000',
-  backgroundOpacity: 1,
+  backgroundOpacity: 0.6,
+  progressColor: '#25f4d1',
+  progressOpacity: 0.8,
 };

@@ -21,6 +21,8 @@ const Theme: React.FC = () => {
     textShadowOpacity,
     backgroundColor,
     backgroundOpacity,
+    progressColor,
+    progressOpacity,
     lineCount,
     palette,
   } = layout;
@@ -156,6 +158,29 @@ const Theme: React.FC = () => {
             name='backgroundOpacity'
             label='Background opacity'
             value={backgroundOpacity}
+            onChange={handleChange}
+            inputProps={{ step: 0.1, min: 0, max: 1 }}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <Grid container item xs={12} spacing={2}>
+        <Grid item xs={4}>
+          <TextField
+            type='color'
+            name='progressColor'
+            label='Progress color'
+            onChange={handleChange}
+            value={progressColor}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            type='number'
+            name='progressOpacity'
+            label='Progress opacity'
+            value={progressOpacity}
             onChange={handleChange}
             inputProps={{ step: 0.1, min: 0, max: 1 }}
             fullWidth
