@@ -17,7 +17,7 @@ const selector = ({
   searchIndex,
 });
 
-const uesStyles = makeStyles({
+const uesStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -26,12 +26,14 @@ const uesStyles = makeStyles({
     overflowY: 'auto',
     overflowX: 'hidden',
     flex: '1 1 auto',
+    padding: theme.spacing(2),
   },
   lyric: {
     padding: '0',
     margin: '0',
   },
-});
+  lyricTimestamp: { marginRight: theme.spacing(1) },
+}));
 
 const Lyric: React.FC = () => {
   const { list, searchList, searchIndex } = useSelector(selector, shallowEqual);
@@ -40,21 +42,18 @@ const Lyric: React.FC = () => {
   return (
     <div className={classes.root}>
       {targetList[searchIndex]?.lyric?.map((lyric) => (
-        <p className={classes.lyric}>
-          {lyric.format === 'krc' ? (
-            <div
-              key={`lyric-row-${lyric.id}`}
-            >
-              {lyric.words.map((word) => (
-                <span
-                  // eslint-disable-next-line
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: word.text }}
-                />
-              ))}
-            </div>
-          ) : (
-            <div
+        <p className={classes.lyric} key={`lyric-row-${lyric.id}`}>
+          <span className={classes.lyricTimestamp}>
+            {new Date(lyric.time).toISOString().replace(/.*T/, '[').replace('Z', ']')}
+          </span>
+          {lyric.format === 'krc' ? lyric.words.map((word) => (
+            <span
+              // eslint-disable-next-line
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: word.text }}
+            />
+          )) : (
+            <span
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: lyric.text }}
             />
