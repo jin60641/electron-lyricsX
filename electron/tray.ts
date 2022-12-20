@@ -1,6 +1,7 @@
 import {
   Menu, nativeImage, shell, Tray,
 } from 'electron';
+import { app } from 'electron';
 import path from 'path';
 
 import { publicPath } from './constants';
@@ -45,7 +46,16 @@ const createTray = (windows: Windows) => {
       },
     },
     { type: 'separator' },
-    { role: 'quit' },
+    {
+      label: 'Quit',
+      click: () => {
+        Object.values(windows).forEach(window => {
+          window.setClosable(true);
+          window.close();
+        });
+        app.quit();
+      },
+    },
   ]);
   tray.setToolTip('LyricsX');
   tray.setContextMenu(contextMenu);
