@@ -2,8 +2,7 @@ import { BrowserWindow, Rectangle } from 'electron';
 
 const DEFAULT_DURATION = 100;
 
-/* Penner easing function
-See: http://robertpenner.com/easing/ */
+// ease out quint
 const DEFAULT_EASING = (
   index: number,
   current: number,
@@ -11,7 +10,7 @@ const DEFAULT_EASING = (
   duration: number,
 ) => (index === duration
   ? current + diff
-  : diff * (-(2 ** ((-10 * index) / duration)) + 1) + current
+  : diff * (1 - Math.pow(1 - (index / duration), 5)) + current
 );
 
 type BrowserWindowAnimateOptions = {
