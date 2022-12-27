@@ -42,7 +42,7 @@ const Lyric: React.FC = () => {
       {list[lastSelected]?.lyric?.map((lyric) => (
         <p className={classes.lyric} key={`lyric-row-${lyric.id}`}>
           <span className={classes.lyricTimestamp}>
-            {new Date(lyric.time).toISOString().replace(/.*T/, '[').replace('Z', ']')}
+            {new Date(lyric.time * 1000).toISOString().replace(/.*T/, '[').replace('Z', ']')}
           </span>
           {(lyric.format === LyricFormat.KRC ? lyric.words : [{ text: lyric.text }]).map((word) => (
             <span
