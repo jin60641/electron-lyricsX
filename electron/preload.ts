@@ -6,7 +6,9 @@ import {
 import storage from './storage';
 
 contextBridge.exposeInMainWorld('bridge', {
+  // isMac: (,
   storage,
+  platform: process.platform,
   ipc: {
     send: (channel: string, data: any) => {
       ipcRenderer.send(channel, data);

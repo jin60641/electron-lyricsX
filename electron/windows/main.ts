@@ -1,13 +1,16 @@
 import { BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 
+import { Music } from '../../types';
 import {
-  pauseMusic, seekMusic, startMusic, stopMusic,
+  pauseMusic, seekMusic, sendTranslatedLyric, startMusic,
+  stopMusic,
 } from '../apis/index';
 import { isDev } from '../constants';
 import playback from '../playback';
 import { EventName } from '../types';
 import '../utils/polyfill';
+import { tlitLyric } from '../utils/parse';
 
 const createWindow = () => {
   // Create the browser window.
@@ -27,6 +30,7 @@ const createWindow = () => {
     minWidth: 1,
     hasShadow: false,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true,
       contextIsolation: true,
       nativeWindowOpen: true,
@@ -85,6 +89,14 @@ const createWindow = () => {
     const { draggable } = payload;
     if (draggable) win.setIgnoreMouseEvents(false);
     else win.setIgnoreMouseEvents(true);
+  });
+
+  ipcMain.on('MUSIC.TRANSLATE_LYRIC#REQUEST', async (event, payload: { lyric: Music['lyric'], locale: string }) => {
+    if ((event as any).sender.getOwnerBrowserWindow() !== win) {
+      return;
+    }
+    const lyricWithTlit = await tlitLyric(payload);
+    sendTranslatedLyric(win, lyricWithTlit);
   });
 
   playback.on(EventName.START, ({ detail }) => {

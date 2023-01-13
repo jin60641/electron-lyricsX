@@ -10,7 +10,7 @@ const DEFAULT_EASING = (
   duration: number,
 ) => (index === duration
   ? current + diff
-  : diff * (1 - Math.pow(1 - (index / duration), 5)) + current
+  : diff * (1 - ((1 - (index / duration)) ** 5)) + current
 );
 
 type BrowserWindowAnimateOptions = {

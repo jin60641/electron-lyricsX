@@ -20,7 +20,7 @@ const preferenceReducer = createReducer<PreferenceState>(initialState)
   }))
   .handleAction(preferenceAction.setLocale, (state, action) => ({
     ...state,
-    code: action.payload,
+    locale: action.payload,
   }));
 
 export default persistReducer(persistConfig, preferenceReducer);

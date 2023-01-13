@@ -62,14 +62,20 @@ const useStyles = makeStyles<Theme, Props>((theme) => createStyles({
   },
   row: {
     display: 'inline-flex',
+    flexDirection: 'column',
+    opacity: 0,
+    transition: 'opacity .3s',
+  },
+  rowInner: {
     color: ({ fontColor }) => fontColor,
     fontSize: ({ fontSize }) => fontSize,
     userSelect: 'none',
     alignItems: 'flex-end',
     flexDirection: 'row',
-    opacity: 0,
-    transition: 'opacity .3s',
-    '> span': { opacity: ({ fontOpacity }) => fontOpacity },
+    '& > span': {
+      opacity: ({ fontOpacity }) => fontOpacity,
+      paddingTop: ({ fontSize }) => fontSize / 2,
+    },
   },
   shown: { opacity: 1 },
   word: {
@@ -219,22 +225,45 @@ const Main: React.FC = () => {
             data-selected={isSelected}
             className={clsx(classes.row, isSelected && classes.shown)}
           >
-            {lyric.words.map((word, i) => {
-              const wordStart = word.time + lyric.time + offsetSum;
-              const wordFinish = wordStart + word.duration;
-              const fullFill = wordFinish <= time;
-              const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
-              return (
-                <span
-                  // eslint-disable-next-line
-                  key={`lyric-row-${id}-word-${i}`}
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: word.text }}
-                  className={classes.word}
-                  style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
-                />
-              );
-            })}
+            <div className={classes.rowInner}>
+              {lyric.words.map((word, i) => {
+                const wordStart = word.time + lyric.time + offsetSum;
+                const wordFinish = wordStart + word.duration;
+                const fullFill = wordFinish <= time;
+                const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
+                return (
+                  <span
+                    // eslint-disable-next-line
+                    key={`lyric-row-${id}-word-${i}`}
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: word.text }}
+                    className={classes.word}
+                    style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
+                  />
+                );
+              })}
+            </div>
+            {lyric.tlitWords && (
+              <div className={classes.rowInner}>
+                {lyric.tlitWords.map((word, i) => {
+                  const wordStart = word.time + lyric.time + offsetSum;
+                  const wordFinish = wordStart + word.duration;
+                  const fullFill = wordFinish <= time;
+                  const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
+                  return (
+                    <span
+                      // eslint-disable-next-line
+                      key={`lyric-row-${id}-tlitWord-${i}`}
+                      // eslint-disable-next-line react/no-danger
+                      dangerouslySetInnerHTML={{ __html: word.text }}
+                      className={classes.word}
+                      style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
+                    />
+                  );
+                })}
+
+              </div>
+            )}
           </div>
         ) : (
           <div
@@ -242,10 +271,19 @@ const Main: React.FC = () => {
             data-selected={isSelected}
             className={clsx(classes.row, isSelected && classes.shown, classes.lrcRow)}
           >
-            <span
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: lyric.text }}
-            />
+            <div className={classes.rowInner}>
+              <span
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: lyric.text }}
+              />
+            </div>
+            {lyric.tlitText && (
+              <div className={classes.rowInner}>
+                <span>
+                  {lyric.tlitText}
+                </span>
+              </div>
+            )}
           </div>
         ))))}
       </div>

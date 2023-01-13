@@ -2,6 +2,7 @@ import { v4 as uuid } from 'uuid';
 
 export interface KrcWord {
   text: string;
+  srcText: string;
   time: number;
   duration: number;
 }
@@ -9,6 +10,9 @@ export interface KrcWord {
 export interface RowBase {
   time: number,
   id: ReturnType<typeof uuid>,
+  srcText: string;
+  translatedText?: string;
+  tlitText?: string;
 }
 
 export enum LyricFormat {
@@ -16,9 +20,16 @@ export enum LyricFormat {
   LRC = 'lrc',
 }
 
+export interface TlitItem {
+  token: string;
+  phoneme: string;
+}
+
 export interface KrcRow extends RowBase {
   duration: number,
-  words: Array<KrcWord>
+  words: Array<KrcWord>,
+  tlits?: Array<TlitItem>,
+  tlitWords?: Array<KrcWord>,
   format: LyricFormat.KRC,
 }
 

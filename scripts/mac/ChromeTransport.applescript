@@ -19,7 +19,7 @@ on GetCurrentTrack()
                if (!video) {
                 return 'null';
               }
-              const name = document.querySelector('#container > h1')?.innerText?.replace(/\\(official (audio|video|MV)\\)/i,'');
+              const name = document.querySelector('#container > h1')?.innerText?.replace(/official \\(audio|video|MV|music video\\)/i,'');
               const { currentTime: position, duration } = video;
               return JSON.stringify({ name, duration, position });
             } catch (e) {

@@ -1,12 +1,13 @@
 import { createAction, createAsyncAction } from 'typesafe-actions';
 
-import { Info } from '../../types/lyric';
+import { Info, Music } from '../../types/lyric';
 
 import {
   Actions,
   SearchMusicRequestPayload,
   SearchMusicSuccessPayload,
   StartMusicPayload,
+  TranslateLyricRequestPayload,
 } from './types';
 
 const resetMusic = createAction(
@@ -34,6 +35,11 @@ const searchMusic = createAsyncAction(
   Actions.SEARCH_MUSIC_SUCCESS,
   Actions.SEARCH_MUSIC_FAILURE,
 )<SearchMusicRequestPayload, SearchMusicSuccessPayload, void>();
+const translateLyric = createAsyncAction(
+  Actions.TRANSLATE_LYRIC_REQUEST,
+  Actions.TRANSLATE_LYRIC_SUCCESS,
+  Actions.TRANSLATE_LYRIC_FAILURE,
+)<TranslateLyricRequestPayload, Music['lyric'], void>();
 const setLastSelected = createAction(Actions.SET_LAST_SELECTED)<number>();
 
 export default {
@@ -46,4 +52,5 @@ export default {
   setLastSelected,
   setCurrentOffset,
   setGlobalOffset,
+  translateLyric,
 };

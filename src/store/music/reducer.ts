@@ -1,6 +1,8 @@
 import { persistReducer } from 'redux-persist';
 import { createReducer } from 'typesafe-actions';
 
+import { Music } from 'types/lyric';
+
 import musicActions from './actions';
 import {
   initialState,
@@ -43,6 +45,13 @@ const musicReducer = createReducer<MusicState>(initialState)
   .handleAction(musicActions.setLastSelected, (state, action) => ({
     ...state,
     lastSelected: action.payload,
+  }))
+  .handleAction(musicActions.translateLyric.success, (state, action) => ({
+    ...state,
+    list: state.list.map((item, i) => (i === state.lastSelected ? ({
+      ...item,
+      lyric: action.payload,
+    } as Music) : item)),
   }));
 
 export default persistReducer(persistConfig, musicReducer);

@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 
-import { Info } from '../../types';
+import { Info, Music } from '../../types';
 import { LyricResponse, Player } from '../types';
 import { checkAnalyzer, parseRowData } from '../utils/parse';
 
@@ -66,4 +66,8 @@ export const stopMusic = async (win: BrowserWindow) => {
 
 export const setPlayer = async (win: BrowserWindow, data: Player) => {
   win.webContents.send('PREFERENCE.SET_PLAYER#SUCCESS', data);
+};
+
+export const sendTranslatedLyric = async (win: BrowserWindow, data: Music['lyric']) => {
+  win.webContents.send('MUSIC.TRANSLATE_LYRIC#SUCCESS', data);
 };

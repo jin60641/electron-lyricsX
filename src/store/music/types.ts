@@ -25,6 +25,10 @@ export enum Actions {
 
   SET_CURRENT_OFFSET = 'MUSIC.SET_CURRENT_OFFSET',
   SET_GLOBAL_OFFSET = 'MUSIC.SET_GLOBAL_OFFSET',
+
+  TRANSLATE_LYRIC_REQUEST = 'MUSIC.TRANSLATE_LYRIC#REQUEST',
+  TRANSLATE_LYRIC_SUCCESS = 'MUSIC.TRANSLATE_LYRIC#SUCCESS',
+  TRANSLATE_LYRIC_FAILURE = 'MUSIC.TRANSLATE_LYRIC#FAILURE',
 }
 
 export const initialState: MusicState = {
@@ -34,6 +38,11 @@ export const initialState: MusicState = {
   currentOffset: 0,
   globalOffset: -0.5,
 };
+
+export interface TranslateLyricRequestPayload {
+  lyric: Music['lyric'],
+  locale: string;
+}
 
 export type SearchMusicRequestPayload = Pick<Music, 'name' | 'artist'>;
 export type SearchMusicSuccessPayload = MusicState['list'];

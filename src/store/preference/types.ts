@@ -2,6 +2,8 @@ export interface PreferenceState {
   draggable: boolean;
   player: Player;
   locale: LocaleState,
+  showFurigana: boolean,
+  showTlit: boolean,
 }
 
 export type LocaleState = {
@@ -22,10 +24,18 @@ export enum Actions {
   SET_PLAYER_FAILURE = 'PREFERENCE.SET_PLAYER#FAILURE',
 }
 
+export enum Locale {
+  EN = 'en',
+  KO = 'ko',
+}
+
 export const initialState: PreferenceState = {
   draggable: false,
   player: Player.CHROME,
-  locale: { code: 'en' },
+  locale: { code: Locale.EN },
+
+  showFurigana: true,
+  showTlit: true,
 };
 
 export type SetDraggablePayload = PreferenceState['draggable'];
