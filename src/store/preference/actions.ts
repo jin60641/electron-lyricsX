@@ -6,9 +6,11 @@ import {
   SetDraggablePayload,
   SetPlayerRequestPayload,
   SetPlayerSuccessPayload,
+  SetPreferencePayload,
 } from './types';
 
 const setDraggable = createAction(Actions.SET_DRAGGABLE)<SetDraggablePayload>();
+const setPreference = createAction(Actions.SET_PREFERENCE)<SetPreferencePayload>();
 const setPlayer = createAsyncAction(
   Actions.SET_PLAYER_REQUEST,
   Actions.SET_PLAYER_SUCCESS,
@@ -16,4 +18,4 @@ const setPlayer = createAsyncAction(
 )<SetPlayerRequestPayload, SetPlayerSuccessPayload, void>();
 const setLocale = createAction(Actions.SET_LOCALE)<PreferenceState['locale']>();
 
-export default { setDraggable, setPlayer, setLocale };
+export default { setDraggable, setPlayer, setLocale, setPreference };

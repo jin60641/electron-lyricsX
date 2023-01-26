@@ -33,13 +33,13 @@ const useStyles = makeStyles<Theme>(() => createStyles({
     },
 }));
 
+const selector = ({
+  preference: { draggable, player, showFurigana, showTlit },
+  music: { globalOffset },
+}: RootState) => ({ draggable, player, globalOffset, showTlit, showFurigana });
 const Settings: React.FC = () => {
   const dispatch = useDispatch();
-  const selector = ({
-    preference: { draggable, player },
-    music: { globalOffset },
-  }: RootState) => ({ draggable, player, globalOffset });
-  const { draggable, player, globalOffset } = useSelector(selector);
+  const { showFurigana, showTlit, draggable, player, globalOffset } = useSelector(selector);
   const classes = useStyles();
   const handleChangeGlobalOffset = useCallback((e) => {
     dispatch(actions.setGlobalOffset(parseFloat(e.target.value)));
@@ -52,6 +52,14 @@ const Settings: React.FC = () => {
   const handleToggleDraggable = useCallback(() => {
     dispatch(preferenceAction.setDraggable(!draggable));
   }, [dispatch, draggable]);
+
+  const handleToggleShowFurigana = useCallback(() => {
+    dispatch(preferenceAction.setPreference({ showFurigana: !showFurigana }));
+  }, [dispatch, showFurigana]);
+
+  const handleToggleShowTlit = useCallback(() => {
+    dispatch(preferenceAction.setPreference({ showTlit: !showTlit }));
+  }, [dispatch, showTlit]);
 
   return (
     <>
@@ -83,9 +91,13 @@ const Settings: React.FC = () => {
           defaultValue={player}
           onChange={handleChangePlayer}
         >
-          <FormControlLabel value={Player.CHROME} control={<Radio color='primary' />} label='chrome(only Mac)' />
+          {window.bridge.platform === 'darwin' ? (
+            <FormControlLabel value={Player.CHROME} control={<Radio color='primary' />} label='Chrome' />
+          ) : (
+            <FormControlLabel value={Player.CHROME_EXTENSION} control={<Radio color='primary' />} label='Chrome Extension' />
+          )}
           <FormControlLabel value={Player.ITUNES} control={<Radio color='primary' />} label='itunes' />
-          <FormControlLabel value={Player.CHROME_EXTENSION} control={<Radio color='primary' />} label='chrome Extension' />
+          <FormControlLabel value={Player.SPOTIFY} control={<Radio color='primary' />} label='spotify' />
         </RadioGroup>
       </FormControl>
       <Grid container spacing={2}>
@@ -97,6 +109,30 @@ const Settings: React.FC = () => {
               value={draggable}
               onChange={handleToggleDraggable}
               checked={draggable}
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <FormControl>
+            <FormControlLabel
+              control={<Checkbox defaultChecked color='primary' />}
+              label='Show Furigana'
+              value={showFurigana}
+              onChange={handleToggleShowFurigana}
+              checked={showFurigana}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl>
+            <FormControlLabel
+              control={<Checkbox defaultChecked color='primary' />}
+              label='Show Pronounciation'
+              value={showTlit}
+              onChange={handleToggleShowTlit}
+              checked={showTlit}
             />
           </FormControl>
         </Grid>

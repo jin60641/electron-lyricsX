@@ -18,7 +18,12 @@ import { getType } from 'typesafe-actions';
 
 import musicActions from 'store/music/actions';
 import { RootState } from 'store/types';
-import { Info } from 'types/lyric';
+import {
+  Info,
+  KrcRow,
+  KrcWord,
+  LyricFormat,
+} from 'types/lyric';
 
 type Props = Omit<RootState['layout'], 'lineCount' | 'palette'>;
 
@@ -108,7 +113,11 @@ const selector = ({
     palette,
     ...layout
   },
-  preference: { draggable },
+  preference: {
+    draggable,
+    showTlit,
+    showFurigana,
+  },
 }: RootState) => ({
   music: list[lastSelected],
   isPlaying,
@@ -117,6 +126,8 @@ const selector = ({
   draggable,
   lineCount,
   layout,
+  showTlit,
+  showFurigana,
 });
 
 const Main: React.FC = () => {
@@ -133,6 +144,8 @@ const Main: React.FC = () => {
     draggable,
     layout,
     lineCount,
+    showTlit,
+    showFurigana,
   } = useSelector(selector);
   const classes = useStyles(layout);
   const lyrics = useMemo(() => music?.lyric?.map((lyric, i) => ({
@@ -196,6 +209,8 @@ const Main: React.FC = () => {
     lineCount,
     filteredLyricsCount,
     theme,
+    showFurigana,
+    showTlit,
   ]);
 
   useEffect(() => {
@@ -208,6 +223,23 @@ const Main: React.FC = () => {
     });
   }, []);
 
+  const renderWord = (lyric: KrcRow, words: KrcWord[]) => words.map((word, i) => {
+    const wordStart = word.time + lyric.time + offsetSum;
+    const wordFinish = wordStart + word.duration;
+    const fullFill = wordFinish <= time;
+    const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
+    return (
+      <span
+        // eslint-disable-next-line
+        key={`lyric-row-${lyric.id}-word-${i}`}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: showFurigana ? word.text : word.srcText }}
+        className={classes.word}
+        style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
+      />
+    );
+  });
+
   return (
     <div className={clsx(classes.main, { [classes.draggableOff]: !draggable })}>
       <div className={classes.background} />
@@ -217,67 +249,35 @@ const Main: React.FC = () => {
       >
         {lyrics?.map(({
           isSelected,
-          id,
           ...lyric
-        }) => ((lyric.format === 'krc' ? (
+        }) => ((lyric.format === LyricFormat.KRC ? (
           <div
-            key={`lyric-row-${id}`}
+            key={`lyric-row-${lyric.id}`}
             data-selected={isSelected}
             className={clsx(classes.row, isSelected && classes.shown)}
           >
             <div className={classes.rowInner}>
-              {lyric.words.map((word, i) => {
-                const wordStart = word.time + lyric.time + offsetSum;
-                const wordFinish = wordStart + word.duration;
-                const fullFill = wordFinish <= time;
-                const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
-                return (
-                  <span
-                    // eslint-disable-next-line
-                    key={`lyric-row-${id}-word-${i}`}
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: word.text }}
-                    className={classes.word}
-                    style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
-                  />
-                );
-              })}
+              {renderWord(lyric, lyric.words)}
             </div>
-            {lyric.tlitWords && (
+            {showTlit && lyric.tlitWords && (
               <div className={classes.rowInner}>
-                {lyric.tlitWords.map((word, i) => {
-                  const wordStart = word.time + lyric.time + offsetSum;
-                  const wordFinish = wordStart + word.duration;
-                  const fullFill = wordFinish <= time;
-                  const percent = Math.min(100, (1 - (time - wordStart) / word.duration) * 100);
-                  return (
-                    <span
-                      // eslint-disable-next-line
-                      key={`lyric-row-${id}-tlitWord-${i}`}
-                      // eslint-disable-next-line react/no-danger
-                      dangerouslySetInnerHTML={{ __html: word.text }}
-                      className={classes.word}
-                      style={{ backgroundPositionX: `${fullFill ? 0 : percent}%` }}
-                    />
-                  );
-                })}
-
+                {renderWord(lyric, lyric.tlitWords)}
               </div>
             )}
           </div>
         ) : (
           <div
-            key={`lyric-row-${id}`}
+            key={`lyric-row-${lyric.id}`}
             data-selected={isSelected}
             className={clsx(classes.row, isSelected && classes.shown, classes.lrcRow)}
           >
             <div className={classes.rowInner}>
               <span
                 // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: lyric.text }}
+                dangerouslySetInnerHTML={{ __html: showFurigana ? lyric.text : lyric.srcText }}
               />
             </div>
-            {lyric.tlitText && (
+            {showTlit && lyric.tlitText && (
               <div className={classes.rowInner}>
                 <span>
                   {lyric.tlitText}

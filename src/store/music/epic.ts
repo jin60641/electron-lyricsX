@@ -32,7 +32,7 @@ const searchMusicSuccessEpic: Epic = (action$, state$) => action$.pipe(
   filter(isActionOf(actions.searchMusic.success)),
   filter(() => !!state$.value.music.list.length),
   mergeMap(() => from(requestTranslateLyric({
-    lyric: state$.value.music.list[0]?.lyric,
+    lyric: state$.value.music.list[state$.value.music.lastSelected]?.lyric,
     locale: state$.value.preference.locale.code,
   })).pipe(
     mergeMap(() => []),
