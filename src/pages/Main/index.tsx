@@ -148,9 +148,10 @@ const Main: React.FC = () => {
     showFurigana,
   } = useSelector(selector);
   const classes = useStyles(layout);
+  const offsetSum = useMemo(() => currentOffset + globalOffset, [currentOffset, globalOffset]);
   const lyrics = useMemo(() => music?.lyric?.map((lyric, i) => ({
     ...lyric,
-    isSelected: (lyric.time <= (time + 10))
+    isSelected: (lyric.time <= (time + 10 - offsetSum))
       && i < index + lineCount
       && i >= index,
   })), [music?.lyric, time, index, lineCount]);
@@ -173,7 +174,6 @@ const Main: React.FC = () => {
     };
   }, [position, isPlaying]);
 
-  const offsetSum = useMemo(() => currentOffset + globalOffset, [currentOffset, globalOffset]);
   useEffect(() => {
     if (lyrics) {
       const nextIndex = lyrics.findIndex(({ time: lyricTime }) => lyricTime > time - offsetSum);
