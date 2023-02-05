@@ -80,6 +80,7 @@ const searchMusic = async (data: LyricRequest): Promise<LyricResponse[]> => {
     lyric: '',
     source: 'kugou',
     format: LyricFormat.KRC,
+    hasTlit: false,
   }));
   const lyricInfos = await Promise.all(infos.map(searchLyric));
   return lyricInfos.filter((lyricInfo) => !!lyricInfo?.lyric);

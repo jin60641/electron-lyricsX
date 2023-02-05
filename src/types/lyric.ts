@@ -59,6 +59,7 @@ export interface MusicBase {
   name: string;
   artist: string;
   source: string;
+  hasTlit: boolean;
 }
 
 export interface KrcMusic extends MusicBase {

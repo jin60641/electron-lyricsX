@@ -48,6 +48,7 @@ const searchMusic = async (data: LyricRequest) => {
     source: '163',
     format: LyricFormat.LRC,
     lyric: '',
+    hasTlit: false,
   }));
   const lyricInfos = await Promise.all(infos.map(searchLyric));
   return lyricInfos.filter((lyricInfo) => !!lyricInfo?.lyric);

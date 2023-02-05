@@ -50,6 +50,7 @@ const musicReducer = createReducer<MusicState>(initialState)
     ...state,
     list: state.list.map((item, i) => (i === state.lastSelected ? ({
       ...item,
+      hasTlit: true,
       lyric: action.payload,
     } as Music) : item)),
   }));

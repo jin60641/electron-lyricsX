@@ -154,7 +154,7 @@ const Main: React.FC = () => {
     isSelected: (lyric.time <= (time + 10 - offsetSum))
       && i < index + lineCount
       && i >= index,
-  })), [music?.lyric, time, index, lineCount]);
+  })), [music?.lyric, time, index, lineCount, offsetSum]);
   const filteredLyricsCount = useMemo(() => lyrics
     ?.filter(({ isSelected }) => isSelected)?.length, [lyrics]);
 
@@ -211,6 +211,7 @@ const Main: React.FC = () => {
     theme,
     showFurigana,
     showTlit,
+    music?.hasTlit,
   ]);
 
   useEffect(() => {
