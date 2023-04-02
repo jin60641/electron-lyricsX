@@ -10,7 +10,7 @@ const getHash = (msg: string, key: string) => {
   return hash.digest('base64');
 };
 
-const HASHING_KEY: string = 'v1.7.0_0d2601d5cf'; // Hashing 시 사용하는 Key, main.xxxxx File 내에서 authorization으로 찾을 수 있음
+const HASHING_KEY: string = 'v1.7.3_de60216eaa'; // Hashing 시 사용하는 Key, main.xxxxx File 내에서 authorization으로 찾을 수 있음
 const C_TYPE: string = 'application/x-www-form-urlencoded; charset=UTF-8'; // Content-Type
 const UA: string = 'Mozilla/5.0 (Macintosh Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36'; // User-Agent
 
