@@ -74,7 +74,7 @@ export const Translator = async (params: TranslateParameter) => {
     return;
   }
   const url: string = 'https://papago.naver.com/apis/n2mt/translate'; // 요청 URL
-  const { config: requestConfig, uuid } = getConfig(url);
+  const { config: requestConfig, uuid } = await getConfig(url);
 
   const resp = await request<TranslateResult>(
     url,
