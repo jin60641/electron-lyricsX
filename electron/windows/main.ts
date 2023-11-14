@@ -33,7 +33,6 @@ const createWindow = () => {
       webSecurity: false,
       nodeIntegration: true,
       contextIsolation: true,
-      nativeWindowOpen: true,
       preload: path.join(__dirname, '..', 'preload.js'),
     },
   });

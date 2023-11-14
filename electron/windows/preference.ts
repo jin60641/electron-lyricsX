@@ -19,7 +19,6 @@ const preferenceWindow = () => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
-      nativeWindowOpen: true,
       preload: path.join(__dirname, '..', 'preload.js'),
     },
   });
@@ -39,6 +38,8 @@ const preferenceWindow = () => {
 
   win.setBackgroundColor('#00000000');
 
+  // electron type error
+  // @ts-ignore
   win.on('close', handleClose);
 
   app.on('before-quit', () => {

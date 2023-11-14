@@ -110,7 +110,7 @@ const selector = ({
   },
   layout: {
     lineCount,
-    palette,
+    palette: _palette,
     ...layout
   },
   preference: {

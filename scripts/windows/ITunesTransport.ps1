@@ -1,4 +1,4 @@
- $itunes = New-Object  -ComObject iTunes.Application
+$itunes = New-Object  -ComObject iTunes.Application
 
 if (!$itunes) {
     return "null";

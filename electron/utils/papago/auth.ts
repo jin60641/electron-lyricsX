@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import cheerio from 'cheerio';
 import Crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
-import cheerio from 'cheerio';
 
 import axios from '../axios';
 
@@ -25,8 +25,6 @@ export const getConfig = async (url: string) => {
   const hash: string = getHash(`${uuid}\n${url}\n${time}`, HASHING_KEY); // Authorization Header Hash 생성
   const config: AxiosRequestConfig = {
     headers: {
-      // Authorization: "PPG " + t + ":" + p.a.HmacMD5(t + "\n" + e.split("?")[0] + "\n" + n, "v1.7.3_de60216eaa").toString(p.a.enc.Base64),
-
       Authorization: `PPG ${uuid}:${hash}`,
       'Content-Type': C_TYPE,
       'User-Agent': UA,
