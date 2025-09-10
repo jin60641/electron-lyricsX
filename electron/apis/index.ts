@@ -6,6 +6,7 @@ import { checkAnalyzer, parseRowData } from '../utils/parse';
 
 import search163 from './163';
 import searchKugou from './kugou';
+import searchLrclib from './lrclib';
 
 /**
  * 검색 인자를 받아서 가사 검색 결과를 반환합니다.
@@ -15,6 +16,7 @@ export const getLyricRes = async (data: Info): Promise<LyricResponse[]> => {
   const lyricRes = await Promise.all([
     searchKugou(data),
     search163(data),
+    searchLrclib(data),
   ]);
   return lyricRes.flat();
 };
