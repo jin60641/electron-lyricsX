@@ -1,3 +1,5 @@
+// export * from '../renderer/src/store/types';
+
 import { v4 as uuid } from 'uuid';
 
 export interface KrcWord {
@@ -8,8 +10,8 @@ export interface KrcWord {
 }
 
 export interface RowBase {
-  time: number,
-  id: ReturnType<typeof uuid>,
+  time: number;
+  id: ReturnType<typeof uuid>;
   srcText: string;
   translatedText?: string;
   tlitText?: string;
@@ -26,17 +28,17 @@ export interface TlitItem {
 }
 
 export interface KrcRow extends RowBase {
-  duration: number,
-  words: Array<KrcWord>,
-  tlits?: Array<TlitItem>,
-  tlitWords?: Array<KrcWord>,
-  format: LyricFormat.KRC,
+  duration: number;
+  words: Array<KrcWord>;
+  tlits?: Array<TlitItem>;
+  tlitWords?: Array<KrcWord>;
+  format: LyricFormat.KRC;
 }
 
 export interface LrcRow extends RowBase {
-  timestamp: string,
-  text: string,
-  format: LyricFormat.LRC,
+  timestamp: string;
+  text: string;
+  format: LyricFormat.LRC;
 }
 
 export type Row = KrcRow | LrcRow;
@@ -64,11 +66,11 @@ export interface MusicBase {
 
 export interface KrcMusic extends MusicBase {
   format: LyricFormat.KRC;
-  lyric: KrcRow[],
+  lyric: KrcRow[];
 }
 export interface LrcMusic extends MusicBase {
   format: LyricFormat.LRC;
-  lyric: LrcRow[],
+  lyric: LrcRow[];
 }
 
 export type Music = KrcMusic | LrcMusic;
