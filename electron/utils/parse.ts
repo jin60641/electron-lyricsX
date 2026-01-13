@@ -17,19 +17,17 @@ import {
 } from './regex';
 
 const Kuroshiro = require('kuroshiro').default;
-const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 
 const kuroshiro = new Kuroshiro();
-const kuromojiAnalyzer = new KuromojiAnalyzer();
+let isInit = false;
+const MecabAnalyzer = require('kuroshiro-analyzer-mecab');
+const mecabAnalyzer = new MecabAnalyzer();
 
 export const checkAnalyzer = async () => {
-  if (kuroshiro.analyzer) {
-    return;
-  }
-  await kuroshiro.init(kuromojiAnalyzer);
+  if (kuroshiro.analyzer || isInit) return;
+  isInit = true;
+  await kuroshiro.init(mecabAnalyzer);
 };
-
-checkAnalyzer();
 
 const lrcTimeTagToTime = (str: string) => {
   const matches = str.match(lrcTimeTagRegex);
@@ -53,7 +51,7 @@ const parseWords = async (str: string): Promise<KrcWord[]> => {
     return [];
   }
   const words = await Promise.all(matches.map(async ([_sub, _offset, duration, _, text]) => ({
-    text: await addFuriganaText(text),
+    text,
     duration: parseInt(duration, 10) / 1000,
     time: 0,
     srcText: text,
@@ -97,14 +95,11 @@ const parseLrcRow = async (row: string): Promise<LrcRow | void> => {
     format: LyricFormat.LRC,
     time: lrcTimeTagToTime(timestamp),
     timestamp,
-    text: await addFuriganaText(text),
+    text,
     srcText: text,
   };
 };
-/**
- * 가사 검색 결과를 받아서 Row 데이터 변환 결과를 반환합니다.
- * @param {LyricResponse[]} filteredLyrics 조건에 맞게 필터링 된 데이터
- */
+
 export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
   const lyrics = await Promise.all(filteredLyrics.map(async ({ lyric, ...info }) => {
     const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
@@ -130,9 +125,100 @@ export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
       }
       return (await arr).concat([item]);
     }, Promise.resolve([])));
+
+    const fullLine = ret.map(({ srcText }) => srcText);
+    const fullText = fullLine.join('\n');
+    
+    // 1. Kuroshiro를 이용해 루비(Furigana) 텍스트 생성
+    const furi = await addFuriganaText(fullText);
+    const furiLines = furi.split(/\r?\n|EOS/).filter((line: string) => line.trim() !== "");
+
+    const re2 = ret.map((item, index) => {
+      const furiLine = furiLines[index];
+      if (!furiLine) return item;
+
+      // 2. 루비 태그와 일반 텍스트를 토큰화 (kanji: 원문, hira: 발음)
+      const rubyRegex = /<ruby>(.*?)<rp>\(<\/rp><rt>(.*?)<\/rt><rp>\)<\/rp><\/ruby>|./g;
+      const tokens: { kanji: string; ruby: string; hira: string }[] = [];
+      let match;
+
+      while ((match = rubyRegex.exec(furiLine)) !== null) {
+        if (match[1]) {
+          // 루비 태그인 경우
+          tokens.push({
+            kanji: match[1],
+            ruby: `<ruby>${match[1]}<rp>(</rp><rt>${match[2]}</rt><rp>)</rp></ruby>`,
+            hira: match[2],
+          });
+        } else if (match[0].trim()) {
+          // 일반 문자인 경우
+          tokens.push({ kanji: match[0], ruby: match[0], hira: match[0] });
+        }
+      }
+
+      let tokenIdx = 0;
+      if (item.format === LyricFormat.KRC) {
+        let remainLength = 0;
+        const updatedWords = item.words.map(word => {
+        if (remainLength < 0) {
+          remainLength++;
+          return { ...word, text: '', srcText: '' };
+        }
+        // word.srcText가 비어있거나 공백이면 그대로 반환
+        if (!word.srcText.trim()) return { ...word, text: word.srcText };
+  
+          let resultText = "";
+          let resultSrcText = "";
+          let remainingSrc = word.srcText;
+  
+          while (remainingSrc.length > 0 && tokenIdx < tokens.length) {
+            const token = tokens[tokenIdx];
+            if (token.kanji.startsWith(remainingSrc) || remainingSrc.startsWith(token.kanji)) {
+              resultText += token.ruby;
+              resultSrcText += token.kanji;
+              
+              if (token.kanji.length > remainingSrc.length) {
+                remainLength = remainingSrc.length - token.kanji.length;
+              }
+              remainingSrc = remainingSrc.substring(token.kanji.length);
+              tokenIdx++;
+            } else {
+              resultText += remainingSrc[0];
+              resultSrcText += remainingSrc[0];
+              remainingSrc = remainingSrc.substring(1);
+            }
+          }
+
+          return { ...word, srcText: resultSrcText || word.srcText, text: resultText || word.srcText };
+        });
+        
+        return { ...item, words: updatedWords };
+      } else {
+        // LRC 처리
+        if (!item.srcText.trim()) return { ...item, text: item.srcText };
+
+        let resultText = "";
+        let remainingSrc = item.srcText;
+
+        while (remainingSrc.length > 0 && tokenIdx < tokens.length) {
+          const token = tokens[tokenIdx];
+          if (token.kanji.startsWith(remainingSrc) || remainingSrc.startsWith(token.kanji)) {
+            resultText += token.ruby;
+            remainingSrc = remainingSrc.substring(token.kanji.length);
+            tokenIdx++;
+          } else {
+            resultText += remainingSrc[0];
+            remainingSrc = remainingSrc.substring(1);
+          }
+        }
+
+        return { ...item, text: resultText || item.srcText };
+      }
+    });
+    
     return {
       ...info,
-      lyric: ret,
+      lyric: re2,
     };
   }));
   return lyrics.filter(({ lyric }) => !!lyric?.length);
@@ -147,7 +233,6 @@ export const decodeKrc = (content: Buffer): Buffer => {
   const diff = 4;
   const buffer = Buffer.alloc(content.length - diff);
   for (let i = diff; i < content.length; i += 1) {
-    // eslint-disable-next-line no-bitwise
     buffer[i - diff] = content[i] ^ KRC_ENCODE_KEY[(i - diff) % 16];
   }
   return zlib.unzipSync(buffer);
@@ -236,10 +321,17 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
         if (index >= 0) {
           if (tlitItemTextIndex === tlitItemText.length - 1) { // 이번 word에서 tlit text 다 찾은거면?
             const left = wordItem.srcText.substr(index + tlitItemText.length);
-
+            if (tlitArrIndex) {
+              srcText += ' ';
+            }
             tlitArrIndex += 1;
             tlitItemTextIndex = 0;
-            srcText += tlitItem.phoneme;
+            const jpRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
+            if (jpRegex.test(tlitItemText)) {
+              srcText += tlitItem.phoneme;
+            } else {
+              srcText += tlitItem.token;
+            }
             if (left.length === 0) { // 남은 글자가 없으면?
               const { time } = row.words[startWordArrIndex];
               row.tlitWords?.push({
