@@ -28,14 +28,12 @@ const searchMusic = async (data: LyricRequest): Promise<LyricResponse[]> => {
     duration: data.duration,
     track_name: data.name,
     artist_name: data.artist,
-  }
-  const res = await axios.get<LrclibLyricResponse>('https://lrclib.net/api/search', {
-    params,
-  }).catch(() => null);
+  };
+  const res = await axios.get<LrclibLyricResponse>('https://lrclib.net/api/search', { params }).catch(() => null);
   if (res?.status !== 200 || !res?.data) {
     return [];
   }
-  return res.data.map(data => ({
+  return res.data.map((data) => ({
     format: LyricFormat.LRC,
     lyric: data.syncedLyrics,
     id: data.id,

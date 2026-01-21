@@ -8,19 +8,18 @@ import {
 import { LyricResponse } from '../types';
 
 // import { tlit } from './papago';
-import { tlit } from './tlit';
+import { kuroshiro } from './mecab';
 import {
   filterRegex,
+  jpRegex,
   krcLineRegex,
   krcTimeTagRegex,
   krcWordRegex,
   lrcTimeTagRegex,
-  rubyRegex,
-  jpRegex,
   newLineRegex,
+  rubyRegex,
 } from './regex';
-
-import { kuroshiro } from './mecab';
+import { tlit } from './tlit';
 
 const lrcTimeTagToTime = (str: string) => {
   const matches = str.match(lrcTimeTagRegex);
@@ -95,101 +94,102 @@ const parseLrcRow = async (row: string): Promise<LrcRow | void> => {
 
 export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
   const lyrics = await Promise.all(filteredLyrics.map(async ({ lyric, ...info }) => {
-    const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
-      if (filterRegex.test(row)) {
-        return arr;
-      }
-      let item;
-      switch (info.format) {
-        case LyricFormat.KRC: {
-          item = await parseKrcRow(row);
-          break;
+    try {
+      const ret = await Promise.resolve((lyric.split('\n')).reduce(async (arr: Promise<Row[]>, row: string) => {
+        if (filterRegex.test(row)) {
+          return arr;
         }
-        case LyricFormat.LRC: {
-          item = await parseLrcRow(row);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-      if (!item) {
-        return arr;
-      }
-      return (await arr).concat([item]);
-    }, Promise.resolve([])));
-
-    const fullLine = ret.map(({ srcText }) => srcText);
-    const fullText = fullLine.join('\n');
-    
-    // 1. Kuroshiro를 이용해 루비(Furigana) 텍스트 생성
-    const furi = await addFuriganaText(fullText);
-    const furiLines = furi.split(newLineRegex).filter((line: string) => line.trim() !== "");
-
-    const re2 = ret.map((item, index) => {
-      const furiLine = furiLines[index];
-      if (!furiLine) return item;
-
-      // 2. 루비 태그와 일반 텍스트를 토큰화 (kanji: 원문, hira: 발음)
-      const tokens: { kanji: string; ruby: string; hira: string }[] = [];
-      let match;
-
-      while ((match = rubyRegex.exec(furiLine)) !== null) {
-        if (match[1]) {
-          // 루비 태그인 경우
-          tokens.push({
-            kanji: match[1],
-            ruby: `<ruby>${match[1]}<rp>(</rp><rt>${match[2]}</rt><rp>)</rp></ruby>`,
-            hira: match[2],
-          });
-        } else if (match[0].trim()) {
-          // 일반 문자인 경우
-          tokens.push({ kanji: match[0], ruby: match[0], hira: match[0] });
-        }
-      }
-
-      let tokenIdx = 0;
-      if (item.format === LyricFormat.KRC) {
-        let remainLength = 0;
-        const updatedWords = item.words.map(word => {
-        if (remainLength < 0) {
-          remainLength++;
-          return { ...word, text: '', srcText: '' };
-        }
-        // word.srcText가 비어있거나 공백이면 그대로 반환
-        if (!word.srcText.trim()) return { ...word, text: word.srcText };
-  
-          let resultText = "";
-          let resultSrcText = "";
-          let remainingSrc = word.srcText;
-  
-          while (remainingSrc.length > 0 && tokenIdx < tokens.length) {
-            const token = tokens[tokenIdx];
-            if (token.kanji.startsWith(remainingSrc) || remainingSrc.startsWith(token.kanji)) {
-              resultText += token.ruby;
-              resultSrcText += token.kanji;
-              
-              if (token.kanji.length > remainingSrc.length) {
-                remainLength = remainingSrc.length - token.kanji.length;
-              }
-              remainingSrc = remainingSrc.substring(token.kanji.length);
-              tokenIdx++;
-            } else {
-              resultText += remainingSrc[0];
-              resultSrcText += remainingSrc[0];
-              remainingSrc = remainingSrc.substring(1);
-            }
+        let item;
+        switch (info.format) {
+          case LyricFormat.KRC: {
+            item = await parseKrcRow(row);
+            break;
           }
+          case LyricFormat.LRC: {
+            item = await parseLrcRow(row);
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+        if (!item) {
+          return arr;
+        }
+        return (await arr).concat([item]);
+      }, Promise.resolve([])));
 
-          return { ...word, srcText: resultSrcText || word.srcText, text: resultText || word.srcText };
-        });
-        
-        return { ...item, words: updatedWords };
-      } else {
+      const fullText = ret.map(({ srcText }) => srcText).join('\n');
+
+      // 1. Kuroshiro를 이용해 루비(Furigana) 텍스트 생성
+      const furi = await addFuriganaText(fullText);
+      const furiLines = furi.split(/\r?\n|EOS/).filter((line: string) => line.trim() !== "");
+
+
+      const re2 = ret.map((item, index) => {
+        const furiLine = furiLines[index];
+        if (!furiLine) return item;
+
+        // 2. 루비 태그와 일반 텍스트를 토큰화 (kanji: 원문, hira: 발음)
+        const tokens: { kanji: string; ruby: string; hira: string }[] = [];
+        let match;
+
+        while ((match = rubyRegex.exec(furiLine)) !== null) {
+          if (match[1]) {
+          // 루비 태그인 경우
+            tokens.push({
+              kanji: match[1],
+              ruby: `<ruby>${match[1]}<rp>(</rp><rt>${match[2]}</rt><rp>)</rp></ruby>`,
+              hira: match[2],
+            });
+          } else if (match[0].trim()) {
+          // 일반 문자인 경우
+            tokens.push({ kanji: match[0], ruby: match[0], hira: match[0] });
+          }
+        }
+
+        let tokenIdx = 0;
+        if (item.format === LyricFormat.KRC) {
+          let remainLength = 0;
+          const updatedWords = item.words.map((word) => {
+            if (remainLength < 0) {
+              remainLength++;
+              return { ...word, text: '', srcText: '' };
+            }
+            // word.srcText가 비어있거나 공백이면 그대로 반환
+            if (!word.srcText.trim()) return { ...word, text: word.srcText };
+
+            let resultText = '';
+            let resultSrcText = '';
+            let remainingSrc = word.srcText;
+
+            while (remainingSrc.length > 0 && tokenIdx < tokens.length) {
+              const token = tokens[tokenIdx];
+              if (token.kanji.startsWith(remainingSrc) || remainingSrc.startsWith(token.kanji)) {
+                resultText += token.ruby;
+                resultSrcText += token.kanji;
+
+                if (token.kanji.length > remainingSrc.length) {
+                  remainLength = remainingSrc.length - token.kanji.length;
+                }
+                remainingSrc = remainingSrc.substring(token.kanji.length);
+                tokenIdx++;
+              } else {
+                resultText += remainingSrc[0];
+                resultSrcText += remainingSrc[0];
+                remainingSrc = remainingSrc.substring(1);
+              }
+            }
+
+            return { ...word, srcText: resultSrcText || word.srcText, text: resultText || word.srcText };
+          });
+
+          return { ...item, words: updatedWords };
+        }
         // LRC 처리
         if (!item.srcText.trim()) return { ...item, text: item.srcText };
 
-        let resultText = "";
+        let resultText = '';
         let remainingSrc = item.srcText;
 
         while (remainingSrc.length > 0 && tokenIdx < tokens.length) {
@@ -205,13 +205,15 @@ export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
         }
 
         return { ...item, text: resultText || item.srcText };
-      }
-    });
-    
-    return {
-      ...info,
-      lyric: re2,
-    };
+      });
+
+      return {
+        ...info,
+        lyric: re2,
+      };
+    } catch (e) {
+      return { lyric: '' };
+    }
   }));
   return lyrics.filter(({ lyric }) => !!lyric?.length);
 };
@@ -238,24 +240,12 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
       row.tlits = [];
     }
     return row.srcText;
-  }).reduce((arr, srcText) => {
-    const target = arr.length - 1;
-    const line = `${srcText}\n`;
-    if (arr[target].length + srcText.length < 900) {
-      arr[target] += line;
-    } else {
-      arr.push(line);
-    }
-    return arr;
-  }, ['']);
+  }).join('\n');
 
-  const promises = srcTexts.map(async (query) => tlit({
-    query,
+  const tlits = await tlit({
+    query: srcTexts,
     tlitLang: locale,
-  }));
-
-  const tlits = await Promise.all(promises)
-    .then((items) => items.map((item) => item?.message?.tlitResult).flat());
+  }).then((item) => item?.message?.tlitResult);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   tlits.reduce(({ texts, arr }, item) => {
@@ -289,7 +279,7 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
     }
 
     return { texts, arr };
-  }, { texts: srcTexts.join(''), arr: [''] });
+  }, { texts: srcTexts, arr: [''] });
 
   lyric.forEach((row) => {
     if (row.format === LyricFormat.KRC && row.tlits?.length) {
@@ -306,9 +296,10 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
         const tlitItemText = tlitItem.token.replace('\r', '');
         const c = tlitItemText[tlitItemTextIndex];
         const index = wordItem.srcText.indexOf(c);
+
         if (index >= 0) {
-          if (tlitItemTextIndex === tlitItemText.length - 1) { // 이번 word에서 tlit text 다 찾은거면?
-            const left = wordItem.srcText.substr(index + tlitItemText.length);
+          if (tlitItemTextIndex === tlitItemText.length - 1) {
+            const left = wordItem.srcText.substr(index + tlitItemText.length - tlitItemTextIndex);
             tlitItemTextIndex = 0;
             if (jpRegex.test(tlitItemText)) {
               srcText += tlitItem.phoneme;
@@ -316,25 +307,27 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
               srcText += tlitItem.token;
             }
             tlitArrIndex += 1;
-            if (left.length === 0) { // 남은 글자가 없으면?
+            if (left.trim().length === 0) { // 남은 글자가 없으면?
               const { time } = row.words[startWordArrIndex];
               row.tlitWords?.push({
                 time,
                 duration: wordItem.duration + wordItem.time - time,
-                srcText,
-                text: srcText,
+                srcText: srcText + left,
+                text: srcText + left,
               });
               wordArrIndex += 1;
               startWordArrIndex = wordArrIndex;
               srcText = '';
             }
-          } else { // 아직 다 못찾았으면?
+          } else {
             tlitItemTextIndex += 1;
           }
-        } else { // 이번 word에 tlit 글자가 없으면?
-          wordArrIndex += 1; // 다음 word에서 마저 탐색
+        } else {
+          if (wordItem.srcText.length && !wordItem.srcText.trim().length)  { 
+            row.tlitWords?.push(wordItem);
+          }
+          wordArrIndex += 1;
         }
-
         if (!(tlitArrIndex < row.tlits.length && wordArrIndex < row.words.length)) {
           // 다 돌았는데 글자가 남았으면?
           if (srcText.length) {

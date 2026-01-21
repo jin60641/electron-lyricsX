@@ -47,6 +47,7 @@
     "koa-router": "^10.1.1",
     "kuroshiro": "^1.2.0",
     "kuroshiro-analyzer-mecab": "^1.0.1",
+    "mecab-async": "^0.1.2",
     "react": "^16.13.1",
     "react-app-rewired": "^2.1.6",
     "react-beautiful-dnd": "^13.0.0",

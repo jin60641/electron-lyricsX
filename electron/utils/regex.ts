@@ -8,4 +8,4 @@ export const filterRegex = /(language|by|title|song|album|artist|singer|lyrics|è
 export const rubyRegex = /<ruby>(.*?)<rp>\(<\/rp><rt>(.*?)<\/rt><rp>\)<\/rp><\/ruby>|./g;
 export const jpRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
 export const newLineRegex = /(\r\n|\r|\n|EOS)/g;
-
+export const katakanaRegex = /[\u30A1-\u30FA]/g;

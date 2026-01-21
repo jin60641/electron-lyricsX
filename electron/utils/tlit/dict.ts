@@ -1,4 +1,4 @@
-// hangul_helper.ts (또는 index.ts 내부)
+import { katakanaRegex } from '../regex';
 
 const KANA_DICT: Record<string, string> = {
   "あ": "아", "い": "이", "う": "우", "え": "에", "お": "오",
@@ -72,52 +72,52 @@ const EXTENDED_KANA_DICT: Record<string, string> = {
 };
 
 export class HangulHelper {
-    static addJongseong(char: string, jongIndex: number): string {
-        const code = char.charCodeAt(0);
-        if (code < 0xAC00 || code > 0xD7A3) return char;
-        const base = code - 0xAC00;
-        const choseong = Math.floor(base / (21 * 28));
-        const jungseong = Math.floor((base / 28) % 21);
-        return String.fromCharCode(0xAC00 + (choseong * 21 * 28) + (jungseong * 28) + jongIndex);
+  static addJongseong(char: string, jongIndex: number): string {
+    const code = char.charCodeAt(0);
+    if (code < 0xAC00 || code > 0xD7A3) return char;
+    const base = code - 0xAC00;
+    const choseong = Math.floor(base / (21 * 28));
+    const jungseong = Math.floor((base / 28) % 21);
+    return String.fromCharCode(0xAC00 + (choseong * 21 * 28) + (jungseong * 28) + jongIndex);
+  }
+
+  static kanaToHangul(text: string, useHyphen = false): string {
+    const result: string[] = [];
+    let i = 0;
+    const target = text;
+
+    while (i < target.length) {
+      const twoChar = target.substr(i, 2);
+      if (EXTENDED_KANA_DICT[twoChar]) {
+        result.push(EXTENDED_KANA_DICT[twoChar]);
+        i += 2;
+        continue;
+      }
+      const oneChar = target[i];
+      if (KANA_DICT[oneChar]) result.push(KANA_DICT[oneChar]);
+      else if (oneChar === 'ー') result.push(useHyphen ? '-' : '');
+      else result.push(oneChar);
+      i++;
     }
-
-    static kanaToHangul(text: string, useHyphen = false): string {
-        let result: string[] = [];
-        let i = 0;
-        const target = text;
-
-        while (i < target.length) {
-            const twoChar = target.substr(i, 2);
-            if (EXTENDED_KANA_DICT[twoChar]) {
-                result.push(EXTENDED_KANA_DICT[twoChar]);
-                i += 2;
-                continue;
-            }
-            const oneChar = target[i];
-            if (KANA_DICT[oneChar]) result.push(KANA_DICT[oneChar]);
-            else if (oneChar === "ー") result.push(useHyphen ? "-" : "");
-            else result.push(oneChar);
-            i++;
+    // 촉음(っ) 및 ん 처리 로직 (Python kana_to_hangul 반영)
+    for (let j = 0; j < result.length; j++) {
+      if (result[j] === 'っ' || result[j] === 'ん') {
+        if (j > 0) {
+          const prev = result[j - 1];
+          const jongIdx = result[j] === 'っ' ? 19 : 4;
+          const combined = this.addJongseong(prev, jongIdx);
+          if (combined !== prev) {
+            result[j - 1] = combined;
+            result.splice(j, 1);
+            j--;
+          }
         }
-        // 촉음(っ) 및 ん 처리 로직 (Python kana_to_hangul 반영)
-        for (let j = 0; j < result.length; j++) {
-            if (result[j] === 'っ' || result[j] === 'ん') {
-                if (j > 0) {
-                    const prev = result[j - 1];
-                    const jongIdx = result[j] === 'っ' ? 19 : 4;
-                    const combined = this.addJongseong(prev, jongIdx);
-                    if (combined !== prev) {
-                        result[j - 1] = combined;
-                        result.splice(j, 1);
-                        j--;
-                    }
-                }
-            }
-        }
-        return result.join('');
+      }
     }
+    return result.join('');
+  }
 
-    static toHiragana(text: string): string {
-        return text.replace(/[\u30A1-\u30FA]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0x60));
-    }
+  static toHiragana(text: string): string {
+    return text.replace(katakanaRegex, (s) => String.fromCharCode(s.charCodeAt(0) - 0x60));
+  }
 }

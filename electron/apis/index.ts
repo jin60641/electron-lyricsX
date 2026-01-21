@@ -33,7 +33,6 @@ export const getLyrics = async (data: Info) => {
     // error logging
   }
   const lyricRes = await getLyricRes(data);
-
   const lyrics = await parseRowData(lyricRes);
   return lyrics;
 };
