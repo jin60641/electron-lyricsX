@@ -7,27 +7,20 @@ import {
 } from '../../types';
 import { LyricResponse } from '../types';
 
-import { tlit } from './papago';
+// import { tlit } from './papago';
+import { tlit } from './tlit';
 import {
   filterRegex,
   krcLineRegex,
   krcTimeTagRegex,
   krcWordRegex,
   lrcTimeTagRegex,
+  rubyRegex,
+  jpRegex,
+  newLineRegex,
 } from './regex';
 
-const Kuroshiro = require('kuroshiro').default;
-
-const kuroshiro = new Kuroshiro();
-let isInit = false;
-const MecabAnalyzer = require('kuroshiro-analyzer-mecab');
-const mecabAnalyzer = new MecabAnalyzer();
-
-export const checkAnalyzer = async () => {
-  if (kuroshiro.analyzer || isInit) return;
-  isInit = true;
-  await kuroshiro.init(mecabAnalyzer);
-};
+import { kuroshiro } from './mecab';
 
 const lrcTimeTagToTime = (str: string) => {
   const matches = str.match(lrcTimeTagRegex);
@@ -131,14 +124,13 @@ export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
     
     // 1. Kuroshiro를 이용해 루비(Furigana) 텍스트 생성
     const furi = await addFuriganaText(fullText);
-    const furiLines = furi.split(/\r?\n|EOS/).filter((line: string) => line.trim() !== "");
+    const furiLines = furi.split(newLineRegex).filter((line: string) => line.trim() !== "");
 
     const re2 = ret.map((item, index) => {
       const furiLine = furiLines[index];
       if (!furiLine) return item;
 
       // 2. 루비 태그와 일반 텍스트를 토큰화 (kanji: 원문, hira: 발음)
-      const rubyRegex = /<ruby>(.*?)<rp>\(<\/rp><rt>(.*?)<\/rt><rp>\)<\/rp><\/ruby>|./g;
       const tokens: { kanji: string; ruby: string; hira: string }[] = [];
       let match;
 
@@ -267,9 +259,6 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
 
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   tlits.reduce(({ texts, arr }, item) => {
-    if (!item) {
-      return { texts, arr };
-    }
     const trimed = item.token.replace('\r', '');
     const index = texts.indexOf(trimed);
     if (index === -1) {
@@ -280,7 +269,6 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
 
     let target = arr.length - 1;
 
-    const newLineRegex = /(\r\n|\r|\n)/g;
     const newlines = etc.match(newLineRegex);
     if (newlines) {
       for (let i = 0; i < newlines.length; i += 1) {
@@ -290,9 +278,9 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
         arr.push('');
         target += 1;
       }
-      arr[target] = `${item.phoneme} `;
+      arr[target] = `${item.phoneme}`;
     } else {
-      arr[target] += `${etc}${item.phoneme} `;
+      arr[target] += `${etc}${item.phoneme}`;
     }
 
     const row = lyric[target];
@@ -321,17 +309,13 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
         if (index >= 0) {
           if (tlitItemTextIndex === tlitItemText.length - 1) { // 이번 word에서 tlit text 다 찾은거면?
             const left = wordItem.srcText.substr(index + tlitItemText.length);
-            if (tlitArrIndex) {
-              srcText += ' ';
-            }
-            tlitArrIndex += 1;
             tlitItemTextIndex = 0;
-            const jpRegex = /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/;
             if (jpRegex.test(tlitItemText)) {
               srcText += tlitItem.phoneme;
             } else {
               srcText += tlitItem.token;
             }
+            tlitArrIndex += 1;
             if (left.length === 0) { // 남은 글자가 없으면?
               const { time } = row.words[startWordArrIndex];
               row.tlitWords?.push({

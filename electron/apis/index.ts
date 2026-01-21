@@ -2,7 +2,8 @@ import { BrowserWindow } from 'electron';
 
 import { Info, Music } from '../../types';
 import { LyricResponse, Player } from '../types';
-import { checkAnalyzer, parseRowData } from '../utils/parse';
+import { checkAnalyzer } from '../utils/mecab';
+import { parseRowData } from '../utils/parse';
 
 import search163 from './163';
 import searchKugou from './kugou';
