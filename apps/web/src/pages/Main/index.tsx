@@ -6,7 +6,7 @@ import { getType } from 'typesafe-actions';
 
 import musicActions from '@renderer/store/music/actions';
 import { RootState } from '@renderer/store/types';
-import { Info, KrcRow, KrcWord, LyricFormat } from '@repo/types';
+import { Info, KrcRow, KrcWord, LyricFormat, LAYOUT_ACTIONS } from '@repo/types';
 
 // [중요] 스타일을 함수 외부에서 정의하여 매 렌더링마다 객체가 생성되지 않도록 함
 const staticStyles = {
@@ -110,7 +110,10 @@ const Main: React.FC = () => {
       }), { width: 0, height: space1 });
 
       setWindowSize(windowSize);
-      window.bridge.ipc.send('LAYOUT.RESIZE_WINDOW', filteredLyricsCount ? windowSize : { width: 0, height: 0 });
+      window.bridge.ipc.send(
+        LAYOUT_ACTIONS.RESIZE_WINDOW,
+        filteredLyricsCount ? windowSize : { width: 0, height: 0 },
+      );
 
       if (selectedEls[0]) {
         const parentTop = domRef.current.getBoundingClientRect().top;

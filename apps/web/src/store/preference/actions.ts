@@ -1,4 +1,4 @@
-import { createAction, createAsyncAction } from 'typesafe-actions';
+import { createAction } from 'typesafe-actions';
 
 import {
   Actions,
@@ -8,14 +8,15 @@ import {
   SetPlayerSuccessPayload,
   SetPreferencePayload,
 } from './types';
+import { createAsyncActionWithTypes } from '../utils';
 
 const setDraggable = createAction(Actions.SET_DRAGGABLE)<SetDraggablePayload>();
 const setPreference = createAction(Actions.SET_PREFERENCE)<SetPreferencePayload>();
-const setPlayer = createAsyncAction(
-  Actions.SET_PLAYER_REQUEST,
-  Actions.SET_PLAYER_SUCCESS,
-  Actions.SET_PLAYER_FAILURE,
-)<SetPlayerRequestPayload, SetPlayerSuccessPayload, void>();
+const setPlayer = createAsyncActionWithTypes<
+  SetPlayerRequestPayload,
+  SetPlayerSuccessPayload,
+  void
+>(Actions.SET_PLAYER);
 const setLocale = createAction(Actions.SET_LOCALE)<PreferenceState['locale']>();
 
 export default { setDraggable, setPlayer, setLocale, setPreference };

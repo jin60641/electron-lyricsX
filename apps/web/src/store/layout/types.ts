@@ -1,3 +1,5 @@
+import { LAYOUT_ACTIONS } from '@repo/types';
+
 export interface LayoutState {
   palette: Palette;
   lineCount: number;
@@ -13,10 +15,7 @@ export interface LayoutState {
   progressOpacity: number;
 }
 
-export enum Actions {
-  SET_LAYOUT = 'LAYOUT.SET_LAYOUT',
-  CLOSE_PREFERENCE = 'LAYOUT.CLOSE_PREFERENCE',
-}
+export { LAYOUT_ACTIONS as Actions };
 
 export enum Palette {
   DARK = 'dark',

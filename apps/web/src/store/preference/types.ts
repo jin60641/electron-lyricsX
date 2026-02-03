@@ -1,3 +1,5 @@
+import { PREFERENCE_ACTIONS } from '@repo/types';
+
 export interface PreferenceState {
   draggable: boolean;
   player: Player;
@@ -17,14 +19,7 @@ export enum Player {
   CHROME_EXTENSION = 'ChromeExtension',
 }
 
-export enum Actions {
-  SET_DRAGGABLE = 'PREFERENCE.SET_DRAGGABLE',
-  SET_LOCALE = 'PREFERENCE.LOCALE.SET_LOCALE',
-  SET_PREFERENCE = 'PREFERENCE.SET_PREFERENCE',
-  SET_PLAYER_REQUEST = 'PREFERENCE.SET_PLAYER#REQUEST',
-  SET_PLAYER_SUCCESS = 'PREFERENCE.SET_PLAYER#SUCCESS',
-  SET_PLAYER_FAILURE = 'PREFERENCE.SET_PLAYER#FAILURE',
-}
+export { PREFERENCE_ACTIONS as Actions };
 
 export enum Locale {
   EN = 'en',

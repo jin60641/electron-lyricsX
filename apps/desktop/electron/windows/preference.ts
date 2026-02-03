@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
+import { LAYOUT_ACTIONS, PREFERENCE_ACTIONS } from '@repo/types';
+
 import { setPlayer } from '../apis/index';
 import { isDev, dirPath, preloadPath } from '../constants';
 import playback from '../playback';
@@ -46,11 +48,11 @@ const preferenceWindow = () => {
     isBeforeQuit = true;
   });
 
-  ipcMain.on('LAYOUT.CLOSE_PREFERENCE', () => {
+  ipcMain.on(LAYOUT_ACTIONS.CLOSE_PREFERENCE, () => {
     win.hide();
   });
 
-  ipcMain.on('PREFERENCE.SET_PLAYER#REQUEST', (_event, player) => {
+  ipcMain.on(PREFERENCE_ACTIONS.SET_PLAYER.REQUEST, (_event, player) => {
     playback.setPlayer(player);
     setPlayer(win, player);
   });

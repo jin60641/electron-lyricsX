@@ -1,5 +1,7 @@
 import { getType } from 'typesafe-actions';
 
+import { LAYOUT_ACTIONS } from '@repo/types';
+
 import actions from './actions';
 import { SetDraggablePayload, SetPlayerRequestPayload } from './types';
 
@@ -13,6 +15,6 @@ export const requestSetPlayer: (payload: SetPlayerRequestPayload) => Promise<und
 export const requestSetDraggable: (payload: SetDraggablePayload) => Promise<undefined> = async (
   payload,
 ) => {
-  window.bridge.ipc.send('LAYOUT.CHANGE_DRAGGABLE', { draggable: payload });
+  window.bridge.ipc.send(LAYOUT_ACTIONS.CHANGE_DRAGGABLE, { draggable: payload });
   return undefined;
 };

@@ -1,4 +1,4 @@
-import { createAction, createAsyncAction } from 'typesafe-actions';
+import { createAction } from 'typesafe-actions';
 
 import { Info, Music } from '@repo/types';
 
@@ -9,6 +9,7 @@ import {
   StartMusicPayload,
   TranslateLyricRequestPayload,
 } from './types';
+import { createAsyncActionWithTypes } from '../utils';
 
 const resetMusic = createAction(Actions.RESET_MUSIC)();
 
@@ -20,16 +21,14 @@ const startMusic = createAction(Actions.START_MUSIC)<StartMusicPayload>();
 const stopMusic = createAction(Actions.STOP_MUSIC)();
 const pauseMusic = createAction(Actions.PAUSE_MUSIC)();
 const seekMusic = createAction(Actions.SEEK_MUSIC)<Info>();
-const searchMusic = createAsyncAction(
-  Actions.SEARCH_MUSIC_REQUEST,
-  Actions.SEARCH_MUSIC_SUCCESS,
-  Actions.SEARCH_MUSIC_FAILURE,
-)<SearchMusicRequestPayload, SearchMusicSuccessPayload, void>();
-const translateLyric = createAsyncAction(
-  Actions.TRANSLATE_LYRIC_REQUEST,
-  Actions.TRANSLATE_LYRIC_SUCCESS,
-  Actions.TRANSLATE_LYRIC_FAILURE,
-)<TranslateLyricRequestPayload, Music['lyric'], void>();
+const searchMusic = createAsyncActionWithTypes<
+  SearchMusicRequestPayload,
+  SearchMusicSuccessPayload,
+  void
+>(Actions.SEARCH_MUSIC);
+const translateLyric = createAsyncActionWithTypes<TranslateLyricRequestPayload, Music['lyric'], void>(
+  Actions.TRANSLATE_LYRIC,
+);
 const setLastSelected = createAction(Actions.SET_LAST_SELECTED)<number>();
 
 export default {

@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
+import { LAYOUT_ACTIONS, MUSIC_ACTIONS } from '@repo/types';
+
 import { searchMusic } from '../apis/index';
 import { isDev, preloadPath, dirPath } from '../constants';
 
@@ -45,10 +47,10 @@ const searchWindow = () => {
     isBeforeQuit = true;
   });
 
-  ipcMain.on('LAYOUT.CLOSE_PREFERENCE', () => {
+  ipcMain.on(LAYOUT_ACTIONS.CLOSE_PREFERENCE, () => {
     win.hide();
   });
-  ipcMain.on('MUSIC.SEARCH_MUSIC#REQUEST', (_event, payload) => {
+  ipcMain.on(MUSIC_ACTIONS.SEARCH_MUSIC.REQUEST, (_event, payload) => {
     searchMusic(win, payload);
   });
   return win;

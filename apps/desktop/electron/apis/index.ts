@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 
-import { Info, Music } from '@repo/types';
+import { Info, Music, MUSIC_ACTIONS, PREFERENCE_ACTIONS } from '@repo/types';
 import { LyricResponse, Player } from '../types';
 import { checkAnalyzer } from '../utils/mecab';
 import { parseRowData } from '../utils/parse';
@@ -38,38 +38,38 @@ export const getLyrics = async (data: Info) => {
 };
 export const searchMusic = async (win: BrowserWindow, data: Info) => {
   const lyrics = await getLyrics(data);
-  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics);
+  win.webContents.send(MUSIC_ACTIONS.SEARCH_MUSIC.SUCCESS, lyrics);
 };
 export const startMusic = async (win: BrowserWindow, data?: Info) => {
   if (!data) {
-    win.webContents.send('MUSIC.START_MUSIC');
+    win.webContents.send(MUSIC_ACTIONS.START_MUSIC);
     return;
   }
   const { name, artist } = data;
-  win.webContents.send('MUSIC.START_MUSIC', {
+  win.webContents.send(MUSIC_ACTIONS.START_MUSIC, {
     name,
     artist,
   });
   const lyrics = await getLyrics(data);
-  win.webContents.send('MUSIC.SEARCH_MUSIC#SUCCESS', lyrics);
+  win.webContents.send(MUSIC_ACTIONS.SEARCH_MUSIC.SUCCESS, lyrics);
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {
-  win.webContents.send('MUSIC.SEEK_MUSIC', data);
+  win.webContents.send(MUSIC_ACTIONS.SEEK_MUSIC, data);
 };
 
 export const pauseMusic = async (win: BrowserWindow) => {
-  win.webContents.send('MUSIC.PAUSE_MUSIC', '');
+  win.webContents.send(MUSIC_ACTIONS.PAUSE_MUSIC, '');
 };
 
 export const stopMusic = async (win: BrowserWindow) => {
-  win.webContents.send('MUSIC.STOP_MUSIC', '');
+  win.webContents.send(MUSIC_ACTIONS.STOP_MUSIC, '');
 };
 
 export const setPlayer = async (win: BrowserWindow, data: Player) => {
-  win.webContents.send('PREFERENCE.SET_PLAYER#SUCCESS', data);
+  win.webContents.send(PREFERENCE_ACTIONS.SET_PLAYER.SUCCESS, data);
 };
 
 export const sendTranslatedLyric = async (win: BrowserWindow, data: Music['lyric']) => {
-  win.webContents.send('MUSIC.TRANSLATE_LYRIC#SUCCESS', data);
+  win.webContents.send(MUSIC_ACTIONS.TRANSLATE_LYRIC.SUCCESS, data);
 };

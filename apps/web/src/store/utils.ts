@@ -9,11 +9,22 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs/operators';
-import { isActionOf } from 'typesafe-actions';
+import { createAsyncAction, isActionOf } from 'typesafe-actions';
+
+import type { AsyncActionTypes } from '@repo/types';
 
 import { Epic } from './types';
 
 type MapOperator = typeof exhaustMap | typeof switchMap | typeof concatMap | typeof flatMap;
+
+export const createAsyncActionWithTypes = <RequestPayload, SuccessPayload, FailurePayload>(
+  types: AsyncActionTypes,
+) =>
+  createAsyncAction(types.REQUEST, types.SUCCESS, types.FAILURE)<
+    RequestPayload,
+    SuccessPayload,
+    FailurePayload
+  >();
 
 export const createAsyncEpic = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
