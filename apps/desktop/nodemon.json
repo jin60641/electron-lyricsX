@@ -1,9 +1,7 @@
 {
-  "ignore": [
-    "node_modules",
-    "dist",
-    "*.test.js",
-    ".git"
-  ],
-  "watch": ["main.js", "preload.js", "src/main/"] 
+  "watch": ["build/electron"],
+  "ext": "js,json",
+  "ignore": ["electron/**", "src/**", "node_modules/**"],
+  "delay": "300ms",
+  "verbose": false
 }

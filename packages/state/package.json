@@ -1,8 +1,8 @@
 {
-  "name": "@repo/types",
+  "name": "@repo/state",
   "version": "0.0.0",
   "private": true,
-  "type": "commonjs", 
+  "type": "commonjs",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/cjs/index.d.ts",
@@ -19,6 +19,10 @@
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
     "lint": "eslint ."
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.5",
+    "@repo/types": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

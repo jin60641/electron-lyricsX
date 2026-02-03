@@ -4,12 +4,11 @@ declare global {
       storage: Storage,
       platform: string,
       ipc: {
-        send: (channel: string, data: any) => void,
-        receive: (channel: string, cb: (data: any) => void) => void,
+        send: <T = unknown>(channel: string, data: T) => void,
+        receive: <T = unknown>(channel: string, cb: (data: T) => void) => void,
       },
     },
   }
 }
 
 export {};
-

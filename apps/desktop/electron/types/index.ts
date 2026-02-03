@@ -24,16 +24,14 @@ export enum EventName {
   SET_PLAYER = 'setPlayer',
 }
 
-export namespace ClientEvent {
-  export type DetailMap = {
-    [EventName.START]: Info;
-    [EventName.STOP]: Info;
-    [EventName.PAUSE]: Info;
-    [EventName.SEEK]: Info;
-    [EventName.SET_PLAYER]: Player;
-  };
+export type ClientEventDetailMap = {
+  [EventName.START]: Info;
+  [EventName.STOP]: Info;
+  [EventName.PAUSE]: Info;
+  [EventName.SEEK]: Info;
+  [EventName.SET_PLAYER]: Player;
+};
 
-  export type HandlersEventMap = {
-    [Property in keyof DetailMap]: CustomEvent<DetailMap[Property]>;
-  };
-}
+export type ClientEventHandlersEventMap = {
+  [Property in keyof ClientEventDetailMap]: CustomEvent<ClientEventDetailMap[Property]>;
+};

@@ -5,7 +5,7 @@ export const getTranslation = async (locale: string) => {
   let ret;
   try {
     ret = await import(`../translations/${locale}.json`);
-  } catch (_e) {
+  } catch {
     ret = await import('../translations/en.json');
   }
   return ret;

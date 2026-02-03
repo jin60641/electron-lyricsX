@@ -1,11 +1,11 @@
+import { spawn } from 'child_process';
+import * as path from 'path';
+
 import { Info } from '@repo/types';
 
 import { resourcePath } from './constants';
 import EventTarget from './event';
 import { EventName, Player } from './types';
-
-const { spawn } = require('child_process');
-const path = require('path');
 
 const SCRIPT_DIR = path.join(resourcePath, 'scripts');
 
@@ -21,12 +21,16 @@ class Playback extends EventTarget {
 
   private timer?: ReturnType<typeof setInterval>;
 
-  public handleData = (data: Info | any) => {
+  public handleData = (data: Info | string | null) => {
     if (data || this.isPlaying) {
-      let track: Info;
-      try {
-        track = JSON.parse(data) as Info;
-      } catch (e) {
+      let track: Info | null = null;
+      if (typeof data === 'string') {
+        try {
+          track = JSON.parse(data) as Info;
+        } catch {
+          track = data as unknown as Info;
+        }
+      } else {
         track = data;
       }
       if (!track) {
@@ -115,14 +119,14 @@ class Playback extends EventTarget {
       if (typeof result === 'string') {
         try {
           data = JSON.parse(result);
-        } catch (_e) {
+        } catch {
           data = result as unknown as Info;
         }
       } else if (result instanceof Buffer) {
         const parsed = (new TextDecoder()).decode(result).trim();
         try {
-          data = JSON.parse((new TextDecoder()).decode(result).trim());
-        } catch (e) {
+          data = JSON.parse(parsed);
+        } catch {
           data = parsed as unknown as Info;
         }
       }

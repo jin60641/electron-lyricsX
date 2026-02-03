@@ -1,9 +1,10 @@
-import { publicPath } from '../constants';
-import path from 'path';
+import * as path from 'path';
 
-const Kuroshiro = require('kuroshiro').default;
-const MecabAnalyzer = require('kuroshiro-analyzer-mecab');
-const Mecab = require('mecab-async');
+import Kuroshiro from 'kuroshiro';
+import MecabAnalyzer from 'kuroshiro-analyzer-mecab';
+import Mecab from 'mecab-async';
+
+import { publicPath } from '../constants';
 
 
 export const kuroshiro = new Kuroshiro();

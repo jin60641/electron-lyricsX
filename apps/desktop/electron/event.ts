@@ -1,26 +1,26 @@
-import { ClientEvent, EventName } from './types';
+import { EventEmitter } from 'events';
 
-const events = require('events');
+import { ClientEventDetailMap, ClientEventHandlersEventMap, EventName } from './types';
 
 type EventClientListener<
-  T extends keyof ClientEvent.HandlersEventMap = keyof ClientEvent.HandlersEventMap,
+  T extends keyof ClientEventHandlersEventMap = keyof ClientEventHandlersEventMap,
 > = {
   eventName: T,
-  listener: (event: ClientEvent.HandlersEventMap[T]) => void,
+  listener: (event: ClientEventHandlersEventMap[T]) => void,
 };
 
 export const isEventName = (eventName: EventName) => Object.values(EventName).includes(eventName);
 
 class EventClient {
-  private eventTarget = new events.EventEmitter();
+  private eventTarget = new EventEmitter();
 
   private listeners: EventClientListener[] = [];
 
   /**
    * Add a event handler
    */
-  public on<K extends keyof ClientEvent.HandlersEventMap>(
-    eventName: K, listener: (event: ClientEvent.HandlersEventMap[K]) => void,
+  public on<K extends keyof ClientEventHandlersEventMap>(
+    eventName: K, listener: (event: ClientEventHandlersEventMap[K]) => void,
   ) {
     if (!isEventName(eventName)) {
       throw new Error('invalid event name');
@@ -41,9 +41,9 @@ class EventClient {
   /**
    * Remove a event handler
    */
-  public off<K extends keyof ClientEvent.HandlersEventMap>(
+  public off<K extends keyof ClientEventHandlersEventMap>(
     eventName: K,
-    listener: (event: ClientEvent.HandlersEventMap[K]) => void,
+    listener: (event: ClientEventHandlersEventMap[K]) => void,
   ) {
     if (!isEventName(eventName)) {
       throw new Error('invalid event name');
@@ -56,9 +56,9 @@ class EventClient {
     return this.eventTarget.off(eventName, listener);
   }
 
-  public emit<K extends keyof ClientEvent.DetailMap>(
+  public emit<K extends keyof ClientEventDetailMap>(
     eventName: K,
-    detail?: ClientEvent.DetailMap[K],
+    detail?: ClientEventDetailMap[K],
   ) {
     return this.eventTarget.emit(eventName, { detail });
   }

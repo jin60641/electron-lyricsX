@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
-import { LAYOUT_ACTIONS, PREFERENCE_ACTIONS } from '@repo/types';
+import { layoutActions, preferenceActions } from '@repo/state';
 
 import { setPlayer } from '../apis/index';
 import { isDev, dirPath, preloadPath } from '../constants';
@@ -41,18 +41,18 @@ const preferenceWindow = () => {
   win.setBackgroundColor('#00000000');
 
   // electron type error
-  // @ts-ignore
+  // @ts-expect-error electron window close event typing mismatch
   win.on('close', handleClose);
 
   app.on('before-quit', () => {
     isBeforeQuit = true;
   });
 
-  ipcMain.on(LAYOUT_ACTIONS.CLOSE_PREFERENCE, () => {
+  ipcMain.on(layoutActions.closePreference.type, () => {
     win.hide();
   });
 
-  ipcMain.on(PREFERENCE_ACTIONS.SET_PLAYER.REQUEST, (_event, player) => {
+  ipcMain.on(preferenceActions.setPlayer.request.type, (_event, player) => {
     playback.setPlayer(player);
     setPlayer(win, player);
   });

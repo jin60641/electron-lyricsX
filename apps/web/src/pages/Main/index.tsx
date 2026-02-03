@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useTheme, alpha } from '@mui/material/styles';
-import clsx from 'clsx';
+import { alpha } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import { getType } from 'typesafe-actions';
-
 import musicActions from '@renderer/store/music/actions';
+import layoutActions from '@renderer/store/layout/actions';
 import { RootState } from '@renderer/store/types';
-import { Info, KrcRow, KrcWord, LyricFormat, LAYOUT_ACTIONS } from '@repo/types';
+import { Info, KrcRow, KrcWord, LyricFormat } from '@repo/types';
 
 // [중요] 스타일을 함수 외부에서 정의하여 매 렌더링마다 객체가 생성되지 않도록 함
 const staticStyles = {
@@ -46,7 +44,6 @@ const selector = ({ music, layout, preference }: RootState) => ({
   isPlaying: music.isPlaying,
   currentOffset: music.currentOffset,
   globalOffset: music.globalOffset,
-  draggable: preference.draggable,
   lineCount: layout.lineCount,
   layout, // 전체 레이아웃 정보
   showTlit: preference.showTlit,
@@ -54,7 +51,6 @@ const selector = ({ music, layout, preference }: RootState) => ({
 });
 
 const Main: React.FC = () => {
-  const theme = useTheme();
   const domRef = useRef<HTMLDivElement | null>(null);
   const [position, setPosition] = useState(0);
   const [time, setTime] = useState(0);
@@ -64,7 +60,7 @@ const Main: React.FC = () => {
 
   const {
     isPlaying, music, currentOffset, globalOffset,
-    draggable, layout, lineCount, showTlit, showFurigana,
+    layout, lineCount, showTlit, showFurigana,
   } = useSelector(selector);
 
   const offsetSum = useMemo(() => currentOffset + globalOffset, [currentOffset, globalOffset]);
@@ -111,7 +107,7 @@ const Main: React.FC = () => {
 
       setWindowSize(windowSize);
       window.bridge.ipc.send(
-        LAYOUT_ACTIONS.RESIZE_WINDOW,
+        layoutActions.resizeWindow.type,
         filteredLyricsCount ? windowSize : { width: 0, height: 0 },
       );
 
@@ -144,7 +140,7 @@ const Main: React.FC = () => {
 
   // IPC 수신
   useEffect(() => {
-    window.bridge.ipc.receive(getType(musicActions.seekMusic), (data: Info) => {
+    window.bridge.ipc.receive(musicActions.seekMusic.type, (data: Info) => {
       if (data.position) {
         setTime(data.position);
         setPosition(data.position);

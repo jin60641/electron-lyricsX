@@ -43,7 +43,7 @@ const parseWords = async (str: string): Promise<KrcWord[]> => {
   if (!matches) {
     return [];
   }
-  const words = await Promise.all(matches.map(async ([_sub, _offset, duration, _, text]) => ({
+  const words = await Promise.all(matches.map(async ([, , duration, , text]) => ({
     text,
     duration: parseInt(duration, 10) / 1000,
     time: 0,
@@ -127,8 +127,9 @@ export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
       let furi;
       try {
         furi = await addFuriganaText(fullText);
-      } catch (e: any) {
-        dialog.showErrorBox(e.name, e.message || 'Unknown mecab error')
+      } catch (error) {
+        const normalizedError = error instanceof Error ? error : new Error('Unknown mecab error');
+        dialog.showErrorBox(normalizedError.name, normalizedError.message || 'Unknown mecab error');
         furi = '';
       }
       const furiLines = furi.split(/\r?\n|EOS/).filter((line: string) => line.trim() !== '');
@@ -218,7 +219,7 @@ export const parseRowData = async (filteredLyrics: LyricResponse[]) => {
         ...info,
         lyric: re2,
       };
-    } catch (e) {
+    } catch {
       return { lyric: '' };
     }
   }));
@@ -236,10 +237,9 @@ export const decodeKrc = (content: Buffer): Buffer => {
   for (let i = diff; i < content.length; i += 1) {
     buffer[i - diff] = content[i] ^ KRC_ENCODE_KEY[(i - diff) % 16];
   }
-  return zlib.unzipSync(buffer as any);
+  return zlib.unzipSync(Uint8Array.from(buffer));
 };
 
-/* eslint-disable no-param-reassign */
 export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], locale: string }) => {
   const srcTexts = lyric.map((row) => {
     if (row.format === LyricFormat.KRC) {
@@ -254,7 +254,6 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
     tlitLang: locale,
   }).then((item) => item?.message?.tlitResult);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   tlits.reduce(({ texts, arr }, item) => {
     const trimed = item.token.replace('\r', '');
     const index = texts.indexOf(trimed);
@@ -296,7 +295,6 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
       let srcText = '';
       let startWordArrIndex = wordArrIndex;
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
         const wordItem = row.words[wordArrIndex];
         const tlitItem = row.tlits[tlitArrIndex];
@@ -353,4 +351,3 @@ export const tlitLyric = async ({ lyric, locale }: { lyric: Music['lyric'], loca
   });
   return lyric;
 };
-/* eslint-enable no-param-reassign */

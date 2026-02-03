@@ -1,7 +1,6 @@
-import { combineEpics } from 'redux-observable';
+import { combineEpics, ofType } from 'redux-observable';
 import { from } from 'rxjs';
-import { filter, mergeMap } from 'rxjs/operators';
-import { isActionOf } from 'typesafe-actions';
+import { mergeMap } from 'rxjs/operators';
 
 import { Epic } from '../types';
 
@@ -10,7 +9,7 @@ import { requestClosePreference } from './apis';
 
 const closePreferenceEpic: Epic = (action$) =>
   action$.pipe(
-    filter(isActionOf(actions.closePreference)),
+    ofType(actions.closePreference.type),
     mergeMap(() => from(requestClosePreference()).pipe(mergeMap(() => []))),
   );
 

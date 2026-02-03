@@ -9,11 +9,11 @@ contextBridge.exposeInMainWorld('bridge', {
   storage,
   platform: process.platform,
   ipc: {
-    send: (channel: string, data: any) => {
+    send: (channel: string, data: unknown) => {
       ipcRenderer.send(channel, data);
     },
-    receive: (channel: string, func: any) => {
-      ipcRenderer.on(channel, (_event, ...args) => func(...args));
+    receive: (channel: string, func: (...args: unknown[]) => void) => {
+      ipcRenderer.on(channel, (_event, ...args: unknown[]) => func(...args));
     },
   },
 });

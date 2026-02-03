@@ -10,6 +10,9 @@ import onlyWarn from "eslint-plugin-only-warn";
  * @type {import("eslint").Linter.Config[]}
  * */
 export const config = [
+  {
+    ignores: ["dist/**", "build/**"],
+  },
   js.configs.recommended,
   eslintConfigPrettier,
   ...tseslint.configs.recommended,
@@ -25,8 +28,5 @@ export const config = [
     plugins: {
       onlyWarn,
     },
-  },
-  {
-    ignores: ["dist/**"],
   },
 ];

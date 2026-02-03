@@ -1,7 +1,14 @@
-import { BrowserWindow, shell, ipcMain, screen } from 'electron';
+import {
+  BrowserWindow,
+  shell,
+  ipcMain,
+  screen,
+  type IpcMainEvent,
+} from 'electron';
 import * as path from 'path';
 
-import { LAYOUT_ACTIONS, MUSIC_ACTIONS, Music } from '@repo/types';
+import { Music } from '@repo/types';
+import { layoutActions, musicActions } from '@repo/state';
 import {
   pauseMusic, seekMusic, sendTranslatedLyric, startMusic,
   stopMusic,
@@ -52,7 +59,7 @@ const createWindow = () => {
   win.setMenu(null);
   win.setVisibleOnAllWorkspaces(true);
 
-  ipcMain.on(LAYOUT_ACTIONS.RESIZE_WINDOW, (_event, payload) => {
+  ipcMain.on(layoutActions.resizeWindow.type, (_event, payload) => {
     const bounds = win.getBounds();
     const diff = {
       width: payload.width - bounds.width,
@@ -90,20 +97,20 @@ const createWindow = () => {
     win.setBounds(nextBounds, true);
   });
 
-  ipcMain.on(LAYOUT_ACTIONS.CHANGE_DRAGGABLE, (_event, payload) => {
+  ipcMain.on(layoutActions.changeDraggable.type, (_event, payload) => {
     const { draggable } = payload;
     if (draggable) win.setIgnoreMouseEvents(false);
     else win.setIgnoreMouseEvents(true);
   });
 
   ipcMain.on(
-    MUSIC_ACTIONS.TRANSLATE_LYRIC.REQUEST,
-    async (event, payload: { lyric: Music['lyric'], locale: string }) => {
-    if ((event as any).sender.getOwnerBrowserWindow() !== win) {
-      return;
-    }
-    const lyricWithTlit = await tlitLyric(payload);
-    sendTranslatedLyric(win, lyricWithTlit);
+    musicActions.translateLyric.request.type,
+    async (event: IpcMainEvent, payload: { lyric: Music['lyric'], locale: string }) => {
+      if (BrowserWindow.fromWebContents(event.sender) !== win) {
+        return;
+      }
+      const lyricWithTlit = await tlitLyric(payload);
+      sendTranslatedLyric(win, lyricWithTlit);
     },
   );
 

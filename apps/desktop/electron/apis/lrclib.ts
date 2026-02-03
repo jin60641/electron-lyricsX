@@ -1,7 +1,6 @@
 import { LyricFormat } from '@repo/types';
 import { LyricRequest, LyricResponse } from '../types';
 import axios from '../utils/axios';
-import { makeKeyword } from '../utils/common';
 
 export interface LrclibLyricItem {
   id: number,

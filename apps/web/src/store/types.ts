@@ -1,17 +1,13 @@
+import type { AnyAction } from '@reduxjs/toolkit';
 import { Epic as RxEpic } from 'redux-observable';
-import { ActionType } from 'typesafe-actions';
 
-import layoutActions from './layout/actions';
 import musicActions from './music/actions';
 import preferenceActions from './preference/actions';
 
 import rootReducer from './reducer';
 export type RootState = ReturnType<typeof rootReducer>;
 
-export type RootAction =
-  | ActionType<typeof musicActions>
-  | ActionType<typeof preferenceActions>
-  | ActionType<typeof layoutActions>;
+export type RootAction = AnyAction;
 
 export const channels = [
   musicActions.resetMusic,
@@ -21,6 +17,8 @@ export const channels = [
   preferenceActions.setPlayer.success,
   musicActions.searchMusic.success,
   musicActions.translateLyric.success,
-];
+] as const;
+
+export type ChannelActionCreator = (typeof channels)[number];
 
 export type Epic = RxEpic<RootAction, RootAction, RootState>;

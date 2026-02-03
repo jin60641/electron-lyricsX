@@ -1,55 +1,52 @@
-import { applyMiddleware, compose, createStore, Middleware } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 import { createEpicMiddleware } from 'redux-observable';
 import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import { createStateSyncMiddleware, initMessageListener } from 'redux-state-sync';
-import { ActionCreator, getType } from 'typesafe-actions';
+import type { Middleware } from 'redux';
 
 import rootEpic from './epic';
 import actions from './preference/actions';
 import rootReducer from './reducer';
 import { channels, RootState, RootAction } from './types';
 
-const composeEnhancers = compose;
-
-const loggerMiddleware = createLogger();
+const loggerMiddleware = createLogger() as Middleware<object, RootState>;
 const epicMiddleware = createEpicMiddleware<RootAction, RootAction, RootState>();
 
 const stateSyncMiddleware = createStateSyncMiddleware({
   blacklist: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-}) as Middleware;
+}) as Middleware<object, RootState>;
 
-const middlewares: Middleware[] = [epicMiddleware, stateSyncMiddleware];
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => {
+    const baseMiddleware = getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(epicMiddleware, stateSyncMiddleware);
 
-if (process.env.NODE_ENV === 'development') {
-  middlewares.push(loggerMiddleware);
-}
+    if (import.meta.env.DEV) {
+      return baseMiddleware.concat(loggerMiddleware);
+    }
 
-const store = createStore(
-  rootReducer,
-  undefined,
-  composeEnhancers(applyMiddleware(...middlewares)),
-);
+    return baseMiddleware;
+  },
+});
 
 epicMiddleware.run(rootEpic);
 initMessageListener(store);
 
-type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (
-  k: infer I,
-) => void
-  ? I
-  : never;
-
 channels.forEach((channel) => {
-  window.bridge.ipc.receive(getType(channel as ActionCreator), (data) => {
-    store.dispatch(channel(data as UnionToIntersection<Parameters<typeof channel>[0]>));
+  window.bridge.ipc.receive(channel.type, (data) => {
+    store.dispatch((channel as (payload?: unknown) => RootAction)(data));
   });
 });
 
 const persistHandler = () => {
   const state = store.getState();
   const { player } = state.preference;
-  window.bridge.ipc.send(getType(actions.setPlayer.request), player);
+  window.bridge.ipc.send(actions.setPlayer.request.type, player);
 };
 
 const persistor = persistStore(store, undefined, persistHandler);

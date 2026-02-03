@@ -1,6 +1,4 @@
 // index.ts
-import { execSync } from 'child_process';
-
 import { mecab } from '../mecab';
 
 import { HangulHelper } from './dict';

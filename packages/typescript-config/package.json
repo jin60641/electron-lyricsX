@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "catalog:eslint"
+  },
   "publishConfig": {
     "access": "public"
   }

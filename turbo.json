@@ -14,15 +14,18 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
-    "desktop#build-app": {
-      "dependsOn": ["web#build"],
+    "web#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
+    "desktop#build": {
+      "dependsOn": ["^build", "web#build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^lint"],
+      "env": ["DEV"]
     },
     "dev": {
       "cache": false,

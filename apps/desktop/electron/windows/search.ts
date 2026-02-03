@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
-import { LAYOUT_ACTIONS, MUSIC_ACTIONS } from '@repo/types';
+import { layoutActions, musicActions } from '@repo/state';
 
 import { searchMusic } from '../apis/index';
 import { isDev, preloadPath, dirPath } from '../constants';
@@ -40,17 +40,17 @@ const searchWindow = () => {
   win.setBackgroundColor('#00000000');
 
   // electron type error
-  // @ts-ignore
+  // @ts-expect-error electron window close event typing mismatch
   win.on('close', handleClose);
 
   app.on('before-quit', () => {
     isBeforeQuit = true;
   });
 
-  ipcMain.on(LAYOUT_ACTIONS.CLOSE_PREFERENCE, () => {
+  ipcMain.on(layoutActions.closePreference.type, () => {
     win.hide();
   });
-  ipcMain.on(MUSIC_ACTIONS.SEARCH_MUSIC.REQUEST, (_event, payload) => {
+  ipcMain.on(musicActions.searchMusic.request.type, (_event, payload) => {
     searchMusic(win, payload);
   });
   return win;

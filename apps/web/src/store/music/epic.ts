@@ -1,22 +1,36 @@
 import { combineEpics } from 'redux-observable';
 import { from } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
-import { isActionOf } from 'typesafe-actions';
 
-import { Epic } from '../types';
+import { Epic, RootAction } from '../types';
 
 import actions from './actions';
 import { requestSearchMusic, requestTranslateLyric } from './apis';
 
+const isSearchMusicRequest = (
+  action: RootAction,
+): action is ReturnType<typeof actions.searchMusic.request> =>
+  action.type === actions.searchMusic.request.type;
+
+const isSetLastSelected = (
+  action: RootAction,
+): action is ReturnType<typeof actions.setLastSelected> =>
+  action.type === actions.setLastSelected.type;
+
+const isSearchMusicSuccess = (
+  action: RootAction,
+): action is ReturnType<typeof actions.searchMusic.success> =>
+  action.type === actions.searchMusic.success.type;
+
 const searchMusicEpic: Epic = (action$) =>
   action$.pipe(
-    filter(isActionOf(actions.searchMusic.request)),
+    filter(isSearchMusicRequest),
     mergeMap((action) => from(requestSearchMusic(action.payload)).pipe(mergeMap(() => []))),
   );
 
 const translateLyricEpic: Epic = (action$, state$) =>
   action$.pipe(
-    filter(isActionOf(actions.setLastSelected)),
+    filter(isSetLastSelected),
     mergeMap((action) =>
       from(
         requestTranslateLyric({
@@ -29,7 +43,7 @@ const translateLyricEpic: Epic = (action$, state$) =>
 
 const searchMusicSuccessEpic: Epic = (action$, state$) =>
   action$.pipe(
-    filter(isActionOf(actions.searchMusic.success)),
+    filter(isSearchMusicSuccess),
     filter(() => !!state$.value.music.list.length),
     mergeMap(() =>
       from(

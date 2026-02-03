@@ -4,14 +4,16 @@
   "main": "build/electron/index.js",
   "private": true,
   "scripts": {
-    "build": "pnpm run build:main && pnpm run build:preload && pnpm run build:electron",
+    "build-app": "pnpm run build:main && pnpm run build:preload && pnpm run build:electron",
     "build:main": "esbuild electron/index.ts --bundle --platform=node --outfile=build/electron/index.js --external:electron",
     "build:preload": "esbuild electron/preload/index.ts --bundle --platform=node --outfile=build/electron/preload/index.js --external:electron",
     "build:electron": "electron-builder --config \"electron-builder.yml\"",
-    "watch": "pnpm tsc --watch -p ./tsconfig.json",
+    "lint": "eslint .",
+    "ts": "pnpm tsc -p ./tsconfig.json",
+    "watch": "pnpm tsc --watch -p ./tsconfig.build.json",
     "clean": "rimraf build dist",
-    "build-app": "pnpm clean && cp -r ../web/build ./build && pnpm run build",
-    "electron": "NODE_ENV=dev nodemon --exec \"\"electron .\"\"",
+    "build": "pnpm clean && cp -r ../web/build ./build && pnpm run build-app",
+    "electron": "NODE_ENV=dev nodemon --config nodemon.json --exec \"\"electron .\"\"",
     "dev": "turbo run watch electron --filter=. --parallel"
   },
   "dependencies": {
@@ -36,13 +38,14 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
+    "@repo/state": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "electron": "^27.0.0",
     "electron-builder": "^26.4.0",
     "esbuild": "^0.27.2",
-    "eslint": "^9.39.1",
+    "eslint": "catalog:eslint",
     "nodemon": "^3.1.11",
     "rimraf": "^5.0.0",
     "typescript": "5.9.2"

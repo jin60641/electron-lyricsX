@@ -19,7 +19,7 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "./build/electron"
+    "noEmit": true
   },
   "include": [
     "./electron"

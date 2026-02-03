@@ -1,13 +1,13 @@
 import { BrowserWindow } from 'electron';
 
-import { Info, Music, MUSIC_ACTIONS, PREFERENCE_ACTIONS } from '@repo/types';
+import { Info, Music } from '@repo/types';
+import { musicActions, preferenceActions } from '@repo/state';
 import { LyricResponse, Player } from '../types';
 import { checkAnalyzer } from '../utils/mecab';
 import { parseRowData } from '../utils/parse';
 
 import search163 from './163';
 import searchKugou from './kugou';
-import searchLrclib from './lrclib';
 
 /**
  * 검색 인자를 받아서 가사 검색 결과를 반환합니다.
@@ -29,8 +29,8 @@ export const getLyricRes = async (data: Info): Promise<LyricResponse[]> => {
 export const getLyrics = async (data: Info) => {
   try {
     await checkAnalyzer();
-  } catch (e) {
-    // error logging
+  } catch {
+    // noop
   }
   const lyricRes = await getLyricRes(data);
   const lyrics = await parseRowData(lyricRes);
@@ -38,38 +38,38 @@ export const getLyrics = async (data: Info) => {
 };
 export const searchMusic = async (win: BrowserWindow, data: Info) => {
   const lyrics = await getLyrics(data);
-  win.webContents.send(MUSIC_ACTIONS.SEARCH_MUSIC.SUCCESS, lyrics);
+  win.webContents.send(musicActions.searchMusic.success.type, lyrics);
 };
 export const startMusic = async (win: BrowserWindow, data?: Info) => {
   if (!data) {
-    win.webContents.send(MUSIC_ACTIONS.START_MUSIC);
+    win.webContents.send(musicActions.startMusic.type);
     return;
   }
   const { name, artist } = data;
-  win.webContents.send(MUSIC_ACTIONS.START_MUSIC, {
+  win.webContents.send(musicActions.startMusic.type, {
     name,
     artist,
   });
   const lyrics = await getLyrics(data);
-  win.webContents.send(MUSIC_ACTIONS.SEARCH_MUSIC.SUCCESS, lyrics);
+  win.webContents.send(musicActions.searchMusic.success.type, lyrics);
 };
 
 export const seekMusic = async (win: BrowserWindow, data: Info) => {
-  win.webContents.send(MUSIC_ACTIONS.SEEK_MUSIC, data);
+  win.webContents.send(musicActions.seekMusic.type, data);
 };
 
 export const pauseMusic = async (win: BrowserWindow) => {
-  win.webContents.send(MUSIC_ACTIONS.PAUSE_MUSIC, '');
+  win.webContents.send(musicActions.pauseMusic.type, '');
 };
 
 export const stopMusic = async (win: BrowserWindow) => {
-  win.webContents.send(MUSIC_ACTIONS.STOP_MUSIC, '');
+  win.webContents.send(musicActions.stopMusic.type, '');
 };
 
 export const setPlayer = async (win: BrowserWindow, data: Player) => {
-  win.webContents.send(PREFERENCE_ACTIONS.SET_PLAYER.SUCCESS, data);
+  win.webContents.send(preferenceActions.setPlayer.success.type, data);
 };
 
 export const sendTranslatedLyric = async (win: BrowserWindow, data: Music['lyric']) => {
-  win.webContents.send(MUSIC_ACTIONS.TRANSLATE_LYRIC.SUCCESS, data);
+  win.webContents.send(musicActions.translateLyric.success.type, data);
 };
