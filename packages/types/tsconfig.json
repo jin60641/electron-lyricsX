@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext", // CommonJS에서 ESNext로 변경
+    "declaration": true,       // .d.ts 파일 생성
+    "declarationMap": true,    // 소스 맵 생성
+    "outDir": "./dist",        // 빌드 결과물 위치
+    "strict": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true
+  },
+  "include": ["./src"]
+}

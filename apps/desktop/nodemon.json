@@ -1,0 +1,9 @@
+{
+  "ignore": [
+    "node_modules",
+    "dist",
+    "*.test.js",
+    ".git"
+  ],
+  "watch": ["main.js", "preload.js", "src/main/"] 
+}

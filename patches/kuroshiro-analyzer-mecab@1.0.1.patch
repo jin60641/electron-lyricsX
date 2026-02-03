@@ -1,0 +1,40 @@
+diff --git a/.npmignore b/.npmignore
+deleted file mode 100644
+index 2f95b3c2d0a4bc944ef1ec70fd39cd91059ca854..0000000000000000000000000000000000000000
+diff --git a/lib/index.js b/lib/index.js
+index 5e55181224655fb6bd30d580c92f097d601691b3..46a3f4a53d6377f33485a7c1e39a919f194d2d85 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -63,18 +63,20 @@ var Analyzer = function () {
+                     _this._analyzer.command = _this._command;
+                     _this._analyzer.options = _this._execOptions;
+                     _this._analyzer.parser = function (data) {
+-                        return {
+-                            surface_form: data[0],
+-                            pos: data[1],
+-                            pos_detail_1: data[2],
+-                            pos_detail_2: data[3],
+-                            pos_detail_3: data[4],
+-                            conjugated_type: data[5],
+-                            conjugated_form: data[6],
+-                            basic_form: data[7],
+-                            reading: data[8],
+-                            pronunciation: data[9]
+-                        };
++                      const posInfo = data[4] ? data[4].split('-') : [];
++
++                      return {
++                          surface_form: data[0],
++                          pos: posInfo[0] || '',          // 명사
++                          pos_detail_1: posInfo[1] || '', // 보통명사
++                          pos_detail_2: posInfo[2] || '', // 일반
++                          pos_detail_3: posInfo[3] || '',
++                          conjugated_type: data[5] || '*', // 활용형 (필요시)
++                          conjugated_form: data[6] || '*', // 활용형태 (필요시)
++                          basic_form: data[3] || data[0],  // 기본형 (UniDic은 data[3])
++                          reading: data[1] || '',          // 카타카나 읽기
++                          pronunciation: data[2] || ''     // 발음
++                      };
+                     };
+                     resolve();
+                 } else {

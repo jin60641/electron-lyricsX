@@ -1,0 +1,75 @@
+appId: com.jinsang.lyricsX
+productName: lyricsX
+directories:
+  buildResources: public
+
+files:
+  - './build/**/*'
+  - './package.json'
+
+asar: false
+
+extraResources:
+  - from: ./scripts/
+    to: scripts
+    filter:
+      - '**/*'
+  - from: ./public/
+    to: public
+    filter :
+     - '**/*'
+
+publish:
+  provider: generic
+  url: https://example.com/auto-updates
+
+win:
+  executableName: my-app
+  fileAssociations:
+    - ext:
+        - mp3
+      description: Mp3 Files
+  target:
+    - nsis
+
+nsis:
+  artifactName: $${productName}-$${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+
+mac:
+  fileAssociations:
+    - ext:
+        - mp3
+      role: Editor
+  entitlements: public/entitlements.mac.plist
+  entitlementsInherit: public/entitlements.mac.plist
+  hardenedRuntime: false
+  extendInfo:
+    LSUIElement: 1
+    NSCameraUsageDescription: Application requests access to the device's camera.
+    NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+
+dmg:
+  artifactName: $${productName}-$${version}.${ext}
+
+linux:
+  fileAssociations:
+    - ext:
+        - mp3
+      mimeType: audio/mpeg
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+
+appImage:
+  artifactName: $${productName}-$${version}.${ext}
+
+npmRebuild: false
