@@ -7,7 +7,7 @@ files:
   - './build/**/*'
   - './package.json'
 
-asar: false
+asar: true
 
 extraResources:
   - from: ./scripts/
