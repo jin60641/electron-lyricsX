@@ -1,8 +1,7 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
     "target": "esnext",
-    "module": "esnext",
+    "module": "commonjs",
     "lib": [
       "dom",
       "dom.iterable",
@@ -15,26 +14,15 @@
     "inlineSourceMap": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "jsx": "react-jsx",
+    "sourceRoot": ".",
     "allowJs": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "noEmit": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@renderer/*": [
-        "./src/*"
-      ]
-    }
-
+    "outDir": "./build/electron"
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    "next.config.js",
-    ".next/types/**/*.ts"
+    "./electron"
   ],
   "exclude": [
     "node_modules"

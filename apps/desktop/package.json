@@ -1,0 +1,51 @@
+{
+  "name": "desktop",
+  "version": "0.1.0",
+  "main": "build/electron/index.js",
+  "private": true,
+  "scripts": {
+    "build": "pnpm run build:main && pnpm run build:preload && pnpm run build:electron",
+    "build:main": "esbuild electron/index.ts --bundle --platform=node --outfile=build/electron/index.js --external:electron",
+    "build:preload": "esbuild electron/preload/index.ts --bundle --platform=node --outfile=build/electron/preload/index.js --external:electron",
+    "build:electron": "electron-builder --config \"electron-builder.yml\"",
+    "watch": "pnpm tsc --watch -p ./tsconfig.json",
+    "clean": "rimraf build dist",
+    "build-app": "pnpm clean && cp -r ../web/build ./build && pnpm run build",
+    "electron": "NODE_ENV=dev nodemon --exec \"\"electron .\"\"",
+    "dev": "turbo run watch electron --filter=. --parallel"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@types/koa": "^2.13.4",
+    "@types/koa-router": "^7.4.4",
+    "@types/koa__cors": "^3.0.3",
+    "@types/node": "^12.0.0",
+    "@types/uuid": "^8.3.1",
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.12",
+    "electron-fetch": "^1.7.2",
+    "electron-store": "^8.0.1",
+    "koa": "^2.13.3",
+    "koa-body": "^4.2.0",
+    "koa-router": "^10.1.1",
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-mecab": "^1.0.1",
+    "mecab-async": "^0.1.2",
+    "typescript": "^5.2.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "electron": "^27.0.0",
+    "electron-builder": "^26.4.0",
+    "electron-reload": "^1.5.0",
+    "esbuild": "^0.27.2",
+    "eslint": "^9.39.1",
+    "nodemon": "^3.1.11",
+    "rimraf": "^5.0.0",
+    "typescript": "5.9.2"
+  }
+}

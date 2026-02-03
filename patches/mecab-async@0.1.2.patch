@@ -1,0 +1,13 @@
+diff --git a/mecab.js b/mecab.js
+index 696277f5440e09279360e24a422178edbe4a64ff..6fdf9088330a1c471c77d3cb6cd5935cfd601f1c 100644
+--- a/mecab.js
++++ b/mecab.js
+@@ -41,7 +41,7 @@ MeCab.prototype = {
+             if (arr.length === 1) {
+                 return [line];
+             }
+-            return [arr[0]].concat(arr[1].split(','));
++            return arr;
+         });
+     },
+     parse : function(str, callback) {
